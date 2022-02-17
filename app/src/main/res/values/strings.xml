@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">crazy_habits</string>
+    <string name="button">Press Me!</string>
+    <string name="counter">0</string>
+    <string name="info">Квадрат числа с первой Activity</string>
+    <string name="title2">Activity2</string>
+    <string name="title1">Activity1</string>
 </resources>
