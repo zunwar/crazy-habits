@@ -1,63 +1,225 @@
 <?xml version="1.0" encoding="utf-8"?>
-        <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".SecondActivity">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SecondActivity">
 
         <Button
-            android:id="@+id/button2"
-            android:layout_width="220dp"
-            android:layout_height="160dp"
-            android:text="@string/button"
+            android:id="@+id/addButton"
+            android:layout_width="115dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="36dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/addButton"
+            android:textSize="@dimen/smallText"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_bias="1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.3" />
+            app:layout_constraintTop_toBottomOf="@id/act2Period"
+            app:layout_constraintVertical_bias="1" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/act2NameHabit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:hint="@string/hintNameHabit"
+            app:boxBackgroundColor="@color/white"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/act2NameHabitText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:inputType="text"
+                    android:paddingStart="0dp"
+                    android:maxLength="34">
+
+                </com.google.android.material.textfield.TextInputEditText>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/act2Desc"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:hint="@string/hintDescription"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/act2NameHabit">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/act2DescText"
+                    android:layout_width="match_parent"
+                    android:layout_height="110dp"
+                    android:gravity="top"
+                    android:inputType="textMultiLine" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
 
         <TextView
-            android:id="@+id/title2"
+            android:id="@+id/typeHabit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/title2"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:text="@string/typeHabit"
             android:textSize="@dimen/middleText"
-            app:layout_constraintBottom_toTopOf="@id/button2"
+            app:layout_constraintHorizontal_bias="0.001"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5"
-            app:layout_constraintHorizontal_bias="0.5"/>
+            app:layout_constraintTop_toBottomOf="@id/act2Desc"
 
+            />
 
         <TextView
-            android:id="@+id/info"
+            android:id="@+id/act2Priority"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/info"
+            android:layout_marginTop="16dp"
+            android:text="@string/priorityText"
             android:textSize="@dimen/middleText"
-            app:layout_constraintBottom_toTopOf="@id/counter2"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/spinner"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/button2"
-            app:layout_constraintVertical_bias="0.9"
-            app:layout_constraintHorizontal_bias="0.5"/>
+            app:layout_constraintTop_toBottomOf="@id/act2Desc" />
 
-        <TextView
-            android:id="@+id/counter2"
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/counter"
-            android:textSize="@dimen/counter"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="16dp"
+            app:layout_constraintHorizontal_bias="0.001"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/act2Priority"
+            app:layout_constraintTop_toBottomOf="@id/typeHabit">
+
+                <RadioButton
+                    android:id="@+id/radioButton1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/radbtText1"
+                    android:buttonTint="@color/purple_500"
+                    android:paddingStart="10dp"/>
+
+                <RadioButton
+                    android:id="@+id/radioButton2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/radbtText2"
+                    app:layout_constraintTop_toBottomOf="@id/radioButton1"
+                    android:buttonTint="@color/purple_500"
+                    android:paddingStart="10dp"/>
+
+                <RadioButton
+                    android:id="@+id/radioButton3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/radbtText3"
+                    app:layout_constraintTop_toBottomOf="@id/radioButton2"
+                    android:buttonTint="@color/purple_500"
+                    android:paddingStart="10dp"/>
+        </RadioGroup>
+
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border"
+            android:entries="@array/spinner"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            app:layout_constraintBottom_toTopOf="@id/addButton"
+            app:layout_constraintHorizontal_bias="0.7"
+            app:layout_constraintLeft_toRightOf="@id/radioGroup"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/button2"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintVertical_bias="0.3" />
+            app:layout_constraintTop_toBottomOf="@id/act2Priority"
+            app:layout_constraintVertical_bias="0.06"
+            />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/act2Number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="16dp"
+            android:hint="@string/hintNumber"
+            app:boxBackgroundColor="@color/white"
+
+            app:layout_constraintLeft_toLeftOf="@id/radioGroup"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/radioGroup">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/act2NumberText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:paddingStart="0dp"
+            android:inputType="number">
+        </com.google.android.material.textfield.TextInputEditText>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/act2Period"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="16dp"
+            android:hint="@string/hintPeriod"
+            app:boxBackgroundColor="@color/white"
+            app:layout_constraintLeft_toLeftOf="@id/act2Number"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/act2Number"
+            app:layout_constraintHorizontal_bias="0.001">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/act2PeriodText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:inputType="text"
+            android:paddingStart="0dp">
+
+        </com.google.android.material.textfield.TextInputEditText>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/chooseColorButton"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="60dp"
+            android:text="@string/chooseColorButton"
+            android:textSize="@dimen/smallText"
+            app:layout_constraintBottom_toBottomOf="@id/addButton"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/addButton"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintVertical_bias="1" />
+
+
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
