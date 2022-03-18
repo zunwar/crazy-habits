@@ -11,67 +11,187 @@
         android:layout_width="100dp"
         android:layout_height="60dp"
         android:text="@string/ok"
-        app:layout_constraintBottom_toTopOf="@id/nsv"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.9" />
-
-
-    <HorizontalScrollView
-        android:id="@+id/nsv"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginTop="15dp"
-        android:scrollbars="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1">
+        app:layout_constraintVertical_bias="0.9"/>
+
+    <View
+        android:id="@+id/chosenColor"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/setColorButton"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/square"
+        app:layout_constraintVertical_bias="0.4"
+        android:translationZ="1dp"
+        />
+
+
+    <HorizontalScrollView
+        android:id="@+id/hsv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
         <LinearLayout
             android:id="@+id/linear1"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="start|center"
+            android:layout_gravity="bottom"
             android:background="@drawable/gradient_hue"
             android:orientation="horizontal">
 
 
             <View
-                android:id="@+id/bt1"
+                android:id="@+id/cv1"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
+                android:layout_marginTop="100dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="25dp"
                 android:background="@drawable/square" />
 
             <View
+                android:id="@+id/cv2"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="25dp"
+                android:layout_marginTop="100dp"
+                android:background="@drawable/square" />
+
+            <View
+                android:id="@+id/cv3"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="100dp"
                 android:layout_gravity="center"
                 android:layout_marginEnd="25dp"
                 android:background="@drawable/square" />
 
             <View
+                android:id="@+id/cv4"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:layout_marginTop="100dp"
                 android:layout_gravity="center"
                 android:layout_marginEnd="25dp"
                 android:background="@drawable/square" />
 
             <View
+                android:id="@+id/cv5"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:layout_marginTop="100dp"
                 android:layout_gravity="center"
                 android:layout_marginEnd="25dp"
                 android:background="@drawable/square" />
 
             <View
+                android:id="@+id/cv6"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:layout_marginTop="100dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="25dp"
+                android:background="@drawable/square" />
+
+            <View
+                android:id="@+id/cv7"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="100dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="25dp"
+                android:background="@drawable/square" />
+
+            <View
+                android:id="@+id/cv8"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="100dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="25dp"
+                android:background="@drawable/square" />
+
+            <View
+                android:id="@+id/cv9"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="100dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="25dp"
+                android:background="@drawable/square" />
+
+            <View
+                android:id="@+id/cv10"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="100dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="25dp"
+                android:background="@drawable/square" />
+
+            <View
+                android:id="@+id/cv11"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="100dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="25dp"
+                android:background="@drawable/square" />
+
+            <View
+                android:id="@+id/cv12"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="100dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="25dp"
+                android:background="@drawable/square" />
+
+            <View
+                android:id="@+id/cv13"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="100dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="25dp"
+                android:background="@drawable/square" />
+
+            <View
+                android:id="@+id/cv14"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="100dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="25dp"
+                android:background="@drawable/square" />
+            <View
+                android:id="@+id/cv15"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="100dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="25dp"
+                android:background="@drawable/square" />
+
+            <View
+                android:id="@+id/cv16"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="100dp"
                 android:layout_gravity="center"
                 android:layout_marginEnd="25dp"
                 android:background="@drawable/square" />
@@ -81,9 +201,6 @@
 
 
     </HorizontalScrollView>
-
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
