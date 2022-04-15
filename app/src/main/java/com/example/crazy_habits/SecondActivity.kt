@@ -55,7 +55,7 @@ class SecondActivity : AppCompatActivity() {
                 binding.colorOfHabit.background = ShapeColorBox(1, oldHabit.colorHabit)
             }
             binding.addButton.text = getString(R.string.changeButton)
-            edit = true
+            if (binding.radioGroup.checkedRadioButtonId != -1 ) edit = true
 
         }
 
