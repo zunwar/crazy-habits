@@ -13,14 +13,23 @@
     <string name="hintDescription">Описание привычки</string>
     <string name="hintNameHabit">Название</string>
     <string name="typeHabit">Тип</string>
-    <string name="radbtText1">полезная</string>
-    <string name="radbtText2">нейтральная</string>
-    <string name="radbtText3">вредная</string>
     <string name="priorityText">Приоритет</string>
     <string name="hintNumber">Количество выполнения</string>
     <string name="hintPeriod">Периодичность</string>
     <string name="chooseColorButton">Задать цвет</string>
     <string name="ok">ок</string>
+    <string name="chosen_color">RGB:</string>
+    <string name="rgb_code">(255, 255, 255)</string>
+    <string name="submit">submit</string>
+    <string name="notSet">не указано</string>
+    <string name="goodHabit">полезная</string>
+    <string name="neutralHabit">нейтральная</string>
+    <string name="badHabit">вредная</string>
+    <string name="empty">---</string>
+    <string name="highPriority">Высокий</string>
+    <string name="middlePriority">Средний</string>
+    <string name="lowPriority">Низкий</string>
+    <string name="changeButton">изменить</string>
     <string-array name="spinner">
         <item>---</item>
         <item>Высокий</item>

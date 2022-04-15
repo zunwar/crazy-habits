@@ -28,7 +28,6 @@
         android:src="@drawable/outline_note_add_black_48"
         app:borderWidth="2dp"
         app:elevation="10dp"
-
-        />
+        android:contentDescription="@string/submit" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -31,6 +31,32 @@
         />
 
 
+    <TextView
+        android:id="@+id/colorCodeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/colorCode"
+        app:layout_constraintBottom_toTopOf="@id/chosenColor"
+        app:layout_constraintHorizontal_bias="0.97"
+        android:layout_marginBottom="5dp"
+        android:text="@string/chosen_color"
+        android:translationZ="1dp"
+        />
+    <TextView
+        android:id="@+id/colorCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/chosenColor"
+        app:layout_constraintBottom_toTopOf="@id/chosenColor"
+        app:layout_constraintHorizontal_bias="1"
+        android:layout_marginBottom="5dp"
+        android:text="@string/rgb_code"
+        android:translationZ="1dp"
+        />
+
+
     <HorizontalScrollView
         android:id="@+id/hsv"
         android:layout_width="match_parent"
@@ -41,160 +67,17 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
-            android:id="@+id/linear1"
+            android:id="@+id/colorLinear"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="bottom"
-            android:background="@drawable/gradient_hue"
-            android:orientation="horizontal">
+            android:background="@color/purple_200"
+            android:orientation="horizontal"
+            android:paddingStart="25dp">
 
 
-            <View
-                android:id="@+id/cv1"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="100dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="25dp"
-                android:background="@drawable/square" />
-
-            <View
-                android:id="@+id/cv2"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:layout_marginEnd="25dp"
-                android:layout_marginTop="100dp"
-                android:background="@drawable/square" />
-
-            <View
-                android:id="@+id/cv3"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="100dp"
-                android:layout_gravity="center"
-                android:layout_marginEnd="25dp"
-                android:background="@drawable/square" />
-
-            <View
-                android:id="@+id/cv4"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="100dp"
-                android:layout_gravity="center"
-                android:layout_marginEnd="25dp"
-                android:background="@drawable/square" />
-
-            <View
-                android:id="@+id/cv5"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="100dp"
-                android:layout_gravity="center"
-                android:layout_marginEnd="25dp"
-                android:background="@drawable/square" />
-
-            <View
-                android:id="@+id/cv6"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="100dp"
-                android:layout_gravity="center"
-                android:layout_marginEnd="25dp"
-                android:background="@drawable/square" />
-
-            <View
-                android:id="@+id/cv7"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="100dp"
-                android:layout_gravity="center"
-                android:layout_marginEnd="25dp"
-                android:background="@drawable/square" />
-
-            <View
-                android:id="@+id/cv8"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="100dp"
-                android:layout_gravity="center"
-                android:layout_marginEnd="25dp"
-                android:background="@drawable/square" />
-
-            <View
-                android:id="@+id/cv9"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="100dp"
-                android:layout_gravity="center"
-                android:layout_marginEnd="25dp"
-                android:background="@drawable/square" />
-
-            <View
-                android:id="@+id/cv10"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="100dp"
-                android:layout_gravity="center"
-                android:layout_marginEnd="25dp"
-                android:background="@drawable/square" />
-
-            <View
-                android:id="@+id/cv11"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="100dp"
-                android:layout_gravity="center"
-                android:layout_marginEnd="25dp"
-                android:background="@drawable/square" />
-
-            <View
-                android:id="@+id/cv12"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="100dp"
-                android:layout_gravity="center"
-                android:layout_marginEnd="25dp"
-                android:background="@drawable/square" />
-
-            <View
-                android:id="@+id/cv13"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="100dp"
-                android:layout_gravity="center"
-                android:layout_marginEnd="25dp"
-                android:background="@drawable/square" />
-
-            <View
-                android:id="@+id/cv14"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="100dp"
-                android:layout_gravity="center"
-                android:layout_marginEnd="25dp"
-                android:background="@drawable/square" />
-            <View
-                android:id="@+id/cv15"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="100dp"
-                android:layout_gravity="center"
-                android:layout_marginEnd="25dp"
-                android:background="@drawable/square" />
-
-            <View
-                android:id="@+id/cv16"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="100dp"
-                android:layout_gravity="center"
-                android:layout_marginEnd="25dp"
-                android:background="@drawable/square" />
 
 
         </LinearLayout>

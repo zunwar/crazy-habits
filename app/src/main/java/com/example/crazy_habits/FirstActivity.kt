@@ -4,157 +4,176 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.crazy_habits.databinding.ActivityFirstBinding
 
 
-class FirstActivity : AppCompatActivity()    {
+class FirstActivity : AppCompatActivity(), HabitAdapter.OnItemClickListener    {
+
+    private lateinit var binding: ActivityFirstBinding
+    private val habitList : MutableList<Habit> = mutableListOf()
+    private lateinit var habit : Habit
+    private lateinit var resultLauncher : ActivityResultLauncher<Intent>
+    private lateinit var resultLauncherEdit : ActivityResultLauncher<Intent>
+    private lateinit var habitAdapter : HabitAdapter
+    private lateinit var intentToSecondActivity : Intent
+    private lateinit var idHabitToEdit : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(FirstActivity, "onCreate")
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "onCreate")
-        setContentView(R.layout.activity_first)
+        binding = ActivityFirstBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
-        val recyclerView : RecyclerView = findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        val name : MutableList<String> = mutableListOf()
-        val desc : MutableList<String> = mutableListOf()
-        val type : MutableList<String> = mutableListOf()
-        val priority : MutableList<String> = mutableListOf()
-        val period : MutableList<String> = mutableListOf()
-        var itemCount : Int = 0
+        initRecyclerView()
+        resultLauncherHabitEdit()
 
-        val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    }
+
+   private fun  initRecyclerView () {
+       binding.recyclerView.layoutManager = LinearLayoutManager(this)
+       resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+           if (result.resultCode == Activity.RESULT_OK) {
+               val data: Intent? = result.data
+               habit = data!!.getParcelableExtra<Habit>(SecondActivity.COLLECTED_HABIT)!!
+               habitList.add(habit)
+               binding.recyclerView.adapter  = HabitAdapter(this)
+               habitAdapter = binding.recyclerView.adapter as HabitAdapter
+               habitAdapter.addMoreHabits(habitList)
+               binding.recyclerView.scrollToPosition(habitAdapter.itemCount-1)
+           }
+       }
+
+       binding.FAB.setOnClickListener {
+           openActivityForResult()
+
+       }
+
+    }
+
+
+
+
+
+
+
+    override fun onItemClicked(id: String) {
+//        habitList.remove(habitList.find { it.id == id })
+//        openSecondActivityEditHabit()
+        idHabitToEdit = id
+        intentToSecondActivity = Intent(this, SecondActivity::class.java)
+        intentToSecondActivity.putExtra(HABIT_TO_EDIT, habitList.find { it.id == idHabitToEdit })
+        resultLauncherEdit.launch(intentToSecondActivity)
+//        habitAdapter.notifyItemRemoved(habitList.indexOf(habitList.find { it.id == id }))
+//        habitAdapter.notifyItemChanged(habitList.indexOf(habitList.find { it.id == id }))
+    }
+
+    private fun resultLauncherHabitEdit () {
+        resultLauncherEdit = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data: Intent? = result.data
-                fun getParameterHab(par : String) : String {
-                    if (data?.getStringExtra(par).toString().isEmpty()) {
-                        return "не указано"
-                    }else return data?.getStringExtra(par).toString()
+                habit = data!!.getParcelableExtra<Habit>(SecondActivity.COLLECTED_HABIT)!!
+                val searchHabit = habitList.find { it.id == idHabitToEdit }
+                with ((searchHabit)!!) {
+                   name       = habit.name
+                   desc       = habit.desc
+                   type       = habit.type
+                   priority   = habit.priority
+                   number     = habit.number
+                   period     = habit.period
+                   colorHabit = habit.colorHabit
                 }
-                name.add(getParameterHab("name"))
-                desc.add(getParameterHab("desc"))
-                type.add(getParameterHab("type"))
-                priority.add(getParameterHab("priority"))
-                period.add(getParameterHab("period"))
-                itemCount++
-                recyclerView.adapter  = Adapter(itemCount, name, desc, type, priority, period)
+                habitAdapter.notifyItemChanged(habitList.indexOf(searchHabit))
             }
         }
+    }
 
-        fun openActivityForResult() {
-            val intent = Intent(this, SecondActivity::class.java)
-            resultLauncher.launch(intent)
-        }
 
-        val fab: View = findViewById(R.id.FAB)
-        fab.setOnClickListener { view ->
-            openActivityForResult()
-        }
 
+//    private fun openSecondActivityEditHabit () {
+//
+//        intentToSecondActivity = Intent(this, SecondActivity::class.java)
+//
+//        resultLauncherEdit.launch(intentToSecondActivity)
+//    }
+
+
+
+
+     private fun openActivityForResult() {
+         intentToSecondActivity = Intent(this, SecondActivity::class.java)
+         resultLauncher.launch(intentToSecondActivity)
     }
 
 
      override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        Log.i(TAG, "onSaveInstanceState")
-//        val counter1: TextView = findViewById(R.id.counter1)
-//        counter1.text = (counter1.text.toString().toInt()+1).toString()
+        Log.i(FirstActivity, "onSaveInstanceState")
+         outState.apply {
+             val bundle = Bundle().apply {
+//                 put("habit", habitList)
+             }
+         }
 //        outState.putString(act1_data, counter1.text.toString())
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        Log.i(TAG, "onRestoreInstanceState")
+        Log.i(FirstActivity, "onRestoreInstanceState")
 //        val counter1:TextView = findViewById(R.id.counter1)
 //        counter1.text = savedInstanceState.getString(act1_data)
     }
 
 
-
+    /**
+     * методы ЖЦ
+     */
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG, "onDestroy")
+        Log.d(FirstActivity, "onDestroy")
     }
 
     override fun onStop() {
         super.onStop()
-        Log.d(TAG, "onStop")
+        Log.d(FirstActivity, "onStop")
     }
 
     override fun onStart() {
         super.onStart()
-        Log.d(TAG, "onStart")
+        Log.d(FirstActivity, "onStart")
     }
 
     override fun onPause() {
         super.onPause()
-        Log.d(TAG, "onPause")
+        Log.d(FirstActivity, "onPause")
     }
 
     override fun onResume() {
         super.onResume()
-        Log.d(TAG, "onResume")
+        Log.d(FirstActivity, "onResume")
     }
 
     override fun onRestart() {
         super.onRestart()
-        Log.d(TAG, "onRestart")
+        Log.d(FirstActivity, "onRestart")
     }
 
 
     companion object {
-        private const val TAG = "FirstActivity"
-        private const val act1_data = "act1_data"
+        private const val FirstActivity = "FirstActivity"
+        private const val TAG           = "errorqwer"
+        private const val act1_data     = "act1_data"
+                const val HABIT_TO_EDIT = "habitToEdit"
 
     }
 
 
-    class Adapter (private val itemCount: Int,
-                   private val name : MutableList<String>,
-                   private val desc : MutableList<String>,
-                   private val type : MutableList<String>,
-                   private val priority : MutableList<String>,
-                   private val period : MutableList<String>,
-                   ): RecyclerView.Adapter<Adapter.ViewHolder>() {
-        override fun getItemCount(): Int {
-            return itemCount
-        }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Adapter.ViewHolder {
-            val itemView = LayoutInflater.from(parent?.context).inflate(R.layout.list_item_view, parent, false)
-            return ViewHolder(itemView)
-        }
-
-        override fun onBindViewHolder(holder: Adapter.ViewHolder, position: Int) {
-            holder?.nameHabit?.text = name[position]
-            holder?.desc?.text      = desc[position]
-            holder?.type?.text      = type[position]
-            holder?.priority?.text  = priority[position]
-            holder?.period?.text    = period[position]
-        }
-
-        class ViewHolder(itemView : View?) : RecyclerView.ViewHolder(itemView!!){
-            var nameHabit : TextView? = null
-            var desc : TextView? = null
-            var type : TextView? = null
-            var priority : TextView? = null
-            var period : TextView? = null
-            init{
-                nameHabit = itemView?.findViewById(R.id.nameHabit)
-                desc      = itemView?.findViewById(R.id.description)
-                type      = itemView?.findViewById(R.id.type)
-                priority  = itemView?.findViewById(R.id.priority)
-                period    = itemView?.findViewById(R.id.period)
-            }
-        }
-    }
 }
+
 
 
