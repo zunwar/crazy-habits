@@ -3,12 +3,14 @@ package com.example.crazy_habits
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.crazy_habits.databinding.ActivityFirstBinding
+import java.util.ArrayList
 
 
 class FirstActivity : AppCompatActivity(), HabitAdapter.OnItemClickListener    {
@@ -111,21 +113,20 @@ class FirstActivity : AppCompatActivity(), HabitAdapter.OnItemClickListener    {
 
 
      override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
         Log.i(FirstActivity, "onSaveInstanceState")
-         outState.apply {
-             val bundle = Bundle().apply {
-//                 put("habit", habitList)
-             }
-         }
-//        outState.putString(act1_data, counter1.text.toString())
+         outState.putParcelableArrayList(RECYCLER_DATA, habitList as ArrayList<out Parcelable>)
+         super.onSaveInstanceState(outState)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         Log.i(FirstActivity, "onRestoreInstanceState")
-//        val counter1:TextView = findViewById(R.id.counter1)
-//        counter1.text = savedInstanceState.getString(act1_data)
+        val mDataset = savedInstanceState.getParcelableArrayList<Habit>(RECYCLER_DATA)
+        binding.recyclerView.adapter  = HabitAdapter(this)
+        habitAdapter = binding.recyclerView.adapter as HabitAdapter
+        habitList.addAll(mDataset as Collection<Habit>)
+        habitAdapter.addMoreHabits(habitList)
+
     }
 
 
@@ -167,6 +168,7 @@ class FirstActivity : AppCompatActivity(), HabitAdapter.OnItemClickListener    {
         private const val FirstActivity = "FirstActivity"
         private const val TAG           = "errorqwer"
         private const val act1_data     = "act1_data"
+        private const val RECYCLER_DATA     = "recycler data"
                 const val HABIT_TO_EDIT = "habitToEdit"
 
     }
