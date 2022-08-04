@@ -1,0 +1,13 @@
+<resources>
+
+    <style name="Widget.Theme.Crazy_habits.ButtonBar.Fullscreen" parent="">
+        <item name="android:background">@color/black_overlay</item>
+        <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
+    </style>
+
+
+
+    <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="">
+        <item name="cornerSize">52%</item>
+    </style>
+</resources>

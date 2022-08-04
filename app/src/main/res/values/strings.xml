@@ -2,7 +2,7 @@
     <string name="app_name">crazy_habits</string>
     <string name="addButton">Добавить</string>
     <string name="counter">0</string>
-    <string name="info">Квадрат числа с первой Activity</string>
+    <string name="info">Information</string>
     <string name="title2">Activity2</string>
     <string name="title1">Activity1</string>
     <string name="name_plug">Название_привычкиX</string>
@@ -36,4 +36,13 @@
         <item>Средний</item>
         <item>Низкий</item>
     </string-array>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="Application_info">Application info</string>
+    <string name="home">Home</string>
+    <string name="emotion">Emotion</string>
+    <string name="hello_there">Hello there…</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="ragdoll_cat">ragdoll cat</string>
 </resources>

@@ -2,6 +2,7 @@ package com.example.crazy_habits
 
 import android.content.Intent
 import android.graphics.drawable.GradientDrawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
@@ -13,8 +14,6 @@ import com.example.crazy_habits.databinding.ListItemViewBinding
 class HabitAdapter (private val itemClickListener: OnItemClickListener)
     : ListAdapter<Habit, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
     private val habitList : MutableList<Habit> = mutableListOf()
-    private lateinit var secondActIntent : Intent
-    private lateinit var resultLauncher : ActivityResultLauncher<Intent>
 
 //    override fun getItemCount(): Int {
 //        return habitList.size
@@ -52,28 +51,29 @@ class HabitAdapter (private val itemClickListener: OnItemClickListener)
         }
     }
 
-interface OnItemClickListener {
-    fun onItemClicked(id : String)
-}
+    interface OnItemClickListener {
+        fun onItemClicked(id : String)
+    }
 
-inner class HabitViewHolder(
-    private val binding: ListItemViewBinding,
-    private val itemClickListener: OnItemClickListener
-    ) : RecyclerView.ViewHolder(binding.root){
+    inner class HabitViewHolder(
+        private val binding: ListItemViewBinding,
+        private val itemClickListener: OnItemClickListener
+        ) : RecyclerView.ViewHolder(binding.root){
 
-    fun bind (habit: Habit) {
-        with(binding) {
-            nameHabit.text      = habit.name
-            description.text    = habit.desc
-            type.text           = habit.type
-            priority.text       = habit.priority
-            period.text         = habit.period
-            LLliv.background    = GradientDrawable().apply { setColor(habit.colorHabit) }
-            LLliv.setOnClickListener {
-                itemClickListener.onItemClicked(id = habit.id)
+        fun bind (habit: Habit) {
+
+            with(binding) {
+                nameHabit.text      = habit.name
+                description.text    = habit.desc
+                type.text           = habit.type
+                priority.text       = habit.priority
+                period.text         = habit.period
+                LLliv.background    = GradientDrawable().apply { setColor(habit.colorHabit) }
+                LLliv.setOnClickListener {
+                    itemClickListener.onItemClicked(id = habit.id)
+                }
             }
         }
-    }
-    }
+        }
 
 }
