@@ -9,7 +9,7 @@ class ShapeColorBox(
 ) : GradientDrawable() {
     init {
         cornerRadius = 15f
-        setStroke(strokeWidth, Color.parseColor("#FFFFFF"))
+        setStroke(strokeWidth, Color.parseColor("#EAEAEA"))
         setColor(colorOfBox)
     }
 }

@@ -18,14 +18,15 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="This test app is created to take control over your habits."
-        android:layout_margin="15dp"/>
+        android:text="@string/app_info_text1"
+        android:layout_marginStart="15dp"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="gl and hf!"
-        android:layout_margin="15dp"/>
+        android:text="@string/app_info_text2"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="15dp"/>
 
     <ImageView
         android:layout_width="wrap_content"

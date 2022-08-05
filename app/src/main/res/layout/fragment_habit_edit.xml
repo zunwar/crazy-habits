@@ -1,236 +1,241 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context=".fragments.HabitEditFragment"
-android:background="@color/purple_200"
-    android:id="@+id/edit_fragment"
-    android:clickable="true">
-
-<Button
-    android:id="@+id/addButton"
-    android:layout_width="115dp"
-    android:layout_height="50dp"
-    android:layout_marginEnd="36dp"
-    android:layout_marginBottom="20dp"
-    android:text="@string/addButton"
-    android:textSize="@dimen/smallText"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintHorizontal_bias="1"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/Period"
-    app:layout_constraintVertical_bias="1" />
-
-
-<com.google.android.material.textfield.TextInputLayout
-    android:id="@+id/NameHabit"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:layout_marginTop="16dp"
-    android:layout_marginEnd="16dp"
-    android:hint="@string/hintNameHabit"
-    app:boxBackgroundColor="@color/white"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fillViewport="true"
+    tools:context=".fragments.HabitEditFragment">
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/NameHabitText"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/edit_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="top"
-        android:inputType="text"
-        android:paddingStart="0dp"
-        android:maxLength="34">
+        android:background="@color/white"
+        android:clickable="true">
 
-    </com.google.android.material.textfield.TextInputEditText>
-
-</com.google.android.material.textfield.TextInputLayout>
-
-<com.google.android.material.textfield.TextInputLayout
-    android:id="@+id/Desc"
-    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="16dp"
-    android:layout_marginTop="16dp"
-    android:layout_marginRight="16dp"
-    android:hint="@string/hintDescription"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/NameHabit">
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/DescText"
-        android:layout_width="match_parent"
-        android:layout_height="110dp"
-        android:gravity="top"
-        android:inputType="textMultiLine" />
-
-</com.google.android.material.textfield.TextInputLayout>
+        <Button
+            android:id="@+id/addButton"
+            android:layout_width="115dp"
+            android:layout_height="50dp"
+            android:text="@string/addButton"
+            android:textSize="@dimen/smallText"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintVertical_bias="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/colorOfHabit"
+            app:layout_constraintTop_toBottomOf="@+id/colorOfHabit" />
 
 
-<TextView
-    android:id="@+id/typeHabit"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="16dp"
-    android:layout_marginLeft="16dp"
-    android:text="@string/typeHabit"
-    android:textSize="@dimen/middleText"
-    app:layout_constraintHorizontal_bias="0.001"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/Desc"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/NameHabit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:hint="@string/hintNameHabit"
+            app:boxBackgroundColor="@color/white"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/NameHabitText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:inputType="text"
+                android:maxLength="34"
+                android:paddingStart="0dp"
+                android:paddingEnd="0dp">
 
-<TextView
-    android:id="@+id/Priority"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="16dp"
-    android:text="@string/priorityText"
-    android:textSize="@dimen/middleText"
-    app:layout_constraintStart_toStartOf="@+id/prioritySpinner"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/Desc" />
+            </com.google.android.material.textfield.TextInputEditText>
 
+        </com.google.android.material.textfield.TextInputLayout>
 
-<RadioGroup
-    android:id="@+id/radioGroup"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="5dp"
-    android:layout_marginLeft="16dp"
-    app:layout_constraintHorizontal_bias="0.001"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toLeftOf="@id/Priority"
-    app:layout_constraintTop_toBottomOf="@id/typeHabit">
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/Desc"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="16dp"
+            android:hint="@string/hintDescription"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/NameHabit">
 
-    <RadioButton
-        android:id="@+id/radioButton1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/goodHabit"
-        android:buttonTint="@color/purple_500"
-        android:paddingStart="10dp"/>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/DescText"
+                android:layout_width="match_parent"
+                android:layout_height="110dp"
+                android:gravity="top"
+                android:inputType="textMultiLine" />
 
-    <RadioButton
-        android:id="@+id/radioButton2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/neutralHabit"
-        app:layout_constraintTop_toBottomOf="@id/radioButton1"
-        android:buttonTint="@color/purple_500"
-        android:paddingStart="10dp"/>
-
-    <RadioButton
-        android:id="@+id/radioButton3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/badHabit"
-        app:layout_constraintTop_toBottomOf="@id/radioButton2"
-        android:buttonTint="@color/purple_500"
-        android:paddingStart="10dp"/>
-</RadioGroup>
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-<Spinner
-    android:id="@+id/prioritySpinner"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@drawable/border"
-    android:entries="@array/spinner"
-    android:paddingStart="5dp"
-    android:paddingEnd="5dp"
-    app:layout_constraintBottom_toTopOf="@id/addButton"
-    app:layout_constraintHorizontal_bias="0.7"
-    app:layout_constraintLeft_toRightOf="@id/radioGroup"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/Priority"
-    app:layout_constraintVertical_bias="0.06"
-    />
+        <TextView
+            android:id="@+id/typeHabit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/typeHabit"
+            android:textSize="@dimen/middleText"
+            app:layout_constraintHorizontal_bias="0.001"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/Desc"
 
-<com.google.android.material.textfield.TextInputLayout
-    android:id="@+id/Number"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:layout_marginTop="5dp"
-    android:layout_marginEnd="16dp"
-    android:hint="@string/hintNumber"
-    app:boxBackgroundColor="@color/white"
+            />
 
-    app:layout_constraintLeft_toLeftOf="@id/radioGroup"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/radioGroup">
+        <TextView
+            android:id="@+id/Priority"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/priorityText"
+            android:textSize="@dimen/middleText"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/prioritySpinner"
+            app:layout_constraintTop_toBottomOf="@id/Desc" />
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/NumberText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="top"
-        android:paddingStart="0dp"
-        android:inputType="number">
-    </com.google.android.material.textfield.TextInputEditText>
 
-</com.google.android.material.textfield.TextInputLayout>
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="5dp"
+            app:layout_constraintHorizontal_bias="0.001"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/Priority"
+            app:layout_constraintTop_toBottomOf="@id/typeHabit">
 
-<com.google.android.material.textfield.TextInputLayout
-    android:id="@+id/Period"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:layout_marginTop="5dp"
-    android:layout_marginEnd="16dp"
-    android:hint="@string/hintPeriod"
-    app:boxBackgroundColor="@color/white"
-    app:layout_constraintLeft_toLeftOf="@id/Number"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/Number"
-    app:layout_constraintHorizontal_bias="0.001">
+            <RadioButton
+                android:id="@+id/radioButton1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/purple_500"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="@string/goodHabit" />
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/PeriodText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="top"
-        android:inputType="text"
-        android:paddingStart="0dp">
+            <RadioButton
+                android:id="@+id/radioButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/purple_500"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="@string/neutralHabit"
+                app:layout_constraintTop_toBottomOf="@id/radioButton1" />
 
-    </com.google.android.material.textfield.TextInputEditText>
+            <RadioButton
+                android:id="@+id/radioButton3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/purple_500"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="@string/badHabit"
+                app:layout_constraintTop_toBottomOf="@id/radioButton2" />
+        </RadioGroup>
 
-</com.google.android.material.textfield.TextInputLayout>
 
-<Button
-    android:id="@+id/chooseColorButton"
-    android:layout_width="100dp"
-    android:layout_height="50dp"
-    android:layout_marginEnd="60dp"
-    android:text="@string/chooseColorButton"
-    android:textSize="@dimen/smallText"
-    app:layout_constraintBottom_toBottomOf="@id/addButton"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toLeftOf="@id/addButton"
-    app:layout_constraintHorizontal_bias="1"
-    app:layout_constraintVertical_bias="1" />
+        <Spinner
+            android:id="@+id/prioritySpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border"
+            android:entries="@array/spinner"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            app:layout_constraintBottom_toTopOf="@id/addButton"
+            app:layout_constraintHorizontal_bias="0.7"
+            app:layout_constraintLeft_toRightOf="@id/radioGroup"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/Priority"
+            app:layout_constraintVertical_bias="0.06" />
 
-<View
-    android:id="@+id/colorOfHabit"
-    android:layout_width="30dp"
-    android:layout_height="30dp"
-    app:layout_constraintTop_toTopOf="@id/chooseColorButton"
-    app:layout_constraintBottom_toBottomOf="@id/chooseColorButton"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toLeftOf="@id/chooseColorButton"
-    app:layout_constraintHorizontal_bias="0.7">
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/Number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
+            android:hint="@string/hintNumber"
+            app:boxBackgroundColor="@color/white"
 
-</View>
+            app:layout_constraintLeft_toLeftOf="@id/radioGroup"
+            app:layout_constraintTop_toBottomOf="@id/radioGroup">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/NumberText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:inputType="number" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/Period"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="16dp"
+            android:hint="@string/hintPeriod"
+            app:boxBackgroundColor="@color/white"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintLeft_toLeftOf="@id/Number"
+            app:layout_constraintTop_toBottomOf="@id/Number">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/PeriodText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:inputType="text">
+
+            </com.google.android.material.textfield.TextInputEditText>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/chooseColorButton"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/chooseColorButton"
+            android:textSize="@dimen/smallText"
+            app:layout_constraintEnd_toEndOf="@+id/colorOfHabit"
+            app:layout_constraintStart_toStartOf="@+id/colorOfHabit"
+            app:layout_constraintTop_toBottomOf="@+id/Period" />
+
+        <View
+            android:id="@+id/colorOfHabit"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/Period"
+            app:layout_constraintHorizontal_bias="0.875"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/Period"
+            app:layout_constraintTop_toBottomOf="@+id/chooseColorButton" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

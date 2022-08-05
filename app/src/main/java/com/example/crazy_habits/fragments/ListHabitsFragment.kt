@@ -50,7 +50,7 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits), HabitAdapter
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentListHabitsBinding.inflate(inflater, container, false)
         Log.d(TAG, "list_frag1_onCreateView")
         return binding.root
@@ -60,42 +60,12 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits), HabitAdapter
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "list_frag1_onViewCreated")
-//        initRecyclerView()
-//        resultLauncherHabitEdit()
         binding.FAB.setOnClickListener {
-//            childFragmentManager.commit {
-//                setReorderingAllowed(true)
-//                add<HabitEditFragment>(R.id.fragment_container_view_edit_habit_fragment)
-//                addToBackStack("HabitEditFragment")
-//            }
             val result = Bundle()
             result.putString("df1", "clicked")
             parentFragmentManager.setFragmentResult("frag1_addNewHabitButton", result)
         }
 
-//
-//        parentFragmentManager.setFragmentResultListener("frag2_AddButton", this, FragmentResultListener(
-//            fun (requstKey : String , bundle : Bundle) {
-//                habit = bundle.getParcelable<Habit>(COLLECTED_HABIT)!!
-//                Log.d(TAG, "нажали кнопку")
-//                parentFragmentManager.popBackStack()
-//                Log.d(TAG, "popbackstack")
-//                initRecyclerView ()
-//                habitAdapter.notifyItemRangeChanged(0, 1000)
-//                Log.d(TAG, "initrecyclerview")
-//            }
-//        ))
-//
-//        supportFragmentManager.setFragmentResultListener("frag2_AddButton", this, FragmentResultListener(
-//            fun(requestkey : String, qwebundle: Bundle) {
-//                habit = qwebundle.getParcelable<Habit>(COLLECTED_HABIT)!!
-//                supportFragmentManager.commit {
-//                    setReorderingAllowed(true)
-//                    replace<ListHabitsFragment>(R.id.fragment_container_view)
-//                    addToBackStack("ListHabitsFragment")
-//                }
-//            }
-//        ))
 
 
 
