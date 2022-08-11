@@ -8,14 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentResultListener
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.crazy_habits.FirstActivity.Companion.TAG
 import com.example.crazy_habits.Habit
-import com.example.crazy_habits.HabitAdapter
+import com.example.crazy_habits.adapters.HabitAdapter
 import com.example.crazy_habits.R
 import com.example.crazy_habits.databinding.FragmentListHabitsBinding
+import com.example.crazy_habits.fragments.HabitEditFragment.Companion.COLLECTED_HABIT
 import kotlin.Exception
 
 class ListHabitsFragment : Fragment(R.layout.fragment_list_habits), HabitAdapter.OnItemClickListener {

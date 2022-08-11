@@ -1,14 +1,12 @@
-package com.example.crazy_habits
+package com.example.crazy_habits.adapters
 
-import android.content.Intent
 import android.graphics.drawable.GradientDrawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.crazy_habits.Habit
 import com.example.crazy_habits.databinding.ListItemViewBinding
 
 class HabitAdapter (private val itemClickListener: OnItemClickListener)

@@ -3,6 +3,7 @@ package com.example.crazy_habits
 import android.app.Activity
 import android.app.PendingIntent.getActivity
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -13,9 +14,13 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.*
+import androidx.viewpager.widget.PagerAdapter
+import com.example.crazy_habits.adapters.ViewPagerAdapter
 import com.example.crazy_habits.databinding.ActivityFirstBinding
 import com.example.crazy_habits.databinding.FragmentListHabitsBinding
 import com.example.crazy_habits.fragments.*
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 
 class FirstActivity : AppCompatActivity()    {
@@ -34,25 +39,31 @@ class FirstActivity : AppCompatActivity()    {
         //setting ToolBar to replace the ActionBar
         setSupportActionBar(binding.appBarMain.toolbar)
 
+        initViewPagerData()
 
-        if (savedInstanceState == null) {
-            supportFragmentManager.commit {
-                setReorderingAllowed(true)
-                replace<ListHabitsFragment>(R.id.fragment_container_view)
-            }
-        }
+
+
+//теперь viewpager дергает фрагменты
+//        if (savedInstanceState == null) {
+//            supportFragmentManager.commit {
+//                setReorderingAllowed(true)
+//                replace<ListHabitsFragment>(R.id.fragment_container_view)
+//            }
+//        }
+
+
         supportFragmentManager.setFragmentResultListener("frag1_addNewHabitButton", this, FragmentResultListener(
                fun(requestkey : String, bundle: Bundle) {
                    if (savedInstanceState == null) {
                        supportFragmentManager.commit {
                            setReorderingAllowed(true)
-                           add<HabitEditFragment>(R.id.fragment_container_view, tag = "habitEditTag")
+                           add<HabitEditFragment>(R.id.fragment_container_view2, tag = "habitEditTag")
                            addToBackStack("HabitEditFragment")
                        }
                    } else {
                         supportFragmentManager.commit {
                             setReorderingAllowed(true)
-                            add<HabitEditFragment>(R.id.fragment_container_view, tag = "habitEditTag")
+                            add<HabitEditFragment>(R.id.fragment_container_view2, tag = "habitEditTag")
                             addToBackStack("HabitEditFragment")
                         }
                    }
@@ -66,7 +77,7 @@ class FirstActivity : AppCompatActivity()    {
                 if (savedInstanceState == null) {
                     supportFragmentManager.commit {
                         setReorderingAllowed(true)
-                        add<HabitEditFragment>(R.id.fragment_container_view, args = bundle)
+                        add<HabitEditFragment>(R.id.fragment_container_view2, args = bundle)
                         addToBackStack("HabitEditFragment")
                     }
                 }
@@ -80,7 +91,7 @@ class FirstActivity : AppCompatActivity()    {
                 if (savedInstanceState == null) {
                     supportFragmentManager.commit {
                         setReorderingAllowed(true)
-                        add<ColorHabitFragment>(R.id.fragment_container_view, args = bundle)
+                        add<ColorHabitFragment>(R.id.fragment_container_view2, args = bundle)
                         addToBackStack("ColorHabitFragment")
                     }
                 }
@@ -108,7 +119,7 @@ class FirstActivity : AppCompatActivity()    {
                         if ((savedInstanceState == null) && !(supportFragmentManager.fragments.last().toString().contains("InfoFragment"))){
                             supportFragmentManager.commit {
                                 setReorderingAllowed(true)
-                                add<InfoFragment>(R.id.fragment_container_view)
+                                add<InfoFragment>(R.id.fragment_container_view2)
                                 addToBackStack("InfoFragment")
                             }
                         }
@@ -125,6 +136,55 @@ class FirstActivity : AppCompatActivity()    {
 
 
     }
+
+    private fun initViewPagerData() {
+        binding.viewPagerMain.adapter = ViewPagerAdapter(this)
+        binding.tabLayout.tabIconTint = null
+        var indicatorColorChange = true
+        binding.tabLayout.setSelectedTabIndicatorColor(Color.parseColor("#00FF37"))
+        TabLayoutMediator(binding.tabLayout, binding.viewPagerMain){
+            tab, position ->
+            when (position) {
+                0 -> {
+                    tab.setIcon(R.drawable.emoji_angel_c)
+                    tab.setText(R.string.goodHabitTab1)
+                }
+                1 -> {
+                    tab.setIcon(R.drawable.emoji_evil_c)
+                    tab.setText(R.string.badHabitTab2)
+                    tab.icon?.alpha = 70
+
+                }
+            }
+        }.attach()
+
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                tab.icon?.alpha = 255
+                if (indicatorColorChange) {
+                    indicatorColorChange = false
+                    binding.tabLayout.setSelectedTabIndicatorColor(Color.parseColor("#FF0000"))
+                } else {
+                    indicatorColorChange = true
+                    binding.tabLayout.setSelectedTabIndicatorColor(Color.parseColor("#00FF37"))
+                }
+
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                tab.icon?.alpha = 70
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+                Toast.makeText(this@FirstActivity, "Already here", Toast.LENGTH_SHORT).show()
+            }
+
+        })
+
+
+
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(toggle.onOptionsItemSelected(item)){
             return  true

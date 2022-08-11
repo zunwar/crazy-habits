@@ -22,8 +22,10 @@
     <string name="submit">submit</string>
     <string name="notSet">не указано</string>
     <string name="goodHabit">полезная</string>
+    <string name="goodHabitTab1">good</string>
     <string name="neutralHabit">нейтральная</string>
     <string name="badHabit">вредная</string>
+    <string name="badHabitTab2">evil</string>
     <string name="empty">---</string>
     <string name="highPriority">Высокий</string>
     <string name="middlePriority">Средний</string>

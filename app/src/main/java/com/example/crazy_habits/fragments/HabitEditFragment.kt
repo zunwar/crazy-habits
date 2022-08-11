@@ -10,16 +10,10 @@ import android.widget.RadioButton
 import androidx.core.view.forEach
 import androidx.fragment.app.FragmentResultListener
 import com.example.crazy_habits.*
-import com.example.crazy_habits.databinding.ActivitySecondBinding
+import com.example.crazy_habits.FirstActivity.Companion.TAG
 import com.example.crazy_habits.databinding.FragmentHabitEditBinding
 import com.example.crazy_habits.fragments.ListHabitsFragment.Companion.HABIT_TO_EDIT
 import java.util.*
-
-private const val TAG = "errorqwer"
-const val COLLECTED_HABIT = "collectedHabit"
-
-
-
 
 
 class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
@@ -62,7 +56,6 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
                 binding.DescText.setText(desc)
                 when (oldHabit.type) {
                     getString(R.string.goodHabit)   -> binding.radioGroup.check(binding.radioButton1.id)
-                    getString(R.string.neutralHabit) -> binding.radioGroup.check(binding.radioButton2.id)
                     getString(R.string.badHabit)     -> binding.radioGroup.check(binding.radioButton3.id)
                 }
                 when (oldHabit.priority) {
@@ -153,6 +146,6 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
 
 
     companion object {
-
+        const val COLLECTED_HABIT = "collectedHabit"
     }
 }
