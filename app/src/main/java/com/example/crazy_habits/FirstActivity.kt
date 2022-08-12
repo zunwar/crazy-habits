@@ -1,23 +1,15 @@
 package com.example.crazy_habits
 
-import android.app.Activity
-import android.app.PendingIntent.getActivity
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
-import android.view.WindowManager
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.*
-import androidx.viewpager.widget.PagerAdapter
 import com.example.crazy_habits.adapters.ViewPagerAdapter
 import com.example.crazy_habits.databinding.ActivityFirstBinding
-import com.example.crazy_habits.databinding.FragmentListHabitsBinding
 import com.example.crazy_habits.fragments.*
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -52,6 +44,18 @@ class FirstActivity : AppCompatActivity()    {
 //        }
 
 
+
+            //потом удалить
+//            binding.FAB.setOnClickListener {
+//                val result = Bundle().apply { putString("df1", "clicked") }
+//                supportFragmentManager.setFragmentResult("frag1_addNewHabitButton", result)
+//        }
+            //
+
+
+
+
+
         supportFragmentManager.setFragmentResultListener("frag1_addNewHabitButton", this, FragmentResultListener(
                fun(requestkey : String, bundle: Bundle) {
                    if (savedInstanceState == null) {
@@ -72,7 +76,7 @@ class FirstActivity : AppCompatActivity()    {
         ))
 
 
-        supportFragmentManager.setFragmentResultListener(ListHabitsFragment.HABIT_TO_EDIT, this, FragmentResultListener(
+        supportFragmentManager.setFragmentResultListener(GoodHabitsFragment.HABIT_TO_EDIT, this, FragmentResultListener(
             fun(requestkey : String, bundle: Bundle) {
                 if (savedInstanceState == null) {
                     supportFragmentManager.commit {
@@ -180,6 +184,29 @@ class FirstActivity : AppCompatActivity()    {
             }
 
         })
+
+
+
+//        binding.viewPagerMain.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+//            override fun onPageScrolled(
+//                position: Int,
+//                positionOffset: Float,
+//                positionOffsetPixels: Int
+//            ) {
+//                super.onPageScrolled(position, positionOffset, positionOffsetPixels)
+//            }
+//
+//            override fun onPageSelected(position: Int) {
+//                super.onPageSelected(position)
+//                binding.FAB.show()
+//            }
+//
+//            override fun onPageScrollStateChanged(state: Int) {
+//                super.onPageScrollStateChanged(state)
+//            }
+//        })
+
+
 
 
 

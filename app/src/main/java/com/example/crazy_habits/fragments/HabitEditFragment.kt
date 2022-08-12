@@ -7,12 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
+import android.widget.Toast
 import androidx.core.view.forEach
 import androidx.fragment.app.FragmentResultListener
 import com.example.crazy_habits.*
 import com.example.crazy_habits.FirstActivity.Companion.TAG
 import com.example.crazy_habits.databinding.FragmentHabitEditBinding
-import com.example.crazy_habits.fragments.ListHabitsFragment.Companion.HABIT_TO_EDIT
+import com.example.crazy_habits.fragments.GoodHabitsFragment.Companion.HABIT_TO_EDIT
 import java.util.*
 
 
@@ -43,10 +44,10 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //        binding.radioGroup.check(binding.radioButton2.id)
-        var type = ""
+                binding.radioGroup.check(binding.radioButton1.id)
+//        var type = ""
         var colorHabit = -1
-        var edit = false
+//        var edit = false
         Log.d(TAG, "edit_frag2_onViewCreated")
         binding.colorOfHabit.background = ShapeColorBox(3, colorHabit)
 
@@ -69,22 +70,23 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
                 binding.colorOfHabit.background = ShapeColorBox(1, oldHabit.colorHabit)
             }
             binding.addButton.text = getString(R.string.changeButton)
-            if (binding.radioGroup.checkedRadioButtonId != -1 ) edit = true
+//            if (binding.radioGroup.checkedRadioButtonId != -1 ) edit = true
             editedit = true
 
         }
 
-        binding.radioGroup.forEach {
-            it.setOnClickListener{
-                type = view.findViewById<RadioButton>(binding.radioGroup.checkedRadioButtonId).text.toString()
-            }
-        }
+//        binding.radioGroup.forEach {
+//            it.setOnClickListener{
+//                type = view.findViewById<RadioButton>(binding.radioGroup.checkedRadioButtonId).text.toString()
+//            }
+//        }
 
         binding.addButton.setOnClickListener {
             habit = Habit(
                 name       = binding.NameHabitText.text.toString(),
                 desc       = binding.DescText.text.toString(),
-                type       = if (edit) (view.findViewById<RadioButton>(binding.radioGroup.checkedRadioButtonId).text.toString()) else type,
+//                type       = if (edit) (view.findViewById<RadioButton>(binding.radioGroup.checkedRadioButtonId).text.toString()) else type,
+                type       = view.findViewById<RadioButton>(binding.radioGroup.checkedRadioButtonId).text.toString(),
                 priority   = binding.prioritySpinner.selectedItem.toString(),
                 number     = binding.NumberText.text.toString(),
                 period     = binding.PeriodText.text.toString(),
@@ -94,7 +96,12 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
             val result = Bundle().apply {
                 putParcelable(COLLECTED_HABIT, habit)
             }
-            parentFragmentManager.setFragmentResult("frag2_AddButton", result)
+            if (habit.type == getString(R.string.goodHabit)){
+                parentFragmentManager.setFragmentResult("frag2_AddButton_good", result)
+            }
+            if (habit.type == getString(R.string.badHabit)){
+                parentFragmentManager.setFragmentResult("frag2_AddButton_bad", result)
+            }
         }
 
 

@@ -13,14 +13,14 @@ import com.example.crazy_habits.FirstActivity.Companion.TAG
 import com.example.crazy_habits.Habit
 import com.example.crazy_habits.adapters.HabitAdapter
 import com.example.crazy_habits.R
-import com.example.crazy_habits.databinding.FragmentListHabitsBinding
+import com.example.crazy_habits.databinding.FragmentGoodHabitsBinding
 import com.example.crazy_habits.fragments.HabitEditFragment.Companion.COLLECTED_HABIT
 import kotlin.Exception
 
-class ListHabitsFragment : Fragment(R.layout.fragment_list_habits), HabitAdapter.OnItemClickListener {
+class GoodHabitsFragment : Fragment(R.layout.fragment_good_habits), HabitAdapter.OnItemClickListener {
 
 
-    private var _binding: FragmentListHabitsBinding? = null
+    private var _binding: FragmentGoodHabitsBinding? = null
     private val habitList : MutableList<Habit> = mutableListOf()
     private lateinit var habit : Habit
     private lateinit var habitAdapter : HabitAdapter
@@ -35,7 +35,7 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits), HabitAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        parentFragmentManager.setFragmentResultListener("frag2_AddButton", this, FragmentResultListener(
+        parentFragmentManager.setFragmentResultListener("frag2_AddButton_good", this, FragmentResultListener(
             fun (requstKey : String , bundle : Bundle) {
                 edit = true
                 habit = bundle.getParcelable<Habit>(COLLECTED_HABIT)!!
@@ -50,7 +50,7 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits), HabitAdapter
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentListHabitsBinding.inflate(inflater, container, false)
+        _binding = FragmentGoodHabitsBinding.inflate(inflater, container, false)
         Log.d(TAG, "list_frag1_onCreateView")
         return binding.root
 
@@ -58,18 +58,15 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits), HabitAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "list_frag1_onViewCreated")
+//        Log.d(TAG, "list_frag1_onViewCreated")
         binding.FAB.setOnClickListener {
             val result = Bundle()
             result.putString("df1", "clicked")
             parentFragmentManager.setFragmentResult("frag1_addNewHabitButton", result)
         }
-
-
-
-
-
     }
+
+
     override fun onItemClicked(id: String) {
 //        habitList.remove(habitList.find { it.id == id })
         idHabitToEdit = id
