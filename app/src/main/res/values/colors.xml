@@ -5,6 +5,7 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
+    <color name="teal_900">#00FFFF</color>
     <color name="black">#000000</color>
     <color name="red">#FF0000</color>
     <color name="green">#00FF37</color>
@@ -16,6 +17,6 @@
     <color name="light_blue_A400">#FF00B0FF</color>
     <color name="black_overlay">#66000000</color>
     <color name="noColor"></color>
-    <color name="goodHabit">#B3FFC3</color>
-    <color name="badHabit">#A84040</color>
+    <color name="goodHabit">#EAFFEE</color>
+    <color name="badHabit">#FFD5D5</color>
 </resources>

@@ -1,153 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:id="@+id/LLliv">
+    app:cardCornerRadius="8dp"
+    android:elevation="5dp"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
+    android:layout_marginBottom="10dp"
+    android:foreground="?selectableItemBackground"
+    android:clickable="true">
+    <LinearLayout
 
-    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:paddingTop="8dp"
-        android:paddingBottom="4dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp">
+        android:orientation="vertical"
+        android:id="@+id/LLliv">
 
-        <TextView
-            android:id="@+id/nameHabit"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/separator_line"
-            app:layout_constraintVertical_bias="0.01"
-            app:layout_constraintHorizontal_bias="0.01"
-            android:gravity="start"
-            android:text="@string/name_plug"
-            android:textSize="@dimen/middleText"
-            android:textColor="@color/almost_black"
-            />
+            android:gravity="center_vertical"
+            android:paddingTop="8dp"
+            android:paddingBottom="4dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
 
-        <TextView
-            android:id="@+id/type"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/nameHabit"
-            app:layout_constraintBottom_toTopOf="@id/separator_line"
-            app:layout_constraintLeft_toRightOf="@id/typeText"
-            android:layout_marginTop="3dp"
-            android:text="@string/type"
-            />
-        <TextView
-            android:id="@+id/typeText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingEnd="3dp"
-            android:paddingStart="0dp"
-            app:layout_constraintTop_toBottomOf="@id/nameHabit"
-            app:layout_constraintBottom_toTopOf="@id/separator_line"
-            app:layout_constraintLeft_toLeftOf="@id/nameHabit"
-            android:text="@string/type"
-            android:layout_marginTop="3dp"
-            android:textSize="@dimen/smallText"
-            />
+            <TextView
+                android:id="@+id/nameHabit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/separator_line"
+                app:layout_constraintVertical_bias="0.01"
+                app:layout_constraintHorizontal_bias="0.01"
+                android:gravity="start"
+                android:text="@string/name_plug"
+                android:textSize="@dimen/middleText"
+                android:textColor="@color/almost_black"
+                />
 
-        <TextView
-            android:id="@+id/period"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintLeft_toRightOf="@id/periodText"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/nameHabit"
-            app:layout_constraintBottom_toTopOf="@id/separator_line"
-            android:text="@string/period"/>
-        <TextView
-            android:id="@+id/periodText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingEnd="3dp"
-            android:paddingStart="0dp"
-            app:layout_constraintTop_toBottomOf="@id/nameHabit"
-            app:layout_constraintLeft_toRightOf="@id/type"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/separator_line"
-            android:text="@string/period"
-            android:layout_marginTop="3dp"
-            app:layout_constraintHorizontal_bias="0.2"
-            android:textSize="@dimen/smallText"
-            />
+            <TextView
+                android:id="@+id/type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/nameHabit"
+                app:layout_constraintBottom_toTopOf="@id/separator_line"
+                app:layout_constraintLeft_toRightOf="@id/typeText"
+                android:layout_marginTop="3dp"
+                android:text="@string/type"
+                />
+            <TextView
+                android:id="@+id/typeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="3dp"
+                android:paddingStart="0dp"
+                app:layout_constraintTop_toBottomOf="@id/nameHabit"
+                app:layout_constraintBottom_toTopOf="@id/separator_line"
+                app:layout_constraintLeft_toLeftOf="@id/nameHabit"
+                android:text="@string/type"
+                android:layout_marginTop="3dp"
+                android:textSize="@dimen/smallText"
+                />
 
-
-
-        <View
-            android:id="@+id/separator_line"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="25dp"
-            app:layout_constraintTop_toBottomOf="@id/nameHabit"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/description"
-            app:layout_constraintVertical_bias="0.01"
-            android:layout_gravity="bottom"
-            android:alpha="0.5"
-            android:background="#41757C"/>
-
-        <View
-            android:id="@+id/separator_line2"
-            android:layout_width="1dp"
-            android:layout_height="20dp"
-            android:layout_marginBottom="7dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/priority"
-            app:layout_constraintHorizontal_bias="0.78"
-            android:alpha="0.5"
-            android:background="#41757C" />
+            <TextView
+                android:id="@+id/period"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintLeft_toRightOf="@id/periodText"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/nameHabit"
+                app:layout_constraintBottom_toTopOf="@id/separator_line"
+                android:text="@string/period"/>
+            <TextView
+                android:id="@+id/periodText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="3dp"
+                android:paddingStart="0dp"
+                app:layout_constraintTop_toBottomOf="@id/nameHabit"
+                app:layout_constraintLeft_toRightOf="@id/type"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/separator_line"
+                android:text="@string/period"
+                android:layout_marginTop="3dp"
+                app:layout_constraintHorizontal_bias="0.2"
+                android:textSize="@dimen/smallText"
+                />
 
 
-        <TextView
-            android:id="@+id/priority"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:text="@string/priority"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/separator_line2"
-            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            app:layout_constraintTop_toBottomOf="@id/separator_line"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintVertical_bias="0.01"
-            app:layout_constraintHorizontal_bias="0.01"
-            android:text="@string/description"
-            android:gravity="top"
-            />
+            <View
+                android:id="@+id/separator_line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="25dp"
+                app:layout_constraintTop_toBottomOf="@id/nameHabit"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/description"
+                app:layout_constraintVertical_bias="0.01"
+                android:layout_gravity="bottom"
+                android:alpha="0.5"
+                android:background="#41757C"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <View
+                android:id="@+id/separator_line2"
+                android:layout_width="1dp"
+                android:layout_height="20dp"
+                android:layout_marginBottom="7dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/priority"
+                app:layout_constraintHorizontal_bias="0.78"
+                android:alpha="0.5"
+                android:background="#41757C" />
 
 
-    <View
-        android:id="@+id/separator_line3"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="15dp"
-        android:layout_gravity="bottom"
-        android:background="@color/purple_700"/>
+            <TextView
+                android:id="@+id/priority"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="@string/priority"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/separator_line2"
+                app:layout_constraintTop_toTopOf="parent" />
 
-</LinearLayout>
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                app:layout_constraintTop_toBottomOf="@id/separator_line"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintVertical_bias="0.01"
+                app:layout_constraintHorizontal_bias="0.01"
+                android:text="@string/description"
+                android:gravity="top"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

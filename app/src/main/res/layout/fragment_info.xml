@@ -38,6 +38,16 @@
         android:layout_marginStart="100dp"
         android:layout_gravity="end"/>
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/info_add_habit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="35dp"
+        android:layout_marginTop="35dp"
+        android:text="@string/go_add_habit"
+        android:layout_gravity="center"
+        android:background="@drawable/gradient_hue" />
+
 
 
 

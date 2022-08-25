@@ -1,13 +1,19 @@
 package com.example.crazy_habits.fragments
 
+
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.example.crazy_habits.R
+import com.example.crazy_habits.databinding.FragmentInfoBinding
 
-class InfoFragment : Fragment() {
+class InfoFragment : Fragment(R.layout.fragment_info) {
+
+    private var _binding: FragmentInfoBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,7 +22,18 @@ class InfoFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_info, container, false)
+    ): View {
+        _binding = FragmentInfoBinding.inflate(inflater, container, false)
+        return binding.root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.infoAddHabit.setOnClickListener{
+            findNavController().navigate(R.id.action_infoFragment_to_habitEditFragment)
+        }
+    }
+
+
 }

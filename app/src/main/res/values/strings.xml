@@ -48,4 +48,9 @@
     <string name="ragdoll_cat">ragdoll cat</string>
     <string name="app_info_text1">This test app is created to take control over your habits.</string>
     <string name="app_info_text2">gl and hf!</string>
+    <string name="go_add_habit">Скорее добавить привычку!</string>
+    <string name="logo">logo</string>
+    <string name="application_name">Crazy Habits</string>
+    <string name="onTabReselectedText">Already here!</string>
+    <string name="nav_emotionText">Feels good!</string>
 </resources>

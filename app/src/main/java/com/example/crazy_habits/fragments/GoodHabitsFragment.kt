@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentResultListener
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.crazy_habits.FirstActivity.Companion.TAG
 import com.example.crazy_habits.Habit
@@ -15,6 +15,7 @@ import com.example.crazy_habits.adapters.HabitAdapter
 import com.example.crazy_habits.R
 import com.example.crazy_habits.databinding.FragmentGoodHabitsBinding
 import com.example.crazy_habits.fragments.HabitEditFragment.Companion.COLLECTED_HABIT
+import com.example.crazy_habits.fragments.HabitEditFragment.Companion.GOOD_HABIT_ADD
 import kotlin.Exception
 
 class GoodHabitsFragment : Fragment(R.layout.fragment_good_habits), HabitAdapter.OnItemClickListener {
@@ -25,24 +26,11 @@ class GoodHabitsFragment : Fragment(R.layout.fragment_good_habits), HabitAdapter
     private lateinit var habit : Habit
     private lateinit var habitAdapter : HabitAdapter
     private var idHabitToEdit : String = ""
-    private var edit = false
-
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        parentFragmentManager.setFragmentResultListener("frag2_AddButton_good", this, FragmentResultListener(
-            fun (requstKey : String , bundle : Bundle) {
-                edit = true
-                habit = bundle.getParcelable<Habit>(COLLECTED_HABIT)!!
-                parentFragmentManager.popBackStack()
-                initRecyclerView ()
-            }
-        ))
+        Log.d(TAG, "good_frag_onCreate")
     }
 
     override fun onCreateView(
@@ -51,36 +39,40 @@ class GoodHabitsFragment : Fragment(R.layout.fragment_good_habits), HabitAdapter
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentGoodHabitsBinding.inflate(inflater, container, false)
-        Log.d(TAG, "list_frag1_onCreateView")
         return binding.root
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        Log.d(TAG, "list_frag1_onViewCreated")
-        binding.FAB.setOnClickListener {
-            val result = Bundle()
-            result.putString("df1", "clicked")
-            parentFragmentManager.setFragmentResult("frag1_addNewHabitButton", result)
+            findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Bundle>(GOOD_HABIT_ADD)?.observe(viewLifecycleOwner) {result ->
+            habit = result.getParcelable<Habit>(COLLECTED_HABIT)!!
+            initRecyclerView()
         }
     }
 
 
     override fun onItemClicked(id: String) {
-//        habitList.remove(habitList.find { it.id == id })
         idHabitToEdit = id
         val bundle = Bundle ()
         bundle.putParcelable(HABIT_TO_EDIT, habitList.find { it.id == idHabitToEdit })
-        parentFragmentManager.setFragmentResult(HABIT_TO_EDIT, bundle)
+        findNavController().navigate(R.id.action_viewPagerFragment_to_habitEditFragment, bundle)
 
-//        habitAdapter.notifyItemRemoved(habitList.indexOf(habitList.find { it.id == id }))
+//        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
+//            MOVE
+//        )?.observe(viewLifecycleOwner) { result ->
+//        val index = habitList.indexOf(habitList.find { it.id == id })
+//        habitList.removeAt(index)
+//        habitAdapter.notifyItemRemoved(index)
+//        }
+
+//            habitAdapter.notifyItemRemoved(habitList.indexOf(habitList.find { it.id == id }))
 //        habitAdapter.notifyItemChanged(habitList.indexOf(habitList.find { it.id == id }))
     }
 
 
     private fun  initRecyclerView () {
-        Log.d(TAG, "list_frag1_initRecyclerView")
+        Log.d(TAG, "good_frag_initRecyclerView")
         binding.recyclerView.layoutManager = LinearLayoutManager(activity)
         binding.recyclerView.adapter  = HabitAdapter(this)
         habitAdapter = binding.recyclerView.adapter as HabitAdapter
@@ -128,30 +120,35 @@ class GoodHabitsFragment : Fragment(R.layout.fragment_good_habits), HabitAdapter
 
 
 
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG, "list_frag1_onResume")
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        Log.d(TAG, "good_fragment_onResume")
+//    }
+//
+//    override fun onPause() {
+//        super.onPause()
+//        Log.d(TAG, "good_fragment_onPause")
+//    }
+//
+//    override fun onStop() {
+//        super.onStop()
+//        Log.d(TAG, "good_fragment_onStop")
+//    }
+//
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        Log.d(TAG, "good_fragment_onDestroy")
+//    }
+//
+//    override fun onDetach() {
+//        super.onDetach()
+//        Log.d(TAG, "good_fragment_onDetach")
+//    }
 
-    override fun onPause() {
-        super.onPause()
-        Log.d(TAG, "list_frag1_onPause")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d(TAG, "list_frag1_onStop")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(TAG, "list_frag1_onDestroy")
-//        dummyButton = null
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        Log.d(TAG, "list_frag1_onDetach")
+    override fun onDestroyView() {
+        super.onDestroyView()
+//        Log.d(TAG, "good_fragment_onDestroyView")
+        _binding = null
     }
 
     companion object {
@@ -163,9 +160,4 @@ class GoodHabitsFragment : Fragment(R.layout.fragment_good_habits), HabitAdapter
         const val HABIT_TO_EDIT = "habitToEdit"
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Log.d(TAG, "list_frag1_onDestroyView")
-        _binding = null
-    }
 }

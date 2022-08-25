@@ -10,7 +10,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -18,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.doOnLayout
+import androidx.navigation.fragment.findNavController
 import com.example.crazy_habits.ShapeColorBox
 import com.example.crazy_habits.databinding.FragmentColorHabitBinding
 
@@ -32,7 +32,7 @@ class ColorHabitFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentColorHabitBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -64,14 +64,14 @@ class ColorHabitFragment : Fragment() {
                 }
             }
             binding.setColorButton.setOnClickListener {
-                parentFragmentManager.setFragmentResult("frag3_okButton", Bundle().apply { putInt(COLOR_HABIT, resultColor) })
-                parentFragmentManager.popBackStack()
+                findNavController().previousBackStackEntry?.savedStateHandle?.set(COLOR_HABIT, Bundle().apply { putInt(COLOR_HABIT, resultColor) })
+                findNavController().popBackStack()
             }
         }
     }
 
     private fun createColorBox(ct : Context?, linear1 : LinearLayout) : View {
-        val mutlist : MutableList<View> = mutableListOf()
+        val mutList : MutableList<View> = mutableListOf()
         val colorBox = View(ct)
         colorBox.layoutParams = LinearLayout.LayoutParams(
             100.dpToPx,
@@ -84,7 +84,7 @@ class ColorHabitFragment : Fragment() {
         margins.marginEnd = 25.dpToPx
         colorBox.layoutParams = margins
         linear1.addView(colorBox)
-        mutlist.add(colorBox)
+        mutList.add(colorBox)
         return colorBox
     }
 
@@ -169,6 +169,5 @@ class ColorHabitFragment : Fragment() {
 
     companion object {
         const val COLOR_HABIT = "colorHabit"
-        const val TAG         = "123123adasd"
     }
 }
