@@ -7,12 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.crazy_habits.*
+import com.example.crazy_habits.FirstActivity.Companion.TAG
 import com.example.crazy_habits.databinding.FragmentHabitEditBinding
 import com.example.crazy_habits.fragments.ColorHabitFragment.Companion.COLOR_HABIT
-import com.example.crazy_habits.fragments.GoodHabitsFragment.Companion.HABIT_TO_EDIT
-import com.example.crazy_habits.fragments.ViewPagerFragment.Companion.FAB_BUTTON_CLICK
+import com.example.crazy_habits.fragments.ListHabitsFragment.Companion.HABIT_TO_EDIT
+import com.example.crazy_habits.viewmodels.HabitEditViewModel
 import java.util.*
 
 
@@ -24,6 +26,9 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
     private val binding get() = _binding!!
     private var edit = false
 
+    private val habitEditViewModel: HabitEditViewModel by viewModels()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments?.getParcelable<Habit>(HABIT_TO_EDIT) != null ) {
@@ -32,11 +37,6 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
             }
             edit = true
         }
-
-
-
-
-
     }
 
     override fun onCreateView(
@@ -51,7 +51,6 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
         super.onViewCreated(view, savedInstanceState)
                 binding.radioGroup.check(binding.radioButton1.id)
         var colorHabit = -1
-//        Log.d(TAG, "edit_frag_onViewCreated")
         binding.colorOfHabit.background = ShapeColorBox(3, colorHabit)
 
         if ((arguments != null) && (edit)) {
@@ -77,31 +76,32 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
 
         binding.addButton.setOnClickListener {
             habit = Habit(
-                name       = binding.NameHabitText.text.toString(),
+                name       = binding.NameHabitText.text.toString().ifEmpty { Type.NoSet.type },
                 desc       = binding.DescText.text.toString(),
-                type       = view.findViewById<RadioButton>(binding.radioGroup.checkedRadioButtonId).text.toString(),
+                type       = checkData(view.findViewById<RadioButton>(binding.radioGroup.checkedRadioButtonId).text.toString()),
                 priority   = binding.prioritySpinner.selectedItem.toString(),
-                number     = binding.NumberText.text.toString(),
-                period     = binding.PeriodText.text.toString(),
+                number     = checkData(binding.NumberText.text.toString()),
+                period     = checkData(binding.PeriodText.text.toString()),
                 colorHabit = colorHabit,
-                id         = UUID.randomUUID().toString()
+                id         =  if (edit) oldHabit.id else UUID.randomUUID().toString()
             )
             val result = Bundle().apply {
                 putParcelable(COLLECTED_HABIT, habit)
             }
             if (habit.type == getString(R.string.goodHabit)){
 
-                findNavController().previousBackStackEntry?.savedStateHandle?.set(GOOD_HABIT_ADD, result)
+//                findNavController().previousBackStackEntry?.savedStateHandle?.set(GOOD_HABIT_ADD, result)
                 findNavController().previousBackStackEntry?.savedStateHandle?.set(TAB_ITEM, 0)
 
             }
             if (habit.type == getString(R.string.badHabit)){
-                findNavController().previousBackStackEntry?.savedStateHandle?.set(BAD_HABIT_ADD, result)
                 findNavController().previousBackStackEntry?.savedStateHandle?.set(TAB_ITEM, 1)
             }
 //            if (binding.addButton.text == getString(R.string.changeButton)) {
 //                findNavController().previousBackStackEntry?.savedStateHandle?.set(MOVE, true)
 //            }
+            findNavController().previousBackStackEntry?.savedStateHandle?.set(HABIT_ADD, result)
+//            if (edit) habitEditViewModel.changeHabit(habit, oldHabit.id) else habitEditViewModel.addHabit(habit)
             findNavController().popBackStack()
 
         }
@@ -115,7 +115,10 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
         binding.chooseColorButton.setOnClickListener {
             findNavController().navigate(R.id.action_habitEditFragment_to_colorHabitFragment)
         }
+    }
 
+    private fun checkData(parameter : String) : String {
+        return parameter.ifEmpty {Type.Empty.type}
     }
 
 //    override fun onResume() {
@@ -153,15 +156,17 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
     companion object {
         const val COLLECTED_HABIT = "collectedHabit"
         const val GOOD_HABIT_ADD = "good habit add"
+        const val HABIT_ADD = "habit add"
         const val BAD_HABIT_ADD = "bad habit add"
         const val TAB_ITEM = "tab item"
         const val MOVE = "move item"
+
+        fun newInstance(bad: Boolean) =
+            HabitEditFragment().apply {
+                arguments = Bundle().apply {
+                    putBoolean(COLLECTED_HABIT, true)
+                }
+            }
     }
 
-    fun Fragment.getNavigationResult(key: String = "result") =
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Bundle>(key)
-
-    fun Fragment.setNavigationResult(key: String = "result", result: Bundle ) {
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(key, result)
-    }
 }

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.GoodHabitsFragment"
+    android:id="@+id/constr_list_habits"
+    tools:context=".fragments.ListHabitsFragment"
     android:background="@color/goodHabit">
 
     <androidx.recyclerview.widget.RecyclerView

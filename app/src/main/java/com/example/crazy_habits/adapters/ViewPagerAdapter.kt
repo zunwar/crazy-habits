@@ -1,12 +1,9 @@
 package com.example.crazy_habits.adapters
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.crazy_habits.fragments.BadHabitsFragment
-import com.example.crazy_habits.fragments.GoodHabitsFragment
 
 //class ViewPagerAdapter(activity: AppCompatActivity, val itemsCount: Int): FragmentStateAdapter(activity) {
 class ViewPagerAdapter(

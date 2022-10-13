@@ -4,28 +4,19 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class Habit(
-    var name:        String,
-    var desc:        String,
-    var type:        String,
-    var priority:    String,
-    var number:      String,
-    var period:      String,
-    var colorHabit:  Int = 16777215,
-    var id : String
+    val name:        String,
+    val desc:        String,
+    val type:        String,
+    val priority:    String,
+    val number:      String,
+    val period:      String,
+    val colorHabit:  Int,
+    val id : String
 ) : Parcelable {
 
 
 
-    private fun checkData(parameter : String) : String {
-        return parameter.ifEmpty {Type.Empty.type}
-    }
-
     init {
-        name   = name.ifEmpty { Type.NoSet.type }
-//        desc   = checkData(desc)
-        type   = checkData(type)
-        number = checkData(number)
-        period = checkData(period)
     }
 
     constructor(parcel: Parcel) : this(

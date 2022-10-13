@@ -3,7 +3,6 @@ package com.example.crazy_habits.fragments
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import com.example.crazy_habits.FirstActivity.Companion.TAG
 import com.example.crazy_habits.R
 import com.example.crazy_habits.adapters.ViewPagerAdapter
 import com.example.crazy_habits.databinding.FragmentViewPagerBinding
@@ -37,8 +35,9 @@ class ViewPagerFragment :  Fragment(R.layout.fragment_view_pager) {
         _binding = FragmentViewPagerBinding.inflate(inflater, container, false)
 
         val fragmentList = arrayListOf<Fragment>(
-            GoodHabitsFragment(),
-            BadHabitsFragment()
+            ListHabitsFragment(),
+//            BadHabitsFragment()
+            ListHabitsFragment.newInstance(bad = true)
         )
 
         val adapter = ViewPagerAdapter(

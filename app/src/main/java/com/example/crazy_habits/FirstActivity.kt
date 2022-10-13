@@ -1,27 +1,14 @@
 package com.example.crazy_habits
 
-import android.app.Activity
-import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.*
-import androidx.navigation.Navigation.findNavController
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
-import androidx.navigation.fragment.findNavController
-import com.example.crazy_habits.adapters.ViewPagerAdapter
 import com.example.crazy_habits.databinding.ActivityFirstBinding
-import com.example.crazy_habits.fragments.*
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 
 
 class FirstActivity : AppCompatActivity() {
@@ -30,6 +17,7 @@ class FirstActivity : AppCompatActivity() {
     private lateinit var toggle: ActionBarDrawerToggle
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         Log.d(FirstActivity, "onCreate")
         super.onCreate(savedInstanceState)
         binding = ActivityFirstBinding.inflate(layoutInflater)

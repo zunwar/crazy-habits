@@ -7,8 +7,8 @@ enum class Type (val type: String,val id : Int) : Parcelable {
 
     NoSet  ("не указано", 0),
     Empty  ("---", 1),
-    Good   ("Полезная", 2),
-    Bad    ("Плохая", 3);
+    Good   ("полезная", 2),
+    Bad    ("вредная", 3);
 
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
