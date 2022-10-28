@@ -17,16 +17,40 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.doOnLayout
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.example.crazy_habits.Habit
 import com.example.crazy_habits.ShapeColorBox
 import com.example.crazy_habits.databinding.FragmentColorHabitBinding
+import com.example.crazy_habits.fragments.HabitEditFragment.Companion.COLLECTED_HABIT
+import com.example.crazy_habits.viewmodels.ColorViewModel
 
 class ColorHabitFragment : Fragment() {
     private var _binding: FragmentColorHabitBinding? = null
     private val binding get() = _binding!!
+    private val widthOfBox = 100
+    private val heightOfBox = 100
+    private val marginBox = 25
+    private val colorViewModel: ColorViewModel by viewModels()
+    private var partHabitNumberOfBox: MutableList<String> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (arguments?.getParcelable<Habit>(COLLECTED_HABIT) != null) {
+            arguments?.let {
+                val habit = it.getParcelable<Habit>(COLLECTED_HABIT)
+                partHabitNumberOfBox = if (colorViewModel.isNew(habit!!.id)) {
+                    mutableListOf(habit.id, habit.colorHabit.toString(), "0")
+                } else {
+                    mutableListOf(
+                        habit.id,
+                        colorViewModel.getColorOfPressedBox().toString(),
+                        colorViewModel.getNumberOfPressedBox().toString()
+                    )
+                }
+                colorViewModel.saveData(partHabitNumberOfBox)
+            }
+        }
     }
 
     override fun onCreateView(
@@ -40,15 +64,12 @@ class ColorHabitFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         var cbCenter: Point
-        val colorOfBoxRGB : MutableList<String> = mutableListOf()
-        val colorOfBox : MutableList<Int> = mutableListOf()
+        val colorOfBox: MutableList<Int> = mutableListOf()
         val colorBoxesList: MutableList<View> = mutableListOf()
-        var resultColor = 0
         val backgroundView: GradientDrawable = linearGradientDrawable()
+        val screenWidth = requireContext().resources.displayMetrics.widthPixels
 
-        for (i in 1..16) {
-            colorBoxesList.add(createColorBox(context, binding.colorLinear))
-        }
+        for (i in 0..15) colorBoxesList.add(createColorBox(context, binding.colorLinear))
 
         binding.colorLinear.doOnLayout {
             binding.colorLinear.background = linearGradientDrawable()
@@ -56,32 +77,45 @@ class ColorHabitFragment : Fragment() {
 
             for (i in 0..15) {
                 cbCenter = getCenterColor(colorBoxesList[i])
-                backgroundColorBox(bitmap, colorBoxesList[i], cbCenter , colorOfBoxRGB, colorOfBox)
+                backgroundColorBox(bitmap, colorBoxesList[i], cbCenter, colorOfBox)
                 colorBoxesList[i].setOnClickListener {
-                    binding.chosenColor.background = ShapeColorBox(5, colorOfBox[i])
-                    binding.colorCode.text = colorOfBoxRGB[i]
-                    resultColor = colorOfBox[i]
+                    partHabitNumberOfBox[1] = colorOfBox[i].toString()
+                    partHabitNumberOfBox[2] = i.toString()
+                    colorViewModel.saveData(partHabitNumberOfBox)
                 }
             }
+            colorViewModel.listPartHabit.observe(viewLifecycleOwner) {
+                binding.chosenColor.background =
+                    ShapeColorBox(5, colorViewModel.getColorOfPressedBox())
+                binding.colorCode.text = convertToRGBcode(colorViewModel.getColorOfPressedBox())
+                binding.hsv.smoothScrollTo(
+                    getCenterColor(colorBoxesList[colorViewModel.getNumberOfPressedBox()]).x - screenWidth/2,
+                    0
+                )
+            }
+
             binding.setColorButton.setOnClickListener {
-                findNavController().previousBackStackEntry?.savedStateHandle?.set(COLOR_HABIT, Bundle().apply { putInt(COLOR_HABIT, resultColor) })
+                findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                    COLOR_HABIT,
+                    Bundle().apply { putInt(COLOR_HABIT, colorViewModel.getColorOfPressedBox()) })
                 findNavController().popBackStack()
             }
         }
+
     }
 
-    private fun createColorBox(ct : Context?, linear1 : LinearLayout) : View {
-        val mutList : MutableList<View> = mutableListOf()
+    private fun createColorBox(ct: Context?, linear1: LinearLayout): View {
+        val mutList: MutableList<View> = mutableListOf()
         val colorBox = View(ct)
         colorBox.layoutParams = LinearLayout.LayoutParams(
-            100.dpToPx,
-            100.dpToPx,
+            widthOfBox.dpToPx,
+            heightOfBox.dpToPx,
         ).apply {
             gravity = Gravity.CENTER
         }
         val margins = colorBox.layoutParams as ViewGroup.MarginLayoutParams
         margins.topMargin = 100.dpToPx
-        margins.marginEnd = 25.dpToPx
+        margins.marginEnd = marginBox.dpToPx
         colorBox.layoutParams = margins
         linear1.addView(colorBox)
         mutList.add(colorBox)
@@ -92,18 +126,19 @@ class ColorHabitFragment : Fragment() {
         bitmap: Bitmap?,
         colorBox: View,
         cbCenter: Point,
-        colorOfBoxRGB: MutableList<String>,
-        colorOfBoxInt: MutableList<Int>
+        colorOfBox: MutableList<Int>
     ) {
         val pixelColor = bitmap!!.getPixel(cbCenter.x, cbCenter.y)
+        colorOfBox.add(pixelColor)
+        colorBox.background = ShapeColorBox(3, pixelColor)
+    }
+
+    private fun convertToRGBcode(pixelColor: Int): String {
 //        val A: Int = pixelColor shr 24 and 0xff // or color >>> 24
         val R: Int = pixelColor shr 16 and 0xff
         val G: Int = pixelColor shr 8 and 0xff
         val B: Int = pixelColor and 0xff
-        val colorOfBoxString = "($R, $G, $B)"
-        colorOfBoxRGB.add(colorOfBoxString)
-        colorOfBoxInt.add(pixelColor)
-        colorBox.background = ShapeColorBox(3, pixelColor)
+        return "($R, $G, $B)"
     }
 
 
@@ -140,18 +175,14 @@ class ColorHabitFragment : Fragment() {
         }
     }
 
-    private fun getCenterColor(colorBox : View): Point {
-        val cbLoc: Point = colorBox.getLocationOnScreen()
+    private fun getCenterColor(colorBox: View): Point {
+        val cbLoc: Point = colorBox.getRelativeLocation()
         return Point(colorBox.width / 2 + cbLoc.x, colorBox.height / 2 + cbLoc.y)
     }
 
-    private fun View.getLocationOnScreen(): Point {
-        val location = IntArray(2)
-        this.getLocationOnScreen(location)
-        return Point(location[0], location[1])
+    private fun View.getRelativeLocation(): Point {
+        return Point(this.x.toInt(), this.y.toInt())
     }
-
-
 
     /**
      * Converts Pixel to DP.
@@ -164,8 +195,6 @@ class ColorHabitFragment : Fragment() {
      */
     val Int.dpToPx: Int
         get() = (this * Resources.getSystem().displayMetrics.density).toInt()
-
-
 
     companion object {
         const val COLOR_HABIT = "colorHabit"

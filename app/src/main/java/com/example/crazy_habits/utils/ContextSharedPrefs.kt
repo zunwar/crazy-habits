@@ -2,7 +2,6 @@ package com.example.crazy_habits.utils
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 
@@ -29,7 +28,6 @@ class ContextSharedPrefs private constructor(private val application : Applicati
     fun <T> put(`object`: T, key: String) {
         //Convert object to JSON String.
         val jsonString = GsonBuilder().create().toJson(`object`)
-        Log.d("habitmodel", "sharedprefs$jsonString")
         //Save that String in SharedPreferences
         preferences.edit().putString(key, jsonString).apply()
     }

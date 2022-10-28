@@ -22,22 +22,23 @@ import com.example.crazy_habits.fragments.HabitEditFragment.Companion.HABIT_ADD
 import com.example.crazy_habits.viewmodels.ListHabitsViewModel
 import java.util.*
 
-class ListHabitsFragment : Fragment(R.layout.fragment_list_habits), HabitAdapter.OnItemClickListener {
+class ListHabitsFragment : Fragment(R.layout.fragment_list_habits),
+    HabitAdapter.OnItemClickListener {
 
 
     private var _binding: FragmentListHabitsBinding? = null
-    private lateinit var habit : Habit
-    private lateinit var habitAdapter : HabitAdapter
+    private lateinit var habit: Habit
+    private lateinit var habitAdapter: HabitAdapter
     private val binding get() = _binding!!
-    private var createBadInstance : Boolean = false
-    private val listHabitsViewModel : ListHabitsViewModel by viewModels()
+    private var createBadInstance: Boolean = false
+    private val listHabitsViewModel: ListHabitsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "List_frag_onCreate")
-        if (arguments?.getBoolean(BAD_INSTANCE) != null ) {
-                createBadInstance = true
-            }
+        if (arguments?.getBoolean(BAD_INSTANCE) != null) {
+            createBadInstance = true
+        }
     }
 
     override fun onCreateView(
@@ -47,7 +48,6 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits), HabitAdapter
     ): View {
         _binding = FragmentListHabitsBinding.inflate(inflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,90 +55,43 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits), HabitAdapter
         Log.d(TAG, "List_frag_onViewCreated")
         binding.constrListHabits.doOnLayout {
             if (createBadInstance) binding.constrListHabits.setBackgroundResource(R.color.badHabit)
-                else binding.constrListHabits.setBackgroundResource(R.color.goodHabit)
+            else binding.constrListHabits.setBackgroundResource(R.color.goodHabit)
         }
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Bundle>(HABIT_ADD)?.observe(viewLifecycleOwner) {result ->
-            habit = result.getParcelable<Habit>(COLLECTED_HABIT)!!
-            if (listHabitsViewModel.isChange(habit)) {
-                val posToInsert = habitAdapter.itemCount+1
-                binding.recyclerView.smoothScrollToPosition(posToInsert)
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Bundle>(HABIT_ADD)
+            ?.observe(viewLifecycleOwner) { result ->
+                habit = result.getParcelable<Habit>(COLLECTED_HABIT)!!
+                if (!listHabitsViewModel.isChange(habit)) {
+                    val posToInsert = habitAdapter.itemCount + 1
+                    binding.recyclerView.smoothScrollToPosition(posToInsert)
+                }
             }
-        }
         initRecyclerView()
     }
 
     override fun onItemClicked(id: String) {
         val bundle = Bundle()
-//        bundle.putParcelable(HABIT_TO_EDIT, habitList.find { it.id == id })
         bundle.putParcelable(HABIT_TO_EDIT, listHabitsViewModel.getHabitToEdit(id))
         findNavController().navigate(R.id.action_viewPagerFragment_to_habitEditFragment, bundle)
-
-//        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
-//            MOVE
-//        )?.observe(viewLifecycleOwner) { result ->
-//        val index = habitList.indexOf(habitList.find { it.id == id })
-//        habitList.removeAt(index)
-//        habitAdapter.notifyItemRemoved(index)
-//        }
-
-//            habitAdapter.notifyItemRemoved(habitList.indexOf(habitList.find { it.id == id }))
-//        habitAdapter.notifyItemChanged(habitList.indexOf(habitList.find { it.id == id }))
     }
 
 
-    private fun  initRecyclerView () {
+    private fun initRecyclerView() {
         Log.d(TAG, "List_frag_initRecyclerView")
         binding.recyclerView.layoutManager = LinearLayoutManager(activity)
-        binding.recyclerView.adapter  = HabitAdapter(this)
+        binding.recyclerView.adapter = HabitAdapter(this)
         habitAdapter = binding.recyclerView.adapter as HabitAdapter
-//        habitAdapter.addMoreHabits(habitList)
 
 
         if (createBadInstance) {
             listHabitsViewModel.habit.observe(viewLifecycleOwner, Observer { list ->
-//                habitAdapter.addMoreHabits(list.filter { it.type == Type.Bad.type })
                 habitAdapter.addMoreHabits(listHabitsViewModel.getBadHabits())
             })
-        }
-        else {
+        } else {
             listHabitsViewModel.habit.observe(viewLifecycleOwner, Observer { list ->
-//                habitAdapter.addMoreHabits(list.filter { it.type == Type.Good.type })
                 habitAdapter.addMoreHabits(listHabitsViewModel.getGoodHabits())
             })
         }
     }
-
-
-//    private fun changeHabit () {
-//        val habitToChange = habitList.find{it.id == habit.id}
-//        val habitToChangeIndex = habitList.indexOf(habitToChange)
-//        habitList[habitToChangeIndex] = habit
-//        habitAdapter.notifyItemChanged(habitToChangeIndex)
-//    }
-
-//    override fun onSaveInstanceState(outState: Bundle) {
-//        outState.putParcelableArrayList(RECYCLER_DATA, habitList as ArrayList<out Parcelable>)
-//        super.onSaveInstanceState(outState)
-//    }
-
-
-/**
- * код раньше не работал , но синт ошибок в нем  не было
- * */
-//    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-//        super.onViewStateRestored(savedInstanceState)
-//        val mDataset = savedInstanceState?.getParcelableArrayList<Habit>(RECYCLER_DATA)
-//        binding.recyclerView.adapter  = HabitAdapter(this)
-//        habitAdapter = binding.recyclerView.adapter as HabitAdapter
-//        try {
-//            habitList.addAll(mDataset as Collection<Habit>)
-//            habitAdapter.addMoreHabits(habitList)
-//        }
-//        catch (e : Exception) {}
-//
-//    }
-
-
 
 //    override fun onResume() {
 //        super.onResume()
@@ -176,7 +129,6 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits), HabitAdapter
          *
          *
          */
-        private const val RECYCLER_DATA     = "recycler data"
         const val HABIT_TO_EDIT = "habitToEdit"
         private const val BAD_INSTANCE = "BadInstance"
 

@@ -22,11 +22,7 @@ class HabitEditViewModel : ViewModel() {
     }
 
     private fun load() {
-        try {
             _habit.postValue(model.habitList.last())
-//            Log.d("MVVM", _habit.toString())
-        }
-        catch (e : Exception) {}
     }
 
 //    fun addHabit(habit : Habit){

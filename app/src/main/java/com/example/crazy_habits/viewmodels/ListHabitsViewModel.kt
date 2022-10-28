@@ -9,12 +9,10 @@ import com.example.crazy_habits.Type
 import com.example.crazy_habits.models.HabitModel
 
 class ListHabitsViewModel : ViewModel() {
-    private val _habit : MutableLiveData<List<Habit>> by lazy { MutableLiveData<List<Habit>>() }
-//    private val _oldHabit : MutableLiveData<Habit> by lazy { MutableLiveData<Habit>() }
-    private  val model : HabitModel = HabitModel()
-
+    private val _habit : MutableLiveData<List<Habit>> = MutableLiveData<List<Habit>>()
     val habit : LiveData<List<Habit>> = _habit
-//    val oldhabit : LiveData<Habit> = _oldHabit
+
+    private  val model : HabitModel = HabitModel()
 
 
     init {
@@ -23,12 +21,7 @@ class ListHabitsViewModel : ViewModel() {
     }
 
     private fun load() {
-        try {
             _habit.postValue(model.getHabList())
-//            model.habitList.forEach{_habit.postValue(it)}
-//            Log.d("MVVM", "GoodHabitsViewModel$_habit")
-        }
-        catch (e : Exception) {}
     }
 
     private fun addHabit(habit : Habit){
@@ -60,10 +53,10 @@ class ListHabitsViewModel : ViewModel() {
     fun isChange(habit: Habit) : Boolean {
         return if (model.isChange(habit)) {
             changeHabit(habit)
-            false
+            true
         } else {
             addHabit(habit)
-            true
+            false
         }
 //        return model.isChange(habit)
     }

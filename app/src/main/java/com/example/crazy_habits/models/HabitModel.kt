@@ -21,27 +21,14 @@ class HabitModel{
 
     }
 
-//
-//    private fun getList(): MutableList<Habit> {
-//        return _habitList
-//    }
-
     fun getHabList() : List<Habit> {
         return _habitList
     }
 
     fun addHabit(habit: Habit) {
         _habitList = getFromPrfs()
-//        if (_habitList.isNotEmpty()) {
-//            if (_habitList.last().id != habit.id){
-//                _habitList.add(habit)
-//                sharedPrfs.put(_habitList, "habitListFull")
-//            }
-//        }
-//        else {
-            _habitList.add(habit)
-            sharedPrfs.put(_habitList, "habitListFull")
-//        }
+        _habitList.add(habit)
+        sharedPrfs.put(_habitList, "habitListFull")
     }
 
     fun changeHabit(habit: Habit) {
@@ -62,12 +49,5 @@ class HabitModel{
         _habitList = getFromPrfs()
         return _habitList.find { it.id == habit.id } != null
     }
-
-
-
-//    private fun loadHabitNameList() : MutableList<String>{
-////        _habitNameList.add("")
-//        return _habitList
-//    }
 
 }
