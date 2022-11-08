@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.findNavController
 import com.example.crazy_habits.databinding.ActivityFirstBinding
+import com.example.crazy_habits.fragments.BottomSheet
 
 
 class FirstActivity : AppCompatActivity() {
@@ -54,8 +55,17 @@ class FirstActivity : AppCompatActivity() {
                 }
             }
 
+        binding.appBarMain.filterButtonToolBar.setOnClickListener {
+            bottomSheet()
+        }
 
 
+
+    }
+
+    private fun bottomSheet() {
+        val bottomSheet = BottomSheet()
+        bottomSheet.show(supportFragmentManager, BottomSheet.BottomSheet_TAG)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

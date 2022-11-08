@@ -53,4 +53,8 @@
     <string name="application_name">Crazy Habits</string>
     <string name="onTabReselectedText">Already here!</string>
     <string name="nav_emotionText">Feels good!</string>
+    <string name="filtration">Фильтрация по имени</string>
+    <string name="filter_name_hint">Имя привычки</string>
+    <string name="filter_list">filter list</string>
+    <string name="too_much">too much symbols!</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.example.crazy_habits.fragments
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,20 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.crazy_habits.FirstActivity.Companion.TAG
 import com.example.crazy_habits.Habit
-import com.example.crazy_habits.adapters.HabitAdapter
 import com.example.crazy_habits.R
-import com.example.crazy_habits.Type
+import com.example.crazy_habits.adapters.HabitAdapter
 import com.example.crazy_habits.databinding.FragmentListHabitsBinding
 import com.example.crazy_habits.fragments.HabitEditFragment.Companion.COLLECTED_HABIT
 import com.example.crazy_habits.fragments.HabitEditFragment.Companion.HABIT_ADD
 import com.example.crazy_habits.viewmodels.ListHabitsViewModel
-import java.util.*
+
 
 class ListHabitsFragment : Fragment(R.layout.fragment_list_habits),
     HabitAdapter.OnItemClickListener {
@@ -31,7 +31,7 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits),
     private lateinit var habitAdapter: HabitAdapter
     private val binding get() = _binding!!
     private var createBadInstance: Boolean = false
-    private val listHabitsViewModel: ListHabitsViewModel by viewModels()
+    private val listHabitsViewModel: ListHabitsViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -139,5 +139,8 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits),
                 }
             }
     }
+    val Int.dpToPx: Int
+        get() = (this * Resources.getSystem().displayMetrics.density).toInt()
+
 
 }

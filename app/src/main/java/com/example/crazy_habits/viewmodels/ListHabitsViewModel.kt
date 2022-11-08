@@ -11,9 +11,7 @@ import com.example.crazy_habits.models.HabitModel
 class ListHabitsViewModel : ViewModel() {
     private val _habit : MutableLiveData<List<Habit>> = MutableLiveData<List<Habit>>()
     val habit : LiveData<List<Habit>> = _habit
-
     private  val model : HabitModel = HabitModel()
-
 
     init {
         Log.d("MVVM", "ListHabitsViewModel created")
@@ -34,11 +32,11 @@ class ListHabitsViewModel : ViewModel() {
     }
 
     fun getGoodHabits() : List<Habit> {
-        return model.getHabList().filter { it.type == Type.Good.type }
+        return _habit.value!!.filter { it.type == Type.Good.type }
     }
 
     fun getBadHabits() : List<Habit> {
-        return model.getHabList().filter { it.type == Type.Bad.type }
+        return _habit.value!!.filter { it.type == Type.Bad.type }
     }
 
     fun getHabitToEdit(id: String) : Habit {
@@ -59,6 +57,13 @@ class ListHabitsViewModel : ViewModel() {
             false
         }
 //        return model.isChange(habit)
+    }
+
+    fun filterHabitsByName(name: String) {
+        if (name.isNotEmpty()) {
+            val filteredList: List<Habit> = _habit.value!!.filter { it.name.contains(name) }
+            _habit.postValue(filteredList)
+        } else _habit.postValue(getListOfHabits())
     }
 
 
