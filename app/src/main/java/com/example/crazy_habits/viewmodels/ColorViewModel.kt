@@ -1,19 +1,21 @@
 package com.example.crazy_habits.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.util.Log
+import androidx.lifecycle.*
+import androidx.lifecycle.viewmodel.CreationExtras
+import com.example.crazy_habits.FirstActivity.Companion.TAG
+import com.example.crazy_habits.fragments.ColorHabitFragment
 import com.example.crazy_habits.models.ColorModel
 
-class ColorViewModel : ViewModel() {
+class ColorViewModel(private val idHabit: String) : ViewModel() {
     private val colorModel = ColorModel()
 
     private val _listPartHabit: MutableLiveData<List<String>> = MutableLiveData<List<String>>()
     val listPartHabit : LiveData<List<String>> = _listPartHabit
-    private var idHabit : String = ""
 
     init{
         load()
+        Log.d(TAG, "initColorViewModel: $idHabit")
     }
 
     private fun load() {
@@ -22,7 +24,6 @@ class ColorViewModel : ViewModel() {
 
     fun saveData(list: List<String>) {
         colorModel.saveListToFile(list)
-        idHabit = list[0]
         load()
     }
 
@@ -44,9 +45,25 @@ class ColorViewModel : ViewModel() {
     }
 
     fun isNew(id: String): Boolean {
-        idHabit = id
         return colorModel.isNew(id)
     }
+
+    companion object {
+
+        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras
+            ): T {
+                val frag = checkNotNull(extras[VIEW_MODEL_STORE_OWNER_KEY])
+                return ColorViewModel(
+                    (frag as ColorHabitFragment).idHabit
+                ) as T
+            }
+        }
+    }
+
 
 
 }

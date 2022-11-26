@@ -6,7 +6,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.crazy_habits.Habit
+import com.example.crazy_habits.database.habit.Habit
+import com.example.crazy_habits.Priority
+import com.example.crazy_habits.R
+import com.example.crazy_habits.Type
 import com.example.crazy_habits.databinding.ListItemViewBinding
 
 class HabitAdapter (private val itemClickListener: OnItemClickListener)
@@ -32,9 +35,9 @@ class HabitAdapter (private val itemClickListener: OnItemClickListener)
 
     }
 
-    fun addMoreHabits(newHabit: List<Habit>) {
+    fun addOrChangeHabit(newHabit: List<Habit>) {
         habitList.addAll(newHabit)
-        submitList(newHabit) // DiffUtil takes care of the check
+        submitList(newHabit) // DiffUtil takes care of the check of new list for changes
     }
 
     companion object {
@@ -44,7 +47,7 @@ class HabitAdapter (private val itemClickListener: OnItemClickListener)
             }
 
             override fun areContentsTheSame(oldItem: Habit, newItem: Habit): Boolean {
-                return oldItem.name == newItem.name
+                return oldItem == newItem
             }
         }
     }
@@ -58,13 +61,23 @@ class HabitAdapter (private val itemClickListener: OnItemClickListener)
         private val itemClickListener: OnItemClickListener
         ) : RecyclerView.ViewHolder(binding.root){
 
+        val ctx  = this.itemView.context
+
         fun bind (habit: Habit) {
 
             with(binding) {
                 nameHabit.text      = habit.name
                 description.text    = habit.desc
-                type.text           = habit.type
-                priority.text       = habit.priority
+                type.text           = when (habit.type){
+                    Type.Good -> ctx.getString(R.string.goodHabit)
+                    Type.Bad  -> ctx.getString(R.string.badHabit)
+                }
+                priority.text       =
+                    when (habit.priority) {
+                        Priority.Low    -> ctx.getString(R.string.lowPriority)
+                        Priority.Middle -> ctx.getString(R.string.middlePriority)
+                        Priority.High   -> ctx.getString(R.string.highPriority)
+                    }
                 period.text         = habit.period
                 LLliv.background    = GradientDrawable().apply { setColor(habit.colorHabit) }
                 LLliv.setOnClickListener {

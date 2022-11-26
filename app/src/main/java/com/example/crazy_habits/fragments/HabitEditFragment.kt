@@ -1,7 +1,6 @@
 package com.example.crazy_habits.fragments
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +9,10 @@ import android.widget.RadioButton
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.crazy_habits.*
-import com.example.crazy_habits.FirstActivity.Companion.TAG
+import com.example.crazy_habits.database.habit.Habit
 import com.example.crazy_habits.databinding.FragmentHabitEditBinding
 import com.example.crazy_habits.fragments.ColorHabitFragment.Companion.COLOR_HABIT
-import com.example.crazy_habits.fragments.ListHabitsFragment.Companion.HABIT_TO_EDIT
+import com.example.crazy_habits.fragments.ListHabitsFragment.Companion.HABIT_TO_EDIT_ID
 import com.example.crazy_habits.viewmodels.HabitEditViewModel
 import java.util.*
 
@@ -31,9 +30,9 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments?.getParcelable<Habit>(HABIT_TO_EDIT) != null) {
+        if (arguments?.getString(HABIT_TO_EDIT_ID) != null) {
             arguments?.let {
-                oldHabit = it.getParcelable<Habit>(HABIT_TO_EDIT)!!
+                oldHabit = habitEditViewModel.getHabitToEdit(it.getString(HABIT_TO_EDIT_ID)!!)
             }
             edit = true
         }
@@ -49,24 +48,24 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.radioGroup.check(binding.radioButton1.id)
+        binding.radioGroup.check(binding.radioButton0.id)
+        binding.prioritySpinner.setSelection(1)
         var colorHabit = -1
         binding.colorOfHabit.background = ShapeColorBox(3, colorHabit)
 
         if ((arguments != null) && (edit)) {
             with(oldHabit) {
-                if (name == getString(R.string.notSet)) binding.NameHabitText.setText("")
+                if (name == getString(R.string.notSpecified)) binding.NameHabitText.setText("")
                 else binding.NameHabitText.setText(name)
                 binding.DescText.setText(desc)
                 when (oldHabit.type) {
-                    getString(R.string.goodHabit) -> binding.radioGroup.check(binding.radioButton1.id)
-                    getString(R.string.badHabit) -> binding.radioGroup.check(binding.radioButton3.id)
+                    Type.Good -> binding.radioGroup.check(binding.radioButton0.id)
+                    Type.Bad -> binding.radioGroup.check(binding.radioButton1.id)
                 }
                 when (oldHabit.priority) {
-                    getString(R.string.empty) -> binding.prioritySpinner.setSelection(0)
-                    getString(R.string.highPriority) -> binding.prioritySpinner.setSelection(1)
-                    getString(R.string.middlePriority) -> binding.prioritySpinner.setSelection(2)
-                    getString(R.string.lowPriority) -> binding.prioritySpinner.setSelection(3)
+                    Priority.Low    -> binding.prioritySpinner.setSelection(0)
+                    Priority.Middle -> binding.prioritySpinner.setSelection(1)
+                    Priority.High   -> binding.prioritySpinner.setSelection(2)
                 }
                 if (number == getString(R.string.empty)) binding.NumberText.setText("")
                 else binding.NumberText.setText(number)
@@ -80,28 +79,47 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
 
         binding.addButton.setOnClickListener {
             habit = Habit(
-                name = binding.NameHabitText.text.toString().ifEmpty { Type.NoSet.type },
+                name = binding.NameHabitText.text.toString().ifEmpty { getString(R.string.notSpecified) },
                 desc = binding.DescText.text.toString(),
-                type = checkData(view.findViewById<RadioButton>(binding.radioGroup.checkedRadioButtonId).text.toString()),
-                priority = binding.prioritySpinner.selectedItem.toString(),
+                type =
+                when (checkData(view.findViewById<RadioButton>(binding.radioGroup.checkedRadioButtonId).text.toString())) {
+                    getString(R.string.goodHabit) -> Type.Good
+                    getString(R.string.badHabit) -> Type.Bad
+                    else -> {
+                        Type.Good
+                    }
+                },
+                priority =
+                when (binding.prioritySpinner.selectedItem.toString()) {
+                    getString(R.string.highPriority) -> Priority.High
+                    getString(R.string.middlePriority) -> Priority.Middle
+                    getString(R.string.lowPriority) -> Priority.Low
+                    else -> {
+                        Priority.Middle
+                    }
+                },
                 number = checkData(binding.NumberText.text.toString()),
                 period = checkData(binding.PeriodText.text.toString()),
                 colorHabit = colorHabit,
                 id = if (edit) oldHabit.id else UUID.randomUUID().toString()
             )
-            val result = Bundle().apply {
-                putParcelable(COLLECTED_HABIT, habit)
-            }
-            if (habit.type == getString(R.string.goodHabit)) {
+            if (habit.type == Type.Good) {
                 findNavController().previousBackStackEntry?.savedStateHandle?.set(TAB_ITEM, 0)
             }
-            if (habit.type == getString(R.string.badHabit)) {
+            if (habit.type == Type.Bad) {
                 findNavController().previousBackStackEntry?.savedStateHandle?.set(TAB_ITEM, 1)
             }
 //            if (binding.addButton.text == getString(R.string.changeButton)) {
 //                findNavController().previousBackStackEntry?.savedStateHandle?.set(MOVE, true)
 //            }
-            findNavController().previousBackStackEntry?.savedStateHandle?.set(HABIT_ADD, result)
+            if ((arguments != null) && (edit)) {
+                habitEditViewModel.changeHabit(habit)
+            } else {
+                habitEditViewModel.addHabit(habit)
+                findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                    HABIT_ADD,
+                    Bundle().apply { putBoolean(ADD_BOOL, true) })
+            }
             findNavController().popBackStack()
 
         }
@@ -126,7 +144,7 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
     }
 
     private fun checkData(parameter: String): String {
-        return parameter.ifEmpty { Type.Empty.type }
+        return parameter.ifEmpty { getString(R.string.empty) }
     }
 
 //    override fun onResume() {
@@ -164,6 +182,8 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
     companion object {
         const val COLLECTED_HABIT = "collectedHabit"
         const val HABIT_ADD = "habit add"
+        const val HABIT_CHANGE = "habit change"
+        const val ADD_BOOL = "habit change"
         const val TAB_ITEM = "tab item"
         const val MOVE = "move item"
 

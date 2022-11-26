@@ -20,7 +20,7 @@
     <string name="chosen_color">RGB:</string>
     <string name="rgb_code">(255, 255, 255)</string>
     <string name="submit">submit</string>
-    <string name="notSet">не указано</string>
+    <string name="notSpecified">не указано</string>
     <string name="goodHabit">полезная</string>
     <string name="goodHabitTab1">good</string>
     <string name="neutralHabit">нейтральная</string>
@@ -32,7 +32,6 @@
     <string name="lowPriority">Низкий</string>
     <string name="changeButton">изменить</string>
     <string-array name="spinner">
-        <item>---</item>
         <item>Высокий</item>
         <item>Средний</item>
         <item>Низкий</item>

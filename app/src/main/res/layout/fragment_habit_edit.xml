@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="top"
                 android:inputType="text"
-                android:maxLength="34"
+                android:maxLength="28"
                 android:paddingStart="0dp"
                 android:paddingEnd="0dp">
 
@@ -118,7 +118,7 @@
             app:layout_constraintTop_toBottomOf="@id/typeHabit">
 
             <RadioButton
-                android:id="@+id/radioButton1"
+                android:id="@+id/radioButton0"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/purple_500"
@@ -127,7 +127,7 @@
                 android:text="@string/goodHabit" />
 
             <RadioButton
-                android:id="@+id/radioButton3"
+                android:id="@+id/radioButton1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/purple_500"
