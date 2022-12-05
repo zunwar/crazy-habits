@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.crazy_habits.FirstActivity.Companion.TAG
+import com.example.crazy_habits.Habit
 import com.example.crazy_habits.fragments.ColorHabitFragment
+import com.example.crazy_habits.fragments.HabitEditFragment
 import com.example.crazy_habits.models.ColorModel
 
 class ColorViewModel(private val idHabit: String) : ViewModel() {
@@ -58,7 +60,7 @@ class ColorViewModel(private val idHabit: String) : ViewModel() {
             ): T {
                 val frag = checkNotNull(extras[VIEW_MODEL_STORE_OWNER_KEY])
                 return ColorViewModel(
-                    (frag as ColorHabitFragment).idHabit
+                    (frag as ColorHabitFragment).requireArguments().getParcelable<Habit>(HabitEditFragment.COLLECTED_HABIT)!!.id
                 ) as T
             }
         }

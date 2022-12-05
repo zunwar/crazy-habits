@@ -19,7 +19,7 @@ import android.widget.LinearLayout
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.example.crazy_habits.database.habit.Habit
+import com.example.crazy_habits.Habit
 import com.example.crazy_habits.ShapeColorBox
 import com.example.crazy_habits.databinding.FragmentColorHabitBinding
 import com.example.crazy_habits.fragments.HabitEditFragment.Companion.COLLECTED_HABIT
@@ -28,7 +28,6 @@ import com.example.crazy_habits.viewmodels.ColorViewModel
 class ColorHabitFragment : Fragment() {
     private var _binding: FragmentColorHabitBinding? = null
     private val binding get() = _binding!!
-    lateinit var idHabit : String
     private val colorViewModel: ColorViewModel by viewModels{ColorViewModel.Factory}
     private var partHabitNumberOfBox: MutableList<String> = mutableListOf()
 
@@ -36,8 +35,7 @@ class ColorHabitFragment : Fragment() {
         super.onCreate(savedInstanceState)
         if (arguments?.getParcelable<Habit>(COLLECTED_HABIT) != null) {
             arguments?.let {
-                val habit = it.getParcelable<Habit>(COLLECTED_HABIT)
-                idHabit = habit!!.id
+                val habit = it.getParcelable<Habit>(COLLECTED_HABIT)!!
                 partHabitNumberOfBox = if (colorViewModel.isNew(habit.id)) {
                     mutableListOf(habit.id, habit.colorHabit.toString(), "0")
                 } else {

@@ -23,7 +23,7 @@ class BottomSheet : BottomSheetDialogFragment() {
     private var _binding: BottomSheetBinding? = null
     private val binding get() = _binding!!
     lateinit var beh: BottomSheetBehavior<*>
-    private val listHabitsViewModel: ListHabitsViewModel by activityViewModels()
+    private val listHabitsViewModel: ListHabitsViewModel by activityViewModels{ListHabitsViewModel.Factory}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

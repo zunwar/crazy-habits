@@ -4,16 +4,19 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.crazy_habits.FirstActivity.Companion.TAG
-import com.example.crazy_habits.database.habit.Habit
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
+import com.example.crazy_habits.App
+import com.example.crazy_habits.database.habit.HabitDao
+import com.example.crazy_habits.database.habit.HabitEntity
 import com.example.crazy_habits.models.HabitModel
 
-class ListHabitsViewModel : ViewModel() {
-    private val _goodHabits : MutableLiveData<List<Habit>> = MutableLiveData<List<Habit>>()
-    val goodHabits : LiveData<List<Habit>> = _goodHabits
-    private val _badHabits : MutableLiveData<List<Habit>> = MutableLiveData<List<Habit>>()
-    val badHabits : LiveData<List<Habit>> = _badHabits
-    private  val model : HabitModel = HabitModel()
+class ListHabitsViewModel(habitDao: HabitDao) : ViewModel() {
+    private val _goodHabits : MutableLiveData<List<HabitEntity>> = MutableLiveData<List<HabitEntity>>()
+    val goodHabits : LiveData<List<HabitEntity>> = _goodHabits
+    private val _badHabits : MutableLiveData<List<HabitEntity>> = MutableLiveData<List<HabitEntity>>()
+    val badHabits : LiveData<List<HabitEntity>> = _badHabits
+    private  val model : HabitModel = HabitModel(habitDao)
 
     init {
         Log.d("MVVM", "ListHabitsViewModel created")
@@ -22,32 +25,18 @@ class ListHabitsViewModel : ViewModel() {
 
     private fun load() {
         _goodHabits.postValue(model.getGoodHabits())
-        Log.d(TAG, "load: ${goodHabits.value.toString()}")
         _badHabits.postValue(model.getBadHabits())
     }
 
-    private fun addHabit(habit : Habit){
-        model.addHabit(habit)
-        load()
-    }
-
-    private fun getListOfHabits() : List<Habit>{
-        return model.getHabList()
-    }
-
-    private fun changeHabit(habit: Habit) {
-        model.changeHabit(habit)
-        load()
-    }
-
     fun update() {
+        model.habitEditFragmentCloseClicked = true
         load()
     }
 
     fun filterHabitsByName(name: String) {
         if (name.isNotEmpty()) {
-            val goodFilteredList: List<Habit> = model.getGoodHabits().filter { it.name.contains(name) }
-            val badFilteredList : List<Habit> = model.getBadHabits().filter { it.name.contains(name) }
+            val goodFilteredList: List<HabitEntity> = model.getGoodHabits().filter { it.name.contains(name) }
+            val badFilteredList : List<HabitEntity> = model.getBadHabits().filter { it.name.contains(name) }
             _goodHabits.postValue(goodFilteredList)
             _badHabits.postValue(badFilteredList)
         } else {
@@ -59,6 +48,23 @@ class ListHabitsViewModel : ViewModel() {
     override fun onCleared() {
         Log.d("MVVM", "ListHabitsViewModel dead")
         super.onCleared()
+    }
+
+
+    companion object {
+
+        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>,
+                extras: CreationExtras
+            ): T {
+                val app = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
+                return ListHabitsViewModel(
+                    (app as App).database.habitDao()
+                ) as T
+            }
+        }
     }
 
 }

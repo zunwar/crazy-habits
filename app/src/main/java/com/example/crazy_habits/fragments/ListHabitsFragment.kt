@@ -15,7 +15,6 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.crazy_habits.FirstActivity.Companion.TAG
-import com.example.crazy_habits.database.habit.Habit
 import com.example.crazy_habits.R
 import com.example.crazy_habits.adapters.HabitAdapter
 import com.example.crazy_habits.databinding.FragmentListHabitsBinding
@@ -24,16 +23,14 @@ import com.example.crazy_habits.fragments.HabitEditFragment.Companion.HABIT_ADD
 import com.example.crazy_habits.viewmodels.ListHabitsViewModel
 
 
-class ListHabitsFragment : Fragment(R.layout.fragment_list_habits),
-    HabitAdapter.OnItemClickListener {
+class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
 
 
     private var _binding: FragmentListHabitsBinding? = null
-    private lateinit var habit: Habit
     private lateinit var habitAdapter: HabitAdapter
     private val binding get() = _binding!!
     private var createBadInstance: Boolean = false
-    private val listHabitsViewModel: ListHabitsViewModel by activityViewModels()
+    private val listHabitsViewModel: ListHabitsViewModel by activityViewModels{ListHabitsViewModel.Factory}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,26 +68,27 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits),
         initRecyclerView()
     }
 
-    override fun onItemClicked(id: String) {
-        val bundle = Bundle().apply { putString(HABIT_TO_EDIT_ID, id)}
-        findNavController().navigate(R.id.action_viewPagerFragment_to_habitEditFragment, bundle)
-    }
-
-
     private fun initRecyclerView() {
         Log.d(TAG, "List_frag_initRecyclerView")
-        binding.recyclerView.layoutManager = LinearLayoutManager(activity)
-        binding.recyclerView.adapter = HabitAdapter(this)
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.adapter = HabitAdapter{
+            if (findNavController().currentDestination!!.id == R.id.viewPagerFragment) {
+            val action =
+                ViewPagerFragmentDirections.actionViewPagerFragmentToHabitEditFragment(
+                    idHabit = it.id
+                )
+                findNavController().navigate(action)
+            }
+        }
         habitAdapter = binding.recyclerView.adapter as HabitAdapter
-
 
         if (createBadInstance) {
             listHabitsViewModel.badHabits.observe(viewLifecycleOwner, Observer { badHabits ->
-                habitAdapter.addOrChangeHabit(badHabits)
+                habitAdapter.submitList(badHabits)
             })
         } else {
             listHabitsViewModel.goodHabits.observe(viewLifecycleOwner, Observer { goodHabits ->
-                habitAdapter.addOrChangeHabit(goodHabits)
+                habitAdapter.submitList(goodHabits)
             })
         }
     }
@@ -133,7 +131,7 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits),
          *
          *
          */
-        const val HABIT_TO_EDIT_ID = "habitToEdit"
+        const val HABIT_TO_EDIT_ID = "idHabit"
         private const val BAD_INSTANCE = "BadInstance"
 
         fun newInstance(bad: Boolean) =

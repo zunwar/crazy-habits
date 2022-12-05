@@ -27,6 +27,9 @@
             android:id="@+id/action_habitEditFragment_to_viewPagerFragment"
             app:destination="@id/viewPagerFragment"
             app:popUpTo="@id/viewPagerFragment" />
+        <argument
+            android:name="idHabit"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/viewPagerFragment"

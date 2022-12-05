@@ -142,7 +142,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/border"
-            android:entries="@array/spinner"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
             android:layout_marginTop="12dp"
