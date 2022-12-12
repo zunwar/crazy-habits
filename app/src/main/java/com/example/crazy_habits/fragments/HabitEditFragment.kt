@@ -5,39 +5,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.RadioButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.crazy_habits.*
+import com.example.crazy_habits.adapters.CustomSpinnerAdapter
 import com.example.crazy_habits.database.habit.HabitEntity
 import com.example.crazy_habits.databinding.FragmentHabitEditBinding
 import com.example.crazy_habits.fragments.ColorHabitFragment.Companion.COLOR_HABIT
 import com.example.crazy_habits.fragments.ListHabitsFragment.Companion.HABIT_TO_EDIT_ID
 import com.example.crazy_habits.viewmodels.HabitEditViewModel
-import java.util.*
 
 
 class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
 
     private var _binding: FragmentHabitEditBinding? = null
-    private lateinit var habit: HabitEntity
-    private lateinit var oldHabit: HabitEntity
     private val binding get() = _binding!!
-    private var edit = false
-    private var selectedPriority : Priority = Priority.Middle
-    private var colorHabit = -1
     private val habitEditViewModel: HabitEditViewModel by viewModels {HabitEditViewModel.Factory}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            arguments?.let {
-                oldHabit = habitEditViewModel.getHabitToEdit(it.getString(HABIT_TO_EDIT_ID)!!)
-            }
-            edit = true
-        }
     }
 
     override fun onCreateView(
@@ -51,37 +39,47 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.radioGroup.check(binding.radioButton0.id)
-        binding.colorOfHabit.background = ShapeColorBox(3, colorHabit)
 
         initPrioritySpinner()
-        displayEditableHabit()
+        if (!requireArguments().isEmpty) {
+            arguments?.let {
+                val liveDataOldHabit = habitEditViewModel.getHabitToEdit(it.getString(HABIT_TO_EDIT_ID)!!)
+                liveDataOldHabit.observe(viewLifecycleOwner){oldHabit ->
+                    displayEditableHabit(oldHabit)
+                }
+            }
+        }
+        binding.colorOfHabit.background = ShapeColorBox(3, habitEditViewModel.colorHabit)
         collectHabitOnSubmitButtonPress()
 
-        habitEditViewModel.habitEditFragmentAddClicked.observe(viewLifecycleOwner) {
+
+        habitEditViewModel.closeFragment.observe(viewLifecycleOwner) {
             findNavController().popBackStack()
+        }
+        habitEditViewModel.navigateToColorFragmentWithBundle.observe(viewLifecycleOwner) {
+            findNavController().navigate(
+                R.id.action_habitEditFragment_to_colorHabitFragment,
+//                    Bundle().apply { putParcelable(COLLECTED_HABIT, habitEditViewModel.getHabitToEdit(requireArguments().getString(HABIT_TO_EDIT_ID)!!)) }
+            )
+        }
+        habitEditViewModel.navigateToColorFragment.observe(viewLifecycleOwner) {
+            findNavController().navigate(R.id.action_habitEditFragment_to_colorHabitFragment)
         }
 
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Bundle>(COLOR_HABIT)
             ?.observe(viewLifecycleOwner) { result ->
-                colorHabit = result.getInt(COLOR_HABIT)
-                binding.colorOfHabit.background = ShapeColorBox(1, colorHabit)
+                habitEditViewModel.setColorOfHabit(result.getInt(COLOR_HABIT))
+                binding.colorOfHabit.background = ShapeColorBox(1, habitEditViewModel.colorHabit)
             }
 
         binding.chooseColorButton.setOnClickListener {
-            if (edit) {
-                findNavController().navigate(
-                    R.id.action_habitEditFragment_to_colorHabitFragment,
-                )
-            } else {
-                findNavController().navigate(R.id.action_habitEditFragment_to_colorHabitFragment)
-            }
-
+            habitEditViewModel.toColorFragmentClicked()
         }
     }
 
     private fun collectHabitOnSubmitButtonPress() {
         binding.addButton.setOnClickListener {
-            habit = HabitEntity(
+            val habit = HabitEntity(
                 name = binding.NameHabitText.text.toString().ifEmpty { getString(R.string.notSpecified) },
                 desc = binding.DescText.text.toString(),
                 type =
@@ -92,11 +90,11 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
                         Type.Good
                     }
                 },
-                priority = selectedPriority,
+                priority = habitEditViewModel.selectedPriority,
                 number = checkData(binding.NumberText.text.toString()),
                 period = checkData(binding.PeriodText.text.toString()),
-                colorHabit = colorHabit,
-                id = if (edit) oldHabit.id else UUID.randomUUID().toString()
+                colorHabit = habitEditViewModel.colorHabit,
+                id = habitEditViewModel.getId()
             )
             if (habit.type == Type.Good) {
                 findNavController().previousBackStackEntry?.savedStateHandle?.set(TAB_ITEM, 0)
@@ -104,38 +102,38 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
             if (habit.type == Type.Bad) {
                 findNavController().previousBackStackEntry?.savedStateHandle?.set(TAB_ITEM, 1)
             }
-            saveAndCloseScreen()
+            saveAndCloseScreen(habit)
         }
     }
 
-    private fun displayEditableHabit() {
-        if ((arguments != null) && (edit)) {
+    private fun displayEditableHabit(oldHabit: HabitEntity) {
+        if (habitEditViewModel.isEditable) {
             with(oldHabit) {
                 if (name == getString(R.string.notSpecified)) binding.NameHabitText.setText("")
                 else binding.NameHabitText.setText(name)
                 binding.DescText.setText(desc)
-                when (oldHabit.type) {
+                when (this.type) {
                     Type.Good -> binding.radioGroup.check(binding.radioButton0.id)
                     Type.Bad -> binding.radioGroup.check(binding.radioButton1.id)
                 }
-                when (oldHabit.priority) {
-                    Priority.Low    -> binding.prioritySpinner.setSelection(0)
+                when (this.priority) {
+                    Priority.High    -> binding.prioritySpinner.setSelection(0)
                     Priority.Middle -> binding.prioritySpinner.setSelection(1)
-                    Priority.High   -> binding.prioritySpinner.setSelection(2)
+                    Priority.Low   -> binding.prioritySpinner.setSelection(2)
                 }
                 if (number == getString(R.string.empty)) binding.NumberText.setText("")
                 else binding.NumberText.setText(number)
                 if (period == getString(R.string.empty)) binding.PeriodText.setText("")
                 else binding.PeriodText.setText(period)
-                binding.colorOfHabit.background = ShapeColorBox(1, oldHabit.colorHabit)
+                binding.colorOfHabit.background = ShapeColorBox(1, this.colorHabit)
             }
-            colorHabit = oldHabit.colorHabit
+            habitEditViewModel.setColorOfHabit(oldHabit.colorHabit)
             binding.addButton.text = getString(R.string.changeButton)
         }
     }
 
-    private fun saveAndCloseScreen() {
-        if ((arguments != null) && (edit)) {
+    private fun saveAndCloseScreen(habit: HabitEntity) {
+        if (habitEditViewModel.isEditable) {
             habitEditViewModel.changeHabit(habit)
         } else {
             findNavController().previousBackStackEntry?.savedStateHandle?.set(
@@ -150,67 +148,29 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
     }
 
     private fun initPrioritySpinner() {
-        val spinnerValues : MutableList<String> = mutableListOf()
-        Priority.values().forEach { spinnerValues.add(getString(it.stringResId)) }
-        ArrayAdapter(
+        val csa = CustomSpinnerAdapter(
             requireContext(),
-            android.R.layout.simple_spinner_item,
-            spinnerValues
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            binding.prioritySpinner.adapter = adapter
-        }
-        binding.prioritySpinner.setSelection(selectedPriority.id)
-
+            R.layout.spinner_dropdown_item,
+            Priority.values()
+        )
+        binding.prioritySpinner.adapter = csa
+        binding.prioritySpinner.setSelection(habitEditViewModel.selectedPriority.id)
         binding.prioritySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val selectedItem = parent!!.adapter.getItem(position)
-
-                selectedPriority = when (selectedItem) {
-                    getString(R.string.highPriority) -> Priority.High
-                    getString(R.string.middlePriority) -> Priority.Middle
-                    getString(R.string.lowPriority) -> Priority.Low
-                    else -> {
-                        Priority.Middle
-                    }
-                }
+                habitEditViewModel.selectPriority(parent!!.adapter.getItem(position) as Priority)
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
-
-
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        Log.d(TAG, "edit_frag_onResume")
-//    }
-//
-//    override fun onPause() {
-//        super.onPause()
-//        Log.d(TAG, "edit_frag_onPause")
-//    }
-//
-//    override fun onStop() {
-//        super.onStop()
-//        Log.d(TAG, "edit_frag_onStop")
-//    }
-//
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        Log.d(TAG, "edit_frag_onDestroy")
-//    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
-//        Log.d(TAG, "edit_frag_onDestroyView")
         _binding = null
     }
 
-//    override fun onDetach() {
-//        super.onDetach()
-//        Log.d(TAG, "edit_frag_onDetach")
-//    }
+
 
 
     companion object {

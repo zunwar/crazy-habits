@@ -1,20 +1,38 @@
 package com.example.crazy_habits.viewmodels
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.crazy_habits.App
+import com.example.crazy_habits.Priority
 import com.example.crazy_habits.SingleLiveEvent
 import com.example.crazy_habits.database.habit.HabitDao
 import com.example.crazy_habits.database.habit.HabitEntity
 import com.example.crazy_habits.models.HabitModel
+import java.util.*
 
 class HabitEditViewModel(habitDao: HabitDao) : ViewModel() {
-    private  val model : HabitModel = HabitModel(habitDao)
-    private var _habitEditFragmentCloseClicked = SingleLiveEvent<Boolean>()
-    val habitEditFragmentAddClicked = _habitEditFragmentCloseClicked
+    private val model: HabitModel = HabitModel(habitDao)
+    private var _closeFragment = SingleLiveEvent<Boolean>()
+    val closeFragment = _closeFragment
+    private var _navigateToColorFragment = SingleLiveEvent<Boolean>()
+    val navigateToColorFragment = _navigateToColorFragment
+    private var _navigateToColorFragmentWithBundle = SingleLiveEvent<Boolean>()
+    val navigateToColorFragmentWithBundle = _navigateToColorFragmentWithBundle
+
+    private var _isEditable: Boolean = false
+    val isEditable get() = _isEditable
+    private var _selectedPriority: Priority = Priority.Middle
+    val selectedPriority get() = _selectedPriority
+    private var _colorHabit = -1
+    val colorHabit get() = _colorHabit
+    private var idHabit = ""
+
+
+
 
     init {
         Log.d("MVVM", "HabitEditViewModel created")
@@ -30,8 +48,28 @@ class HabitEditViewModel(habitDao: HabitDao) : ViewModel() {
         closeScreen()
     }
 
-    fun getHabitToEdit(id: String): HabitEntity {
+    fun getHabitToEdit(id: String): LiveData<HabitEntity> {
+        _isEditable = true
+        idHabit = id
         return model.getHabitToEdit(id)
+    }
+
+    fun selectPriority(priority: Priority){
+        _selectedPriority=priority
+    }
+
+    fun setColorOfHabit(color: Int){
+        _colorHabit = color
+    }
+
+    fun getId(): String{
+        return if (isEditable) idHabit
+        else UUID.randomUUID().toString()
+    }
+
+    fun toColorFragmentClicked(){
+        if (isEditable) _navigateToColorFragment.value = true
+        else _navigateToColorFragmentWithBundle.value = true
     }
 
     override fun onCleared() {
@@ -40,8 +78,7 @@ class HabitEditViewModel(habitDao: HabitDao) : ViewModel() {
     }
 
     private fun closeScreen() {
-        model.habitEditFragmentCloseClicked = true
-        _habitEditFragmentCloseClicked.value = true
+        _closeFragment.value = true
     }
 
     companion object {

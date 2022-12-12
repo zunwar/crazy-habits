@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -19,6 +20,7 @@ import android.widget.LinearLayout
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.example.crazy_habits.FirstActivity.Companion.TAG
 import com.example.crazy_habits.Habit
 import com.example.crazy_habits.ShapeColorBox
 import com.example.crazy_habits.databinding.FragmentColorHabitBinding
@@ -33,7 +35,7 @@ class ColorHabitFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments?.getParcelable<Habit>(COLLECTED_HABIT) != null) {
+        if (!requireArguments().isEmpty) {
             arguments?.let {
                 val habit = it.getParcelable<Habit>(COLLECTED_HABIT)!!
                 partHabitNumberOfBox = if (colorViewModel.isNew(habit.id)) {

@@ -121,9 +121,7 @@ class ViewPagerFragment :  Fragment(R.layout.fragment_view_pager) {
 
     private fun fabClick() {
         binding.FAB.setOnClickListener {
-            val result = Bundle()
-            result.putString(FAB_BUTTON_CLICK, "clicked")
-            it.findNavController().navigate(R.id.action_viewPagerFragment_to_habitEditFragment, result)
+            it.findNavController().navigate(R.id.action_viewPagerFragment_to_habitEditFragment)
         }
     }
 
