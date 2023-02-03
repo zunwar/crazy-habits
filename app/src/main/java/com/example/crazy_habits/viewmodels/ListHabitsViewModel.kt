@@ -5,63 +5,66 @@ import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.crazy_habits.App
 import com.example.crazy_habits.FirstActivity.Companion.TAG
+import com.example.crazy_habits.Type
 import com.example.crazy_habits.database.habit.HabitDao
 import com.example.crazy_habits.database.habit.HabitEntity
+import com.example.crazy_habits.database.habit.NameToFilter
+import com.example.crazy_habits.database.habit.NoName
 import com.example.crazy_habits.models.HabitModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ListHabitsViewModel(habitDao: HabitDao) : ViewModel() {
-    private  val model : HabitModel = HabitModel(habitDao)
-    private var _goodHabits : MutableLiveData<LiveData<List<HabitEntity>>> = MutableLiveData(model.getGoodHabits())
-    val goodHabits: LiveData<LiveData<List<HabitEntity>>> = _goodHabits
-    private val _badHabits : MutableLiveData<LiveData<List<HabitEntity>>> = MutableLiveData(model.getBadHabits())
-    val badHabits : LiveData<LiveData<List<HabitEntity>>> = _badHabits
+    private val model: HabitModel = HabitModel(habitDao)
+    private val nameToFilter = MutableStateFlow<NameToFilter>(NoName)
 
     init {
-        Log.d("MVVM", "ListHabitsViewModel created")
+        Log.d(TAG, "ListHabitsViewModel created")
     }
 
-    fun filterHabitsByName(name: String) {
-        if (name.isNotEmpty()) {
-            _goodHabits.postValue(
-                Transformations.map(model.getGoodHabits()) { list ->
-                    list
-                        .filter { habit ->
-                            name in habit.name
-                        }
-                }
-            )
-        } else if (name.isBlank()) {
-            _goodHabits.postValue(model.getGoodHabits())
+    fun getRightHabits(boolean: Boolean): LiveData<List<HabitEntity>> {
+        return when (boolean) {
+            false -> getHabitsByType(Type.Good)
+            true -> getHabitsByType(Type.Bad)
         }
-        if (name.isNotEmpty()) {
-            _badHabits.postValue(
-                Transformations.map(model.getBadHabits()) { list ->
-                    list
-                        .filter { habit ->
-                            name in habit.name
-                        }
-                }
-            )
-        } else if (name.isBlank()) {
-            _badHabits.postValue(model.getBadHabits())
-        }
+    }
+
+    private fun getHabitsByType(type: Type): LiveData<List<HabitEntity>> {
+        return nameToFilter.flatMapLatest { name ->
+            if (name == NoName) {
+                model.getHabitsByType(type)
+            } else {
+                model.searchHabitsByNameAndType(name.string, type)
+            }
+        }.asLiveData()
+    }
+
+    fun updateNameToFilter(name: String) {
+        nameToFilter.value = NameToFilter(name)
     }
 
     override fun onCleared() {
-        Log.d("MVVM", "ListHabitsViewModel dead")
+        Log.d(TAG, "ListHabitsViewModel dead")
         super.onCleared()
     }
 
+    fun deleteClickedHabit(idd: String) {
+        viewModelScope.launch {
+            model.deleteHabitById(idd)
+        }
+    }
 
     companion object {
-
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras
             ): T {
-                val app = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
+                val app =
+                    checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
                 return ListHabitsViewModel(
                     (app as App).database.habitDao()
                 ) as T

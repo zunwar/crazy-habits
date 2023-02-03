@@ -1,71 +1,96 @@
 package com.example.crazy_habits.viewmodels
 
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.example.crazy_habits.App
+import com.example.crazy_habits.ColorBoxNum
 import com.example.crazy_habits.FirstActivity.Companion.TAG
-import com.example.crazy_habits.Habit
-import com.example.crazy_habits.fragments.ColorHabitFragment
-import com.example.crazy_habits.fragments.HabitEditFragment
+import com.example.crazy_habits.SingleLiveEvent
+import com.example.crazy_habits.database.habit.ColorBoxDao
+import com.example.crazy_habits.database.habit.ColorBoxEntity
 import com.example.crazy_habits.models.ColorModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
-class ColorViewModel(private val idHabit: String) : ViewModel() {
-    private val colorModel = ColorModel()
+class ColorViewModel(colorBoxDao: ColorBoxDao) : ViewModel() {
+    private val model = ColorModel(colorBoxDao)
+    private var _closeColorFragment = SingleLiveEvent<Boolean>()
+    val closeColorFragment = _closeColorFragment
+    private var id = ""
+    private val _colorBoxViewList: MutableList<View> = mutableListOf()
+    val colorBoxViewList: List<View> = _colorBoxViewList
 
-    private val _listPartHabit: MutableLiveData<List<String>> = MutableLiveData<List<String>>()
-    val listPartHabit : LiveData<List<String>> = _listPartHabit
-
-    init{
-        load()
-        Log.d(TAG, "initColorViewModel: $idHabit")
+    init {
+        Log.d(TAG, "initColorViewModel")
     }
 
-    private fun load() {
-        _listPartHabit.postValue(getList())
+    fun setId(habitId: String) {
+        id = habitId
     }
 
-    fun saveData(list: List<String>) {
-        colorModel.saveListToFile(list)
-        load()
+    private fun addNewColorBox(isNew: Boolean) {
+        if (isNew) {
+            val cbe = ColorBoxEntity(
+                id,
+                -1,
+                ColorBoxNum.One
+            )
+            save(cbe)
+        }
     }
 
-    private fun getList(): List<String> {
-        return colorModel.getListFromFile()
+    fun saveIfNew() {
+        viewModelScope.launch {
+            model.getAllColorBoxes().collect { list ->
+                val isNew = (list.find { it.id == id }) == null
+                addNewColorBox(isNew)
+            }
+        }
     }
 
-    fun getNumberOfPressedBox(): Int {
-        val list = getList()
-        val idIndex = list.indexOf(idHabit)
-        return list[idIndex + 2].toInt()
+    fun getColorBox(): Flow<ColorBoxEntity> {
+        return model.getColorBoxEntity(id)
     }
 
-    fun getColorOfPressedBox() : Int {
-        colorModel.getListFromFile()
-        val list = getList()
-        val idIndex = list.indexOf(idHabit)
-        return list[idIndex + 1].toInt()
+    fun holdColorBoxesCoor(colorBoxView: View) {
+        _colorBoxViewList.add(colorBoxView)
     }
 
-    fun isNew(id: String): Boolean {
-        return colorModel.isNew(id)
+    private fun save(cbe: ColorBoxEntity) {
+        viewModelScope.launch {
+            model.add(cbe)
+        }
+    }
+
+    fun saveSelectedColorAndNum(color: Int, num: Int) {
+        val cbe = ColorBoxEntity(
+            id = id,
+            color = color,
+            colorBoxNum = ColorBoxNum.values()[num]
+        )
+        save(cbe)
+    }
+
+    fun closeColorFragment() {
+        _closeColorFragment.postValue(true)
     }
 
     companion object {
-
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras
             ): T {
-                val frag = checkNotNull(extras[VIEW_MODEL_STORE_OWNER_KEY])
+                val app =
+                    checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
                 return ColorViewModel(
-                    (frag as ColorHabitFragment).requireArguments().getParcelable<Habit>(HabitEditFragment.COLLECTED_HABIT)!!.id
+                    (app as App).database.colorBoxDao()
                 ) as T
             }
         }
     }
-
-
 
 }

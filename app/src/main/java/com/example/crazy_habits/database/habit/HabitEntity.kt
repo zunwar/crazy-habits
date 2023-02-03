@@ -15,5 +15,10 @@ data class HabitEntity(
     @ColumnInfo(name = "number") val number: String,
     @ColumnInfo(name = "period") val period: String,
     @ColumnInfo(name = "color") val colorHabit: Int,
+//    @ColumnInfo(name = "colorBoxNum") val colorBoxNum: ColorBox,
     @PrimaryKey val id: String
 )
+
+@JvmInline
+value class NameToFilter(val string: String)
+val NoName = NameToFilter("")

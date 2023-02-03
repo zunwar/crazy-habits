@@ -119,7 +119,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintBottom_toBottomOf="@id/priority"
-                app:layout_constraintHorizontal_bias="0.78"
+                app:layout_constraintHorizontal_bias="0.74"
                 android:alpha="0.5"
                 android:background="#41757C" />
 

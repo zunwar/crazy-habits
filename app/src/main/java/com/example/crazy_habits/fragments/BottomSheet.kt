@@ -23,7 +23,7 @@ class BottomSheet : BottomSheetDialogFragment() {
     private var _binding: BottomSheetBinding? = null
     private val binding get() = _binding!!
     lateinit var beh: BottomSheetBehavior<*>
-    private val listHabitsViewModel: ListHabitsViewModel by activityViewModels{ListHabitsViewModel.Factory}
+    private val listHabitsViewModel: ListHabitsViewModel by activityViewModels { ListHabitsViewModel.Factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +48,7 @@ class BottomSheet : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.filterButton.setOnClickListener {
-            listHabitsViewModel.filterHabitsByName(binding.filterTextSet.text.toString())
+            listHabitsViewModel.updateNameToFilter(binding.filterTextSet.text.toString())
         }
 
         binding.bottomSheetRoot.setOnClickListener {

@@ -1,17 +1,16 @@
 package com.example.crazy_habits.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.example.crazy_habits.App
-import com.example.crazy_habits.Priority
-import com.example.crazy_habits.SingleLiveEvent
+import com.example.crazy_habits.*
+import com.example.crazy_habits.FirstActivity.Companion.TAG
 import com.example.crazy_habits.database.habit.HabitDao
 import com.example.crazy_habits.database.habit.HabitEntity
 import com.example.crazy_habits.models.HabitModel
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.util.*
 
 class HabitEditViewModel(habitDao: HabitDao) : ViewModel() {
@@ -20,9 +19,6 @@ class HabitEditViewModel(habitDao: HabitDao) : ViewModel() {
     val closeFragment = _closeFragment
     private var _navigateToColorFragment = SingleLiveEvent<Boolean>()
     val navigateToColorFragment = _navigateToColorFragment
-    private var _navigateToColorFragmentWithBundle = SingleLiveEvent<Boolean>()
-    val navigateToColorFragmentWithBundle = _navigateToColorFragmentWithBundle
-
     private var _isEditable: Boolean = false
     val isEditable get() = _isEditable
     private var _selectedPriority: Priority = Priority.Middle
@@ -30,59 +26,86 @@ class HabitEditViewModel(habitDao: HabitDao) : ViewModel() {
     private var _colorHabit = -1
     val colorHabit get() = _colorHabit
     private var idHabit = ""
-
-
-
+    private var colorChange: Boolean = false
 
     init {
-        Log.d("MVVM", "HabitEditViewModel created")
+        Log.d(TAG, "HabitEditViewModel created")
     }
 
-    fun addHabit(habit: HabitEntity) {
-        model.addHabit(habit)
-        closeScreen()
+    private fun addHabit(habit: HabitEntity) {
+        viewModelScope.launch {
+            model.addHabit(habit)
+        }
     }
 
-    fun changeHabit(habit: HabitEntity) {
-        model.changeHabit(habit)
-        closeScreen()
+    private fun changeHabit(habit: HabitEntity) {
+        viewModelScope.launch {
+            model.changeHabit(habit)
+        }
     }
 
-    fun getHabitToEdit(id: String): LiveData<HabitEntity> {
+    fun saveHabit(habit: HabitEntity) {
+        if (_isEditable) {
+            changeHabit(habit)
+        } else {
+            addHabit(habit)
+        }
+    }
+
+    fun getHabitToEditFlow(id: String): Flow<HabitEntity> {
         _isEditable = true
         idHabit = id
         return model.getHabitToEdit(id)
     }
 
-    fun selectPriority(priority: Priority){
-        _selectedPriority=priority
+    fun selectPriority(priority: Priority) {
+        _selectedPriority = priority
     }
 
-    fun setColorOfHabit(color: Int){
+    fun setColorFromColorFragment(color: Int) {
+        colorChange = true
         _colorHabit = color
     }
 
-    fun getId(): String{
-        return if (isEditable) idHabit
-        else UUID.randomUUID().toString()
+    fun setColorOfHabit(color: Int) {
+        if (!colorChange) _colorHabit = color
     }
 
-    fun toColorFragmentClicked(){
-        if (isEditable) _navigateToColorFragment.value = true
-        else _navigateToColorFragmentWithBundle.value = true
+    fun getId(): String {
+        return if (isEditable) idHabit
+        else {
+            idHabit = UUID.randomUUID().toString()
+            idHabit
+        }
+    }
+
+    fun toColorFragmentClicked() {
+        _navigateToColorFragment.value = true
     }
 
     override fun onCleared() {
-        Log.d("MVVM", "HabitEditViewModel dead")
+        Log.d(TAG, "HabitEditViewModel dead")
         super.onCleared()
     }
 
-    private fun closeScreen() {
+    fun closeScreen() {
         _closeFragment.value = true
     }
 
-    companion object {
+    fun deleteHabitById() {
+        viewModelScope.launch {
+            model.deleteHabitById(idHabit)
+        }
+    }
 
+    fun setRightTabItem(type: Type): Int {
+        return when (type) {
+            Type.Good -> 0
+            Type.Bad -> 1
+        }
+    }
+
+    companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(

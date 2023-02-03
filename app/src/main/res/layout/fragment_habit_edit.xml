@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="top"
                 android:inputType="text"
-                android:maxLength="28"
+                android:maxLength="25"
                 android:paddingStart="0dp"
                 android:paddingEnd="0dp">
 

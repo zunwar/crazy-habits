@@ -1,47 +1,40 @@
 package com.example.crazy_habits.models
 
 import android.util.Log
-import androidx.lifecycle.LiveData
+import com.example.crazy_habits.FirstActivity.Companion.TAG
 import com.example.crazy_habits.Type
 import com.example.crazy_habits.database.habit.HabitDao
 import com.example.crazy_habits.database.habit.HabitEntity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
 
 class HabitModel(private val habitDao: HabitDao) {
 
     init {
-        Log.d("MVVM", "HabitModel created")
+        Log.d(TAG, "HabitModel created")
     }
 
-
-    fun addHabit(habit: HabitEntity) {
-        GlobalScope.launch(Dispatchers.IO) {
-            habitDao.insertAll(habit)
-        }
+    suspend fun addHabit(habit: HabitEntity) {
+        habitDao.insertAll(habit)
     }
 
-    fun getGoodHabits() : LiveData<List<HabitEntity>> {
-        return habitDao.getHabitsByType(type = Type.Good)
+    fun getHabitsByType(type: Type): Flow<List<HabitEntity>> {
+        return habitDao.getHabitsByType(type)
     }
 
-    fun getBadHabits() : LiveData<List<HabitEntity>> {
-        return habitDao.getHabitsByType(type = Type.Bad)
+    suspend fun changeHabit(habit: HabitEntity) {
+        habitDao.updateHabit(habit)
     }
 
-    fun changeHabit(habit: HabitEntity) {
-        GlobalScope.launch(Dispatchers.IO) {
-            habitDao.updateHabit(habit)
-        }
-    }
-
-    fun getHabitToEdit(id: String) : LiveData<HabitEntity> {
+    fun getHabitToEdit(id: String): Flow<HabitEntity> {
         return habitDao.getHabitById(id)
     }
 
-    fun getHabitByName(habit: HabitEntity): LiveData<List<HabitEntity>> {
-        return habitDao.getHabitsByName(habit.name)
+    fun searchHabitsByNameAndType(n: String, t: Type): Flow<List<HabitEntity>> {
+        return habitDao.searchHabitsByNameAndType(n, t)
+    }
+
+    suspend fun deleteHabitById(id: String) {
+        habitDao.deleteById(id)
     }
 
 }

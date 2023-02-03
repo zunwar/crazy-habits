@@ -1,38 +1,22 @@
 package com.example.crazy_habits.models
 
-import com.example.crazy_habits.utils.FileStreams
+import com.example.crazy_habits.ColorBox
+import com.example.crazy_habits.database.habit.ColorBoxDao
+import com.example.crazy_habits.database.habit.ColorBoxEntity
+import kotlinx.coroutines.flow.Flow
 
-class ColorModel {
+class ColorModel(private val colorBoxDao: ColorBoxDao) {
 
-    private val fileStr = FileStreams.getFileStreams()
-    private var _listPartHabit : MutableList<String> = mutableListOf()
-    private val listFileName =  "ColorList"
-
-    fun saveListToFile(list: List<String>) {
-        _listPartHabit = getListFromFile()
-        if (_listPartHabit.contains(list[0])){
-            val idIndex = _listPartHabit.indexOf(list[0])
-            _listPartHabit[idIndex+1] = list[1]
-            _listPartHabit[idIndex+2] = list[2]
-            fileStr.saveListToFile(listFileName, _listPartHabit)
-        } else {
-            if (_listPartHabit.isEmpty() || _listPartHabit[0] == "") {
-                _listPartHabit = mutableListOf(list[0], list[1], list[2])
-            }
-            else {
-                _listPartHabit.addAll(list)
-            }
-            fileStr.saveListToFile(listFileName, _listPartHabit)
-        }
+    suspend fun add(cb: ColorBoxEntity) {
+        colorBoxDao.insertAll(cb)
     }
 
-    fun getListFromFile () : MutableList<String> {
-        return fileStr.getListFromFile(listFileName).toMutableList()
+    fun getColorBoxEntity(habitId: String): Flow<ColorBoxEntity> {
+        return colorBoxDao.getColorBoxById(habitId)
     }
 
-    fun isNew(idHabit: String): Boolean {
-        _listPartHabit = getListFromFile()
-       return !_listPartHabit.contains(idHabit)
+    fun getAllColorBoxes(): Flow<List<ColorBox>> {
+        return colorBoxDao.getAllColorBoxes()
     }
 
 }
