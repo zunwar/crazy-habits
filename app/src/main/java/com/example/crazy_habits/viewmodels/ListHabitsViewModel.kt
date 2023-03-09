@@ -24,8 +24,8 @@ class ListHabitsViewModel(habitDao: HabitDao) : ViewModel() {
         Log.d(TAG, "ListHabitsViewModel created")
     }
 
-    fun getRightHabits(boolean: Boolean): LiveData<List<HabitEntity>> {
-        return when (boolean) {
+    fun getRightHabits(badOrGood: Boolean): LiveData<List<HabitEntity>> {
+        return when (badOrGood) {
             false -> getHabitsByType(Type.Good)
             true -> getHabitsByType(Type.Bad)
         }

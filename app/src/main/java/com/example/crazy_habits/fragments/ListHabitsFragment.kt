@@ -7,9 +7,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.crazy_habits.FirstActivity.Companion.TAG
@@ -19,6 +19,8 @@ import com.example.crazy_habits.databinding.FragmentListHabitsBinding
 import com.example.crazy_habits.fragments.HabitEditFragment.Companion.EDIT_BOOL
 import com.example.crazy_habits.fragments.HabitEditFragment.Companion.HABIT_ADD
 import com.example.crazy_habits.viewmodels.ListHabitsViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
@@ -33,8 +35,8 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "List_frag_onCreate")
-        if (arguments?.getBoolean(BAD_INSTANCE) != null) {
-            isBadInstance = true
+        arguments?.let {
+            isBadInstance = it.getBoolean(BAD_INSTANCE)
         }
     }
 
@@ -51,28 +53,27 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "List_frag_onViewCreated")
 
-        setBackgroundForFragments()
         scrollToPositionWhenAdded()
         initRecyclerView()
+        setBackgroundForFragments()
     }
 
     private fun scrollToPositionWhenAdded() {
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Bundle>(HABIT_ADD)
             ?.observe(viewLifecycleOwner) { result ->
                 if (!result.getBoolean(EDIT_BOOL)) {
-                    Handler(Looper.getMainLooper()).postDelayed({
+                    lifecycleScope.launch {
+                        delay(100)
                         val posToInsert = habitAdapter.itemCount + 1
                         binding.recyclerView.smoothScrollToPosition(posToInsert)
-                    }, 200)
+                    }
                 }
             }
     }
 
     private fun setBackgroundForFragments() {
-        binding.constrListHabits.doOnLayout {
             if (isBadInstance) binding.constrListHabits.setBackgroundResource(R.color.badHabit)
             else binding.constrListHabits.setBackgroundResource(R.color.goodHabit)
-        }
     }
 
     private fun initRecyclerView() {
@@ -88,15 +89,48 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
             }
 //            listHabitsViewModel.deleteClickedHabit(it.id)
         }
-        habitAdapter = binding.recyclerView.adapter as HabitAdapter
-
         subscribeUi()
+//        (binding.recyclerView.adapter as HabitAdapter).registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+//            override fun onItemRangeInserted(
+//                positionStart: Int,
+//                itemCount: Int
+//            ) {
+//
+//            }
+//
+//            override fun onChanged() {
+//                super.onChanged()
+//            }
+//
+//            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+//                super.onItemRangeChanged(positionStart, itemCount)
+//            }
+//
+//            override fun onItemRangeRemoved(
+//                positionStart: Int,
+//                itemCount: Int
+//            ) {
+//
+//            }
+//        }
+//        )
     }
 
+//    fun habitClicked(){
+//        if (findNavController().currentDestination!!.id == R.id.viewPagerFragment) {
+//            val action =
+//                ViewPagerFragmentDirections.actionViewPagerFragmentToHabitEditFragment(
+//                    idHabit = it.id
+//                )
+//            findNavController().navigate(action)
+//        }
+////            listHabitsViewModel.deleteClickedHabit(it.id)
+//    }
+
     private fun subscribeUi() {
-        val listHabits = listHabitsViewModel.getRightHabits(boolean = isBadInstance)
+        val listHabits = listHabitsViewModel.getRightHabits(badOrGood = isBadInstance)
         listHabits.observe(viewLifecycleOwner) { list ->
-            habitAdapter.submitList(list)
+            (binding.recyclerView.adapter as HabitAdapter).submitList(list)
         }
     }
 
@@ -115,10 +149,10 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
         const val HABIT_TO_EDIT_ID = "idHabit"
         private const val BAD_INSTANCE = "BadInstance"
 
-        fun newInstance(bad: Boolean) =
+        fun newInstance(isBad: Boolean) =
             ListHabitsFragment().apply {
                 arguments = Bundle().apply {
-                    putBoolean(BAD_INSTANCE, bad)
+                    putBoolean(BAD_INSTANCE, isBad)
                 }
             }
     }

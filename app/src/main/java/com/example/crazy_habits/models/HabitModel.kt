@@ -29,8 +29,8 @@ class HabitModel(private val habitDao: HabitDao) {
         return habitDao.getHabitById(id)
     }
 
-    fun searchHabitsByNameAndType(n: String, t: Type): Flow<List<HabitEntity>> {
-        return habitDao.searchHabitsByNameAndType(n, t)
+    fun searchHabitsByNameAndType(name: String, type: Type): Flow<List<HabitEntity>> {
+        return habitDao.searchHabitsByNameAndType(name, type)
     }
 
     suspend fun deleteHabitById(id: String) {

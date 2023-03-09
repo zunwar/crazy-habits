@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import com.example.crazy_habits.FirstActivity.Companion.TAG
 import com.example.crazy_habits.R
 import com.example.crazy_habits.adapters.ViewPagerAdapter
 import com.example.crazy_habits.databinding.FragmentViewPagerBinding
@@ -36,8 +37,8 @@ class ViewPagerFragment :  Fragment(R.layout.fragment_view_pager) {
         _binding = FragmentViewPagerBinding.inflate(inflater, container, false)
 
         val fragmentList = arrayListOf<Fragment>(
-            ListHabitsFragment(),
-            ListHabitsFragment.newInstance(bad = true)
+            ListHabitsFragment.newInstance(isBad = false),
+            ListHabitsFragment.newInstance(isBad = true)
         )
 
         val adapter = ViewPagerAdapter(

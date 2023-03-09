@@ -10,67 +10,68 @@ import com.example.crazy_habits.FirstActivity.Companion.TAG
 import com.example.crazy_habits.SingleLiveEvent
 import com.example.crazy_habits.database.habit.ColorBoxDao
 import com.example.crazy_habits.database.habit.ColorBoxEntity
+import com.example.crazy_habits.fragments.ColorHabitFragment
+import com.example.crazy_habits.fragments.HabitEditFragment
 import com.example.crazy_habits.models.ColorModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-class ColorViewModel(colorBoxDao: ColorBoxDao) : ViewModel() {
+class ColorViewModel(colorBoxDao: ColorBoxDao, private val id: String) : ViewModel() {
     private val model = ColorModel(colorBoxDao)
     private var _closeColorFragment = SingleLiveEvent<Boolean>()
     val closeColorFragment = _closeColorFragment
-    private var id = ""
     private val _colorBoxViewList: MutableList<View> = mutableListOf()
     val colorBoxViewList: List<View> = _colorBoxViewList
+    private var _colorBoxEntity: MutableLiveData<ColorBoxEntity> = MutableLiveData()
+    val colorBoxEntity: MutableLiveData<ColorBoxEntity> = _colorBoxEntity
 
     init {
         Log.d(TAG, "initColorViewModel")
     }
 
-    fun setId(habitId: String) {
-        id = habitId
-    }
-
-    private fun addNewColorBox(isNew: Boolean) {
-        if (isNew) {
-            val cbe = ColorBoxEntity(
-                id,
-                -1,
-                ColorBoxNum.One
-            )
-            save(cbe)
-        }
+    private suspend fun addNewColorBox() {
+        val cbe = ColorBoxEntity(
+            id,
+            -1,
+            ColorBoxNum.One
+        )
+        save(cbe)
     }
 
     fun saveIfNew() {
         viewModelScope.launch {
             model.getAllColorBoxes().collect { list ->
-                val isNew = (list.find { it.id == id }) == null
-                addNewColorBox(isNew)
+                if ((list.find { it.id == id }) == null) {
+                    addNewColorBox()
+                } else {
+                    getColorBox()
+                }
             }
         }
     }
 
-    fun getColorBox(): Flow<ColorBoxEntity> {
-        return model.getColorBoxEntity(id)
+    private suspend fun getColorBox() {
+        model.getColorBoxEntity(id).collect {
+            _colorBoxEntity.postValue(it)
+        }
     }
 
     fun holdColorBoxesCoor(colorBoxView: View) {
         _colorBoxViewList.add(colorBoxView)
     }
 
-    private fun save(cbe: ColorBoxEntity) {
-        viewModelScope.launch {
-            model.add(cbe)
-        }
+    private suspend fun save(cbe: ColorBoxEntity) {
+        model.add(cbe)
     }
 
     fun saveSelectedColorAndNum(color: Int, num: Int) {
-        val cbe = ColorBoxEntity(
-            id = id,
-            color = color,
-            colorBoxNum = ColorBoxNum.values()[num]
-        )
-        save(cbe)
+        viewModelScope.launch {
+            val cbe = ColorBoxEntity(
+                id = id,
+                color = color,
+                colorBoxNum = ColorBoxNum.values()[num]
+            )
+            save(cbe)
+        }
     }
 
     fun closeColorFragment() {
@@ -86,8 +87,12 @@ class ColorViewModel(colorBoxDao: ColorBoxDao) : ViewModel() {
             ): T {
                 val app =
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
+                val frag = checkNotNull(extras[VIEW_MODEL_STORE_OWNER_KEY])
                 return ColorViewModel(
-                    (app as App).database.colorBoxDao()
+                    (app as App).database.colorBoxDao(),
+                    (frag as ColorHabitFragment).requireArguments().let {
+                        it.getString(HabitEditFragment.COLLECTED_HABIT)!!
+                    }
                 ) as T
             }
         }

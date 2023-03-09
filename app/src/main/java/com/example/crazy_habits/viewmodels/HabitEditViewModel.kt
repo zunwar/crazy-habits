@@ -8,33 +8,50 @@ import com.example.crazy_habits.*
 import com.example.crazy_habits.FirstActivity.Companion.TAG
 import com.example.crazy_habits.database.habit.HabitDao
 import com.example.crazy_habits.database.habit.HabitEntity
+import com.example.crazy_habits.fragments.HabitEditFragment
+import com.example.crazy_habits.fragments.ListHabitsFragment.Companion.HABIT_TO_EDIT_ID
 import com.example.crazy_habits.models.HabitModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
 
-class HabitEditViewModel(habitDao: HabitDao) : ViewModel() {
+class HabitEditViewModel(
+    habitDao: HabitDao,
+    val isEditable: Boolean,
+    private var idHabit: String
+) : ViewModel() {
+    private val _displayOldHabit: MutableLiveData<HabitEntity> = MutableLiveData()
+    val displayOldHabit: LiveData<HabitEntity> = _displayOldHabit
     private val model: HabitModel = HabitModel(habitDao)
     private var _closeFragment = SingleLiveEvent<Boolean>()
     val closeFragment = _closeFragment
     private var _navigateToColorFragment = SingleLiveEvent<Boolean>()
     val navigateToColorFragment = _navigateToColorFragment
-    private var _isEditable: Boolean = false
-    val isEditable get() = _isEditable
     private var _selectedPriority: Priority = Priority.Middle
     val selectedPriority get() = _selectedPriority
     private var _colorHabit = -1
     val colorHabit get() = _colorHabit
-    private var idHabit = ""
     private var colorChange: Boolean = false
 
     init {
         Log.d(TAG, "HabitEditViewModel created")
+        displayOldHabit()
     }
 
     private fun addHabit(habit: HabitEntity) {
         viewModelScope.launch {
             model.addHabit(habit)
+        }
+    }
+
+
+    private fun displayOldHabit() {
+        if (isEditable) {
+            viewModelScope.launch {
+                model.getHabitToEdit(idHabit).collect{
+                    _displayOldHabit.postValue(it)
+                }
+            }
         }
     }
 
@@ -45,17 +62,12 @@ class HabitEditViewModel(habitDao: HabitDao) : ViewModel() {
     }
 
     fun saveHabit(habit: HabitEntity) {
-        if (_isEditable) {
+        if (isEditable) {
             changeHabit(habit)
         } else {
             addHabit(habit)
         }
-    }
-
-    fun getHabitToEditFlow(id: String): Flow<HabitEntity> {
-        _isEditable = true
-        idHabit = id
-        return model.getHabitToEdit(id)
+        closeScreen()
     }
 
     fun selectPriority(priority: Priority) {
@@ -72,11 +84,7 @@ class HabitEditViewModel(habitDao: HabitDao) : ViewModel() {
     }
 
     fun getId(): String {
-        return if (isEditable) idHabit
-        else {
-            idHabit = UUID.randomUUID().toString()
-            idHabit
-        }
+        return idHabit
     }
 
     fun toColorFragmentClicked() {
@@ -88,7 +96,7 @@ class HabitEditViewModel(habitDao: HabitDao) : ViewModel() {
         super.onCleared()
     }
 
-    fun closeScreen() {
+    private fun closeScreen() {
         _closeFragment.value = true
     }
 
@@ -113,11 +121,15 @@ class HabitEditViewModel(habitDao: HabitDao) : ViewModel() {
                 extras: CreationExtras
             ): T {
                 val app = checkNotNull(extras[APPLICATION_KEY])
+                val frag = checkNotNull(extras[VIEW_MODEL_STORE_OWNER_KEY])
+                val isEditable = !(frag as HabitEditFragment).requireArguments().isEmpty
+                val id = if (isEditable) frag.requireArguments().getString(HABIT_TO_EDIT_ID)!! else UUID.randomUUID().toString()
                 return HabitEditViewModel(
-                    (app as App).database.habitDao()
+                    (app as App).database.habitDao(),
+                    isEditable,
+                    id
                 ) as T
             }
         }
     }
-
 }

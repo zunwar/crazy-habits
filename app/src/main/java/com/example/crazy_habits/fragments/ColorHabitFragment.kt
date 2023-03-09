@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -18,28 +19,21 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.crazy_habits.ColorBoxNum
+import com.example.crazy_habits.FirstActivity.Companion.TAG
 import com.example.crazy_habits.ShapeColorBox
 import com.example.crazy_habits.databinding.FragmentColorHabitBinding
-import com.example.crazy_habits.fragments.HabitEditFragment.Companion.COLLECTED_HABIT
 import com.example.crazy_habits.viewmodels.ColorViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class ColorHabitFragment : Fragment() {
     private var _binding: FragmentColorHabitBinding? = null
     private val binding get() = _binding!!
-    private val colorViewModel: ColorViewModel by viewModels{ColorViewModel.Factory}
+    private val colorViewModel: ColorViewModel by viewModels { ColorViewModel.Factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-            arguments?.let {
-                val habitId = it.getString(COLLECTED_HABIT)
-                colorViewModel.setId(habitId!!)
-                colorViewModel.saveIfNew()
-            }
+        Log.d(TAG, "ColorHabitFragment---onCreate ")
     }
 
     override fun onCreateView(
@@ -52,45 +46,42 @@ class ColorHabitFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        colorViewModel.saveIfNew()
         createColorBoxes(context, binding.colorLinear)
         displaySelectedColorBox()
         saveColorAndNumberOfSelected(colorViewModel.colorBoxViewList)
         setColorButton()
+        observeClose()
+    }
+
+    private fun observeClose() {
+        colorViewModel.closeColorFragment.observe(viewLifecycleOwner) {
+            findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                COLOR_HABIT,
+                Bundle().apply { putInt(COLOR_HABIT, colorViewModel.colorBoxEntity.value!!.color) })
+            findNavController().popBackStack()
+        }
     }
 
     private fun setColorButton() {
         //передаем выбранный цвет обратно в listHabitsFragment
         binding.setColorButton.setOnClickListener {
             colorViewModel.closeColorFragment()
-            colorViewModel.closeColorFragment.observe(viewLifecycleOwner){
-                lifecycleScope.launch {
-                    colorViewModel.getColorBox().collect {
-                        findNavController().previousBackStackEntry?.savedStateHandle?.set(
-                            COLOR_HABIT,
-                            Bundle().apply { putInt(COLOR_HABIT, it.color) })
-                        findNavController().popBackStack()
-                    }
-                }
-            }
         }
     }
 
     private fun displaySelectedColorBox() {
         val screenWidth = requireContext().resources.displayMetrics.widthPixels
-        lifecycleScope.launch {
-            delay(100)
-            colorViewModel.getColorBox().collect {
-                binding.chosenColor.background =
-                    ShapeColorBox(5, it.color)
-                binding.colorCode.text = convertToRGBcode(it.color)
-                binding.hsv.smoothScrollTo(
-                    getCenterColor(colorViewModel.colorBoxViewList[it.colorBoxNum.id - 1]).x - screenWidth / 2,
-                    0
-                )
-            }
+        colorViewModel.colorBoxEntity.observe(viewLifecycleOwner) {
+            binding.chosenColor.background =
+                ShapeColorBox(5, it.color)
+            binding.colorCode.text = convertToRGBcode(it.color)
+            binding.hsv.smoothScrollTo(
+                getCenterColor(colorViewModel.colorBoxViewList[it.colorBoxNum.id - 1]).x - screenWidth / 2,
+                0
+            )
         }
     }
-
 
     private fun saveColorAndNumberOfSelected(colorBoxesList: List<View>) {
         var cbCenter: Point
@@ -100,10 +91,10 @@ class ColorHabitFragment : Fragment() {
         binding.colorLinear.doOnLayout {
             binding.colorLinear.background = linearGradientDrawable()
             val bitmap = convertToBitmap(backgroundView, it.measuredWidth, it.measuredHeight)
-            repeat(ColorBoxNum.Sixteen.id){ i ->
+            repeat(ColorBoxNum.Sixteen.id) { i ->
                 cbCenter = getCenterColor(colorBoxesList[i])
                 backgroundColorBox(bitmap, colorBoxesList[i], cbCenter, colorOfBox)
-                saveColorAndNumSelected(colorBoxesList[i], i , colorOfBox[i] )
+                saveColorAndNumSelected(colorBoxesList[i], i, colorOfBox[i])
             }
         }
     }
@@ -115,7 +106,7 @@ class ColorHabitFragment : Fragment() {
     }
 
     private fun createColorBoxes(ct: Context?, linear1: LinearLayout) {
-        repeat(ColorBoxNum.Sixteen.id){
+        repeat(ColorBoxNum.Sixteen.id) {
             val colorBoxView = View(ct)
             colorBoxView.layoutParams = LinearLayout.LayoutParams(
                 widthOfBox.dpToPx,

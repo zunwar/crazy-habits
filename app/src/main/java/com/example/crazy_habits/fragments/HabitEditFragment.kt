@@ -1,6 +1,7 @@
 package com.example.crazy_habits.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,16 +9,15 @@ import android.widget.AdapterView
 import android.widget.RadioButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.coroutineScope
 import androidx.navigation.fragment.findNavController
 import com.example.crazy_habits.*
+import com.example.crazy_habits.FirstActivity.Companion.TAG
 import com.example.crazy_habits.adapters.CustomSpinnerAdapter
 import com.example.crazy_habits.database.habit.HabitEntity
 import com.example.crazy_habits.databinding.FragmentHabitEditBinding
 import com.example.crazy_habits.fragments.ColorHabitFragment.Companion.COLOR_HABIT
 import com.example.crazy_habits.fragments.ListHabitsFragment.Companion.HABIT_TO_EDIT_ID
 import com.example.crazy_habits.viewmodels.HabitEditViewModel
-import kotlinx.coroutines.launch
 
 
 class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
@@ -40,15 +40,30 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (!requireArguments().isEmpty) {
-            arguments?.let {
-                displayOldHabit(it.getString(HABIT_TO_EDIT_ID)!!)
-            }
+
+//отображаем старую/редактируемую привычку, если возможно
+        habitEditViewModel.displayOldHabit.observe(viewLifecycleOwner){
+            displayOldHabit(it)
         }
-//закрытие фроагмента
+
+//закрытие фрагмента
         habitEditViewModel.closeFragment.observe(viewLifecycleOwner) {
             findNavController().popBackStack()
         }
+
+//подписываемся на нажатие кнопки перехода на фрагмент с выбором цвета привычки
+        habitEditViewModel.navigateToColorFragment.observe(viewLifecycleOwner) {
+            findNavController().navigate(
+                R.id.action_habitEditFragment_to_colorHabitFragment,
+                Bundle().apply {
+                    putString(
+                        COLLECTED_HABIT,
+                        habitEditViewModel.getId()
+                    )
+                }
+            )
+        }
+
 //получение результата с ColorFragment и сохранение его в EditViewModel и задание цвета строки,
 // показывающей выбранный ранее цвет
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Bundle>(COLOR_HABIT)
@@ -56,6 +71,7 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
                 habitEditViewModel.setColorFromColorFragment(result.getInt(COLOR_HABIT))
                 binding.colorOfHabit.background = ShapeColorBox(1, habitEditViewModel.colorHabit)
             }
+
         checkDefaultRadioGroupValue()
         initPrioritySpinner()
         chooseColorButton()
@@ -68,23 +84,11 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
 
     private fun chooseColorButton() {
         binding.chooseColorButton.setOnClickListener {
-            val h = collectAndSaveHabit()
-            habitEditViewModel.navigateToColorFragment.observe(viewLifecycleOwner) {
-                findNavController().navigate(
-                    R.id.action_habitEditFragment_to_colorHabitFragment,
-                    Bundle().apply {
-                        putString(
-                            COLLECTED_HABIT,
-                            h.id
-                        )
-                    }
-                )
-            }
             habitEditViewModel.toColorFragmentClicked()
         }
     }
 
-    private fun collectAndSaveHabit(): HabitEntity {
+    private fun collectAndSaveHabit() {
         val habit = HabitEntity(
             name = binding.NameHabitText.text.toString()
                 .ifEmpty { getString(R.string.notSpecified) },
@@ -104,24 +108,20 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
         findNavController().previousBackStackEntry?.savedStateHandle?.set(
             HABIT_ADD,
             Bundle().apply { putBoolean(EDIT_BOOL, habitEditViewModel.isEditable) })
-        return habit
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(
+            TAB_ITEM,
+            habitEditViewModel.setRightTabItem(habit.type)
+        )
+        habitEditViewModel.saveHabit(habit)
     }
 
     private fun submitButton() {
         binding.addButton.setOnClickListener {
-            val habit = collectAndSaveHabit()
-            findNavController().previousBackStackEntry?.savedStateHandle?.set(
-                TAB_ITEM,
-                habitEditViewModel.setRightTabItem(habit.type)
-            )
-            habitEditViewModel.saveHabit(habit)
-            habitEditViewModel.closeScreen()
+            collectAndSaveHabit()
         }
     }
 
-    private fun displayOldHabit(idOldHabit: String) {
-        lifecycle.coroutineScope.launch {
-            habitEditViewModel.getHabitToEditFlow(idOldHabit).collect { oldHabit ->
+    private fun displayOldHabit(oldHabit: HabitEntity) {
                 with(oldHabit) {
                     if (name == getString(R.string.notSpecified)) binding.NameHabitText.setText("")
                     else binding.NameHabitText.setText(name)
@@ -143,8 +143,6 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
                 habitEditViewModel.setColorOfHabit(oldHabit.colorHabit)
                 binding.colorOfHabit.background = ShapeColorBox(1, habitEditViewModel.colorHabit)
                 binding.addButton.text = getString(R.string.changeButton)
-            }
-        }
     }
 
     private fun checkData(parameter: String): String {
