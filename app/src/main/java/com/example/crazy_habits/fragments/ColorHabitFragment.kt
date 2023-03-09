@@ -30,6 +30,7 @@ class ColorHabitFragment : Fragment() {
     private var _binding: FragmentColorHabitBinding? = null
     private val binding get() = _binding!!
     private val colorViewModel: ColorViewModel by viewModels { ColorViewModel.Factory }
+    private val colorBoxViewList: MutableList<View> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +50,7 @@ class ColorHabitFragment : Fragment() {
         colorViewModel.saveIfNew()
         createColorBoxes(context, binding.colorLinear)
         displaySelectedColorBox()
-        saveColorAndNumberOfSelected(colorViewModel.colorBoxViewList)
+        saveColorAndNumberOfSelected(colorBoxViewList)
         setColorButton()
         observeClose()
     }
@@ -77,7 +78,7 @@ class ColorHabitFragment : Fragment() {
                 ShapeColorBox(5, it.color)
             binding.colorCode.text = convertToRGBcode(it.color)
             binding.hsv.smoothScrollTo(
-                getCenterColor(colorViewModel.colorBoxViewList[it.colorBoxNum.id - 1]).x - screenWidth / 2,
+                getCenterColor(colorBoxViewList[it.colorBoxNum.id - 1]).x - screenWidth / 2,
                 0
             )
         }
@@ -119,7 +120,7 @@ class ColorHabitFragment : Fragment() {
             margins.marginEnd = marginBox.dpToPx
             colorBoxView.layoutParams = margins
             linear1.addView(colorBoxView)
-            colorViewModel.holdColorBoxesCoor(colorBoxView)
+            colorBoxViewList.add(colorBoxView)
         }
     }
 

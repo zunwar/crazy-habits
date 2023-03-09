@@ -25,10 +25,8 @@ import kotlinx.coroutines.launch
 
 class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
 
-
     private var _binding: FragmentListHabitsBinding? = null
     private val binding get() = _binding!!
-    private lateinit var habitAdapter: HabitAdapter
     private var isBadInstance: Boolean = false
     private val listHabitsViewModel: ListHabitsViewModel by activityViewModels{ListHabitsViewModel.Factory}
 
@@ -64,7 +62,7 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
                 if (!result.getBoolean(EDIT_BOOL)) {
                     lifecycleScope.launch {
                         delay(100)
-                        val posToInsert = habitAdapter.itemCount + 1
+                        val posToInsert = (binding.recyclerView.adapter as HabitAdapter).itemCount + 1
                         binding.recyclerView.smoothScrollToPosition(posToInsert)
                     }
                 }

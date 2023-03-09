@@ -67,9 +67,9 @@ class BottomSheet : BottomSheetDialogFragment() {
         val textWatcher = object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 if (s.isNullOrEmpty()) {
-                    binding.filterButton.background.setTint(Color.parseColor("#8F8A8A"))
+                    binding.filterButton.background.setTint(resources.getColor(R.color.gray))
                 } else {
-                    binding.filterButton.background.setTint(Color.parseColor("#FF6200EE"))
+                    binding.filterButton.background.setTint(resources.getColor(R.color.purple_500))
                 }
             }
 

@@ -19,8 +19,6 @@ class ColorViewModel(colorBoxDao: ColorBoxDao, private val id: String) : ViewMod
     private val model = ColorModel(colorBoxDao)
     private var _closeColorFragment = SingleLiveEvent<Boolean>()
     val closeColorFragment = _closeColorFragment
-    private val _colorBoxViewList: MutableList<View> = mutableListOf()
-    val colorBoxViewList: List<View> = _colorBoxViewList
     private var _colorBoxEntity: MutableLiveData<ColorBoxEntity> = MutableLiveData()
     val colorBoxEntity: MutableLiveData<ColorBoxEntity> = _colorBoxEntity
 
@@ -53,10 +51,6 @@ class ColorViewModel(colorBoxDao: ColorBoxDao, private val id: String) : ViewMod
         model.getColorBoxEntity(id).collect {
             _colorBoxEntity.postValue(it)
         }
-    }
-
-    fun holdColorBoxesCoor(colorBoxView: View) {
-        _colorBoxViewList.add(colorBoxView)
     }
 
     private suspend fun save(cbe: ColorBoxEntity) {
