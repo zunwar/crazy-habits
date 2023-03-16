@@ -1,4 +1,4 @@
-package com.example.crazy_habits
+package com.example.crazy_habits.utils
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

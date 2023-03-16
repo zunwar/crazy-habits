@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/constr_list_habits"
-    tools:context=".fragments.ListHabitsFragment"
+    tools:context=".listhabits.ListHabitsFragment"
     android:background="@color/goodHabit">
 
     <androidx.recyclerview.widget.RecyclerView

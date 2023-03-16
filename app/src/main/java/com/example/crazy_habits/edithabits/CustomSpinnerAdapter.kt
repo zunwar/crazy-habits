@@ -1,10 +1,10 @@
-package com.example.crazy_habits.adapters
+package com.example.crazy_habits.edithabits
 
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import com.example.crazy_habits.Priority
+import com.example.crazy_habits.utils.Priority
 import com.example.crazy_habits.R
 
 

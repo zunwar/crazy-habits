@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:fillViewport="true"
-    tools:context=".fragments.HabitEditFragment">
+    tools:context=".edithabits.HabitEditFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/edit_fragment"

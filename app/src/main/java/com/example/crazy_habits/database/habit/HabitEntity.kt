@@ -3,8 +3,8 @@ package com.example.crazy_habits.database.habit
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.crazy_habits.Priority
-import com.example.crazy_habits.Type
+import com.example.crazy_habits.utils.Priority
+import com.example.crazy_habits.utils.Type
 
 @Entity
 data class HabitEntity(

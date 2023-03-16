@@ -1,4 +1,4 @@
-package com.example.crazy_habits.adapters
+package com.example.crazy_habits.listhabits
 
 import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.crazy_habits.Priority
+import com.example.crazy_habits.utils.Priority
 import com.example.crazy_habits.R
-import com.example.crazy_habits.Type
+import com.example.crazy_habits.utils.Type
 import com.example.crazy_habits.database.habit.HabitEntity
 import com.example.crazy_habits.databinding.ListItemViewBinding
 

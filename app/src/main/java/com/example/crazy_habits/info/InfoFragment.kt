@@ -1,4 +1,4 @@
-package com.example.crazy_habits.fragments
+package com.example.crazy_habits.info
 
 
 import android.os.Bundle

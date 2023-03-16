@@ -1,12 +1,13 @@
 package com.example.crazy_habits.database.habit
 
 import androidx.room.*
-import com.example.crazy_habits.Type
+import com.example.crazy_habits.utils.Type
 import kotlinx.coroutines.flow.Flow
 
 
 @Dao
 interface HabitDao {
+
     @Query("SELECT * FROM HabitEntity")
     fun getAllHabits(): Flow<List<HabitEntity>>
 

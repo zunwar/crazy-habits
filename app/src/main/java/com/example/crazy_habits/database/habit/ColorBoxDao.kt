@@ -1,7 +1,7 @@
 package com.example.crazy_habits.database.habit
 
 import androidx.room.*
-import com.example.crazy_habits.ColorBox
+import com.example.crazy_habits.utils.ColorBox
 import kotlinx.coroutines.flow.Flow
 
 @Dao

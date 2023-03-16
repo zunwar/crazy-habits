@@ -1,22 +1,17 @@
-package com.example.crazy_habits.viewmodels
+package com.example.crazy_habits.colorchoose
 
 import android.util.Log
-import android.view.View
 import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.crazy_habits.App
-import com.example.crazy_habits.ColorBoxNum
+import com.example.crazy_habits.utils.ColorBoxNum
 import com.example.crazy_habits.FirstActivity.Companion.TAG
 import com.example.crazy_habits.SingleLiveEvent
-import com.example.crazy_habits.database.habit.ColorBoxDao
 import com.example.crazy_habits.database.habit.ColorBoxEntity
-import com.example.crazy_habits.fragments.ColorHabitFragment
-import com.example.crazy_habits.fragments.HabitEditFragment
-import com.example.crazy_habits.models.ColorModel
+import com.example.crazy_habits.edithabits.HabitEditFragment
 import kotlinx.coroutines.launch
 
-class ColorViewModel(colorBoxDao: ColorBoxDao, private val id: String) : ViewModel() {
-    private val model = ColorModel(colorBoxDao)
+class ColorViewModel(private val colorModel: ColorModel, private val id: String) : ViewModel() {
     private var _closeColorFragment = SingleLiveEvent<Boolean>()
     val closeColorFragment = _closeColorFragment
     private var _colorBoxEntity: MutableLiveData<ColorBoxEntity> = MutableLiveData()
@@ -37,7 +32,7 @@ class ColorViewModel(colorBoxDao: ColorBoxDao, private val id: String) : ViewMod
 
     fun saveIfNew() {
         viewModelScope.launch {
-            model.getAllColorBoxes().collect { list ->
+            colorModel.getAllColorBoxes().collect { list ->
                 if ((list.find { it.id == id }) == null) {
                     addNewColorBox()
                 } else {
@@ -48,13 +43,13 @@ class ColorViewModel(colorBoxDao: ColorBoxDao, private val id: String) : ViewMod
     }
 
     private suspend fun getColorBox() {
-        model.getColorBoxEntity(id).collect {
+        colorModel.getColorBoxEntity(id).collect {
             _colorBoxEntity.postValue(it)
         }
     }
 
     private suspend fun save(cbe: ColorBoxEntity) {
-        model.add(cbe)
+        colorModel.add(cbe)
     }
 
     fun saveSelectedColorAndNum(color: Int, num: Int) {
@@ -83,7 +78,7 @@ class ColorViewModel(colorBoxDao: ColorBoxDao, private val id: String) : ViewMod
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
                 val frag = checkNotNull(extras[VIEW_MODEL_STORE_OWNER_KEY])
                 return ColorViewModel(
-                    (app as App).database.colorBoxDao(),
+                    (app as App).colorModel,
                     (frag as ColorHabitFragment).requireArguments().let {
                         it.getString(HabitEditFragment.COLLECTED_HABIT)!!
                     }

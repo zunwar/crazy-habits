@@ -1,9 +1,8 @@
-package com.example.crazy_habits.fragments
+package com.example.crazy_habits.listhabits
 
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +10,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import com.example.crazy_habits.FirstActivity.Companion.TAG
 import com.example.crazy_habits.R
-import com.example.crazy_habits.adapters.ViewPagerAdapter
 import com.example.crazy_habits.databinding.FragmentViewPagerBinding
-import com.example.crazy_habits.fragments.HabitEditFragment.Companion.TAB_ITEM
+import com.example.crazy_habits.edithabits.HabitEditFragment.Companion.TAB_ITEM
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -43,7 +40,6 @@ class ViewPagerFragment :  Fragment(R.layout.fragment_view_pager) {
 
         val adapter = ViewPagerAdapter(
             fragmentList,
-//            requireActivity().supportFragmentManager,
             childFragmentManager,
             lifecycle
         )
@@ -68,7 +64,6 @@ class ViewPagerFragment :  Fragment(R.layout.fragment_view_pager) {
         }
 
         fabClick()
-//        viewPagerEvents()
     }
 
 
@@ -124,32 +119,6 @@ class ViewPagerFragment :  Fragment(R.layout.fragment_view_pager) {
         binding.FAB.setOnClickListener {
             it.findNavController().navigate(R.id.action_viewPagerFragment_to_habitEditFragment)
         }
-    }
-
-//    private fun viewPagerEvents() {
-//        binding.viewPagerMain.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
-//            override fun onPageScrolled(
-//                position: Int,
-//                positionOffset: Float,
-//                positionOffsetPixels: Int
-//            ) {
-//                super.onPageScrolled(position, positionOffset, positionOffsetPixels)
-//            }
-//
-//            override fun onPageSelected(position: Int) {
-//                super.onPageSelected(position)
-//            }
-//
-//            override fun onPageScrollStateChanged(state: Int) {
-//                super.onPageScrollStateChanged(state)
-//            }
-//        })
-//    }
-
-
-
-    companion object {
-        const val FAB_BUTTON_CLICK = "fab button clicked"
     }
 
 }

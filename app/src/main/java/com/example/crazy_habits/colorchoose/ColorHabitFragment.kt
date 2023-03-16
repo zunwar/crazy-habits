@@ -1,4 +1,4 @@
-package com.example.crazy_habits.fragments
+package com.example.crazy_habits.colorchoose
 
 import android.content.Context
 import android.content.res.Resources
@@ -20,11 +20,10 @@ import android.widget.LinearLayout
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.example.crazy_habits.ColorBoxNum
+import com.example.crazy_habits.utils.ColorBoxNum
 import com.example.crazy_habits.FirstActivity.Companion.TAG
-import com.example.crazy_habits.ShapeColorBox
+import com.example.crazy_habits.utils.ShapeColorBox
 import com.example.crazy_habits.databinding.FragmentColorHabitBinding
-import com.example.crazy_habits.viewmodels.ColorViewModel
 
 class ColorHabitFragment : Fragment() {
     private var _binding: FragmentColorHabitBinding? = null

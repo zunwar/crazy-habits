@@ -1,6 +1,6 @@
-package com.example.crazy_habits.models
+package com.example.crazy_habits.colorchoose
 
-import com.example.crazy_habits.ColorBox
+import com.example.crazy_habits.utils.ColorBox
 import com.example.crazy_habits.database.habit.ColorBoxDao
 import com.example.crazy_habits.database.habit.ColorBoxEntity
 import kotlinx.coroutines.flow.Flow

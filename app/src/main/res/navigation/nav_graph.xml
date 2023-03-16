@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/infoFragment"
-        android:name="com.example.crazy_habits.fragments.InfoFragment"
+        android:name="com.example.crazy_habits.info.InfoFragment"
         android:label="fragment_info"
         tools:layout="@layout/fragment_info" >
         <action
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/habitEditFragment"
-        android:name="com.example.crazy_habits.fragments.HabitEditFragment"
+        android:name="com.example.crazy_habits.edithabits.HabitEditFragment"
         android:label="fragment_habit_edit"
         tools:layout="@layout/fragment_habit_edit" >
         <action
@@ -33,7 +33,7 @@
     </fragment>
     <fragment
         android:id="@+id/viewPagerFragment"
-        android:name="com.example.crazy_habits.fragments.ViewPagerFragment"
+        android:name="com.example.crazy_habits.listhabits.ViewPagerFragment"
         android:label="fragment_view_pager"
         tools:layout="@layout/fragment_view_pager" >
         <action
@@ -46,7 +46,7 @@
     </fragment>
     <fragment
         android:id="@+id/colorHabitFragment"
-        android:name="com.example.crazy_habits.fragments.ColorHabitFragment"
+        android:name="com.example.crazy_habits.colorchoose.ColorHabitFragment"
         android:label="fragment_color_habit"
         tools:layout="@layout/fragment_color_habit" />
     <action android:id="@+id/action_global_infoFragment" app:destination="@id/infoFragment" />

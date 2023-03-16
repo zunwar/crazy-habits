@@ -1,7 +1,6 @@
-package com.example.crazy_habits.fragments
+package com.example.crazy_habits.edithabits
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,13 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.crazy_habits.*
-import com.example.crazy_habits.FirstActivity.Companion.TAG
-import com.example.crazy_habits.adapters.CustomSpinnerAdapter
 import com.example.crazy_habits.database.habit.HabitEntity
 import com.example.crazy_habits.databinding.FragmentHabitEditBinding
-import com.example.crazy_habits.fragments.ColorHabitFragment.Companion.COLOR_HABIT
-import com.example.crazy_habits.fragments.ListHabitsFragment.Companion.HABIT_TO_EDIT_ID
-import com.example.crazy_habits.viewmodels.HabitEditViewModel
+import com.example.crazy_habits.colorchoose.ColorHabitFragment.Companion.COLOR_HABIT
+import com.example.crazy_habits.utils.Priority
+import com.example.crazy_habits.utils.ShapeColorBox
+import com.example.crazy_habits.utils.Type
 
 
 class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
@@ -106,8 +104,8 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
             id = habitEditViewModel.getId()
         )
         findNavController().previousBackStackEntry?.savedStateHandle?.set(
-            HABIT_ADD,
-            Bundle().apply { putBoolean(EDIT_BOOL, habitEditViewModel.isEditable) })
+            EDIT_BOOL,
+            habitEditViewModel.isEditable)
         findNavController().previousBackStackEntry?.savedStateHandle?.set(
             TAB_ITEM,
             habitEditViewModel.setRightTabItem(habit.type)
@@ -172,14 +170,6 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
             }
     }
 
-//    private fun deleteHabitOnBackPressed() {
-//        requireActivity().onBackPressedDispatcher.addCallback(this) {
-//            habitEditViewModel.deleteHabitById()
-//            habitEditViewModel.closeScreen()
-//        }
-//    }
-
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -187,16 +177,8 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
 
     companion object {
         const val COLLECTED_HABIT = "collectedHabit"
-        const val HABIT_ADD = "habit add"
         const val EDIT_BOOL = "habit change"
         const val TAB_ITEM = "tab item"
-
-//        fun newInstance(bad: Boolean) =
-//            HabitEditFragment().apply {
-//                arguments = Bundle().apply {
-//                    putBoolean(COLLECTED_HABIT, true)
-//                }
-//            }
     }
 
 }

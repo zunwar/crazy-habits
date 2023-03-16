@@ -1,4 +1,4 @@
-package com.example.crazy_habits.viewmodels
+package com.example.crazy_habits.edithabits
 
 import android.util.Log
 import androidx.lifecycle.*
@@ -8,10 +8,9 @@ import com.example.crazy_habits.*
 import com.example.crazy_habits.FirstActivity.Companion.TAG
 import com.example.crazy_habits.database.habit.HabitDao
 import com.example.crazy_habits.database.habit.HabitEntity
-import com.example.crazy_habits.fragments.HabitEditFragment
-import com.example.crazy_habits.fragments.ListHabitsFragment.Companion.HABIT_TO_EDIT_ID
-import com.example.crazy_habits.models.HabitModel
-import kotlinx.coroutines.flow.*
+import com.example.crazy_habits.listhabits.ListHabitsFragment.Companion.HABIT_TO_EDIT_ID
+import com.example.crazy_habits.utils.Priority
+import com.example.crazy_habits.utils.Type
 import kotlinx.coroutines.launch
 import java.util.*
 

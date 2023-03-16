@@ -1,8 +1,8 @@
-package com.example.crazy_habits.models
+package com.example.crazy_habits.edithabits
 
 import android.util.Log
 import com.example.crazy_habits.FirstActivity.Companion.TAG
-import com.example.crazy_habits.Type
+import com.example.crazy_habits.utils.Type
 import com.example.crazy_habits.database.habit.HabitDao
 import com.example.crazy_habits.database.habit.HabitEntity
 import kotlinx.coroutines.flow.Flow

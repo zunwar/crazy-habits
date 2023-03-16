@@ -1,31 +1,31 @@
-package com.example.crazy_habits.viewmodels
+package com.example.crazy_habits.listhabits
 
 import android.util.Log
 import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.crazy_habits.App
 import com.example.crazy_habits.FirstActivity.Companion.TAG
-import com.example.crazy_habits.Type
-import com.example.crazy_habits.database.habit.HabitDao
+import com.example.crazy_habits.utils.Type
 import com.example.crazy_habits.database.habit.HabitEntity
 import com.example.crazy_habits.database.habit.NameToFilter
 import com.example.crazy_habits.database.habit.NoName
-import com.example.crazy_habits.models.HabitModel
+import com.example.crazy_habits.edithabits.HabitModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class ListHabitsViewModel(habitDao: HabitDao) : ViewModel() {
-    private val model: HabitModel = HabitModel(habitDao)
+class ListHabitsViewModel(private val habitModel: HabitModel) : ViewModel() {
     private val nameToFilter = MutableStateFlow<NameToFilter>(NoName)
+    private val _listLoadedToRecycler: MutableLiveData<Boolean> = MutableLiveData()
+    val listLoadedToRecycler: LiveData<Boolean> = _listLoadedToRecycler
 
     init {
-        Log.d(TAG, "ListHabitsViewModel created")
+        Log.d(TAG, "ListHabitsViewModel---created ")
     }
 
-    fun getRightHabits(badOrGood: Boolean): LiveData<List<HabitEntity>> {
-        return when (badOrGood) {
+    fun getRightHabits(isBadList: Boolean): LiveData<List<HabitEntity>> {
+        return when (isBadList) {
             false -> getHabitsByType(Type.Good)
             true -> getHabitsByType(Type.Bad)
         }
@@ -34,9 +34,9 @@ class ListHabitsViewModel(habitDao: HabitDao) : ViewModel() {
     private fun getHabitsByType(type: Type): LiveData<List<HabitEntity>> {
         return nameToFilter.flatMapLatest { name ->
             if (name == NoName) {
-                model.getHabitsByType(type)
+                habitModel.getHabitsByType(type)
             } else {
-                model.searchHabitsByNameAndType(name.string, type)
+                habitModel.searchHabitsByNameAndType(name.string, type)
             }
         }.asLiveData()
     }
@@ -46,14 +46,18 @@ class ListHabitsViewModel(habitDao: HabitDao) : ViewModel() {
     }
 
     override fun onCleared() {
-        Log.d(TAG, "ListHabitsViewModel dead")
+        Log.d(TAG, "ListHabitsViewModel---onCleared --dead")
         super.onCleared()
     }
 
     fun deleteClickedHabit(idd: String) {
         viewModelScope.launch {
-            model.deleteHabitById(idd)
+            habitModel.deleteHabitById(idd)
         }
+    }
+
+    fun listLoadedToRecycler(isLoaded: Boolean) {
+        _listLoadedToRecycler.postValue(isLoaded)
     }
 
     companion object {
@@ -66,7 +70,7 @@ class ListHabitsViewModel(habitDao: HabitDao) : ViewModel() {
                 val app =
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
                 return ListHabitsViewModel(
-                    (app as App).database.habitDao()
+                    (app as App).habitModel
                 ) as T
             }
         }

@@ -1,4 +1,4 @@
-package com.example.crazy_habits
+package com.example.crazy_habits.utils
 
 enum class ColorBoxNum (val id: Int){
     One      (1),

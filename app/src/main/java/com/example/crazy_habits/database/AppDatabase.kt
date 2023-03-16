@@ -14,7 +14,6 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun habitDao(): HabitDao
     abstract fun colorBoxDao(): ColorBoxDao
-
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null

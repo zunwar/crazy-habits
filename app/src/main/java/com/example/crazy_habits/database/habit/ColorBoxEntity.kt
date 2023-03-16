@@ -3,7 +3,7 @@ package com.example.crazy_habits.database.habit
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.crazy_habits.ColorBoxNum
+import com.example.crazy_habits.utils.ColorBoxNum
 
 @Entity
 data class ColorBoxEntity(

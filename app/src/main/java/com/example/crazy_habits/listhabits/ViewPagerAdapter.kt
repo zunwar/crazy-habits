@@ -1,11 +1,10 @@
-package com.example.crazy_habits.adapters
+package com.example.crazy_habits.listhabits
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-//class ViewPagerAdapter(activity: AppCompatActivity, val itemsCount: Int): FragmentStateAdapter(activity) {
 class ViewPagerAdapter(
     list : ArrayList<Fragment>,
     fm : FragmentManager,

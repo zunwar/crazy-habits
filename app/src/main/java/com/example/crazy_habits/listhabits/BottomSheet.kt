@@ -1,7 +1,6 @@
-package com.example.crazy_habits.fragments
+package com.example.crazy_habits.listhabits
 
 import android.content.res.Resources
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,7 +11,6 @@ import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.example.crazy_habits.R
 import com.example.crazy_habits.databinding.BottomSheetBinding
-import com.example.crazy_habits.viewmodels.ListHabitsViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:behavior_peekHeight="100dp"
-    tools:context=".fragments.BottomSheet">
+    tools:context=".listhabits.BottomSheet">
 
     <FrameLayout
         android:id="@+id/frame_bottom_sheet"

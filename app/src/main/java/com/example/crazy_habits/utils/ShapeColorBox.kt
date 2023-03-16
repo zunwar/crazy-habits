@@ -1,4 +1,4 @@
-package com.example.crazy_habits
+package com.example.crazy_habits.utils
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
