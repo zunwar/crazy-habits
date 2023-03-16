@@ -6,22 +6,19 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.crazy_habits.*
 import com.example.crazy_habits.FirstActivity.Companion.TAG
-import com.example.crazy_habits.database.habit.HabitDao
 import com.example.crazy_habits.database.habit.HabitEntity
-import com.example.crazy_habits.listhabits.ListHabitsFragment.Companion.HABIT_TO_EDIT_ID
 import com.example.crazy_habits.utils.Priority
 import com.example.crazy_habits.utils.Type
 import kotlinx.coroutines.launch
 import java.util.*
 
 class HabitEditViewModel(
-    habitDao: HabitDao,
-    val isEditable: Boolean,
-    private var idHabit: String
+    private val habitModel: HabitModel,
+//    val isEditable: Boolean,
+    id: String?
 ) : ViewModel() {
     private val _displayOldHabit: MutableLiveData<HabitEntity> = MutableLiveData()
     val displayOldHabit: LiveData<HabitEntity> = _displayOldHabit
-    private val model: HabitModel = HabitModel(habitDao)
     private var _closeFragment = SingleLiveEvent<Boolean>()
     val closeFragment = _closeFragment
     private var _navigateToColorFragment = SingleLiveEvent<Boolean>()
@@ -31,15 +28,26 @@ class HabitEditViewModel(
     private var _colorHabit = -1
     val colorHabit get() = _colorHabit
     private var colorChange: Boolean = false
+    private val idHabit: String = getId(id)
+    var isEditable = false
 
     init {
         Log.d(TAG, "HabitEditViewModel created")
         displayOldHabit()
     }
 
+    private fun getId(protoId: String?): String {
+        return if (protoId == null) {
+            UUID.randomUUID().toString()
+        } else {
+            isEditable = true
+            protoId
+        }
+    }
+
     private fun addHabit(habit: HabitEntity) {
         viewModelScope.launch {
-            model.addHabit(habit)
+            habitModel.addHabit(habit)
         }
     }
 
@@ -47,7 +55,7 @@ class HabitEditViewModel(
     private fun displayOldHabit() {
         if (isEditable) {
             viewModelScope.launch {
-                model.getHabitToEdit(idHabit).collect{
+                habitModel.getHabitToEdit(idHabit).collect{
                     _displayOldHabit.postValue(it)
                 }
             }
@@ -56,7 +64,7 @@ class HabitEditViewModel(
 
     private fun changeHabit(habit: HabitEntity) {
         viewModelScope.launch {
-            model.changeHabit(habit)
+            habitModel.changeHabit(habit)
         }
     }
 
@@ -101,7 +109,7 @@ class HabitEditViewModel(
 
     fun deleteHabitById() {
         viewModelScope.launch {
-            model.deleteHabitById(idHabit)
+            habitModel.deleteHabitById(idHabit)
         }
     }
 
@@ -113,19 +121,18 @@ class HabitEditViewModel(
     }
 
     companion object {
-        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+        fun provideFactory(
+            id: String?
+        ): ViewModelProvider.Factory =
+            object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(
                 modelClass: Class<T>,
                 extras: CreationExtras
             ): T {
                 val app = checkNotNull(extras[APPLICATION_KEY])
-                val frag = checkNotNull(extras[VIEW_MODEL_STORE_OWNER_KEY])
-                val isEditable = !(frag as HabitEditFragment).requireArguments().isEmpty
-                val id = if (isEditable) frag.requireArguments().getString(HABIT_TO_EDIT_ID)!! else UUID.randomUUID().toString()
                 return HabitEditViewModel(
-                    (app as App).database.habitDao(),
-                    isEditable,
+                    (app as App).habitModel,
                     id
                 ) as T
             }

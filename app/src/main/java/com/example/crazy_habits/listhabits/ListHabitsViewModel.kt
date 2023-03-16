@@ -2,6 +2,7 @@ package com.example.crazy_habits.listhabits
 
 import android.util.Log
 import androidx.lifecycle.*
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.crazy_habits.App
 import com.example.crazy_habits.FirstActivity.Companion.TAG
@@ -67,8 +68,7 @@ class ListHabitsViewModel(private val habitModel: HabitModel) : ViewModel() {
                 modelClass: Class<T>,
                 extras: CreationExtras
             ): T {
-                val app =
-                    checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
+                val app = checkNotNull(extras[APPLICATION_KEY])
                 return ListHabitsViewModel(
                     (app as App).habitModel
                 ) as T

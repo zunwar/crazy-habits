@@ -13,6 +13,7 @@ import com.example.crazy_habits.*
 import com.example.crazy_habits.database.habit.HabitEntity
 import com.example.crazy_habits.databinding.FragmentHabitEditBinding
 import com.example.crazy_habits.colorchoose.ColorHabitFragment.Companion.COLOR_HABIT
+import com.example.crazy_habits.listhabits.ListHabitsFragment.Companion.HABIT_TO_EDIT_ID
 import com.example.crazy_habits.utils.Priority
 import com.example.crazy_habits.utils.ShapeColorBox
 import com.example.crazy_habits.utils.Type
@@ -22,7 +23,11 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
 
     private var _binding: FragmentHabitEditBinding? = null
     private val binding get() = _binding!!
-    private val habitEditViewModel: HabitEditViewModel by viewModels { HabitEditViewModel.Factory }
+    private val habitEditViewModel: HabitEditViewModel by viewModels {
+        HabitEditViewModel.provideFactory(
+            arguments?.getString(HABIT_TO_EDIT_ID)
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +45,7 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
         super.onViewCreated(view, savedInstanceState)
 
 //отображаем старую/редактируемую привычку, если возможно
-        habitEditViewModel.displayOldHabit.observe(viewLifecycleOwner){
+        habitEditViewModel.displayOldHabit.observe(viewLifecycleOwner) {
             displayOldHabit(it)
         }
 
@@ -120,27 +125,27 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
     }
 
     private fun displayOldHabit(oldHabit: HabitEntity) {
-                with(oldHabit) {
-                    if (name == getString(R.string.notSpecified)) binding.NameHabitText.setText("")
-                    else binding.NameHabitText.setText(name)
-                    binding.DescText.setText(desc)
-                    when (this.type) {
-                        Type.Good -> binding.radioGroup.check(binding.radioButton0.id)
-                        Type.Bad -> binding.radioGroup.check(binding.radioButton1.id)
-                    }
-                    when (this.priority) {
-                        Priority.High -> binding.prioritySpinner.setSelection(0)
-                        Priority.Middle -> binding.prioritySpinner.setSelection(1)
-                        Priority.Low -> binding.prioritySpinner.setSelection(2)
-                    }
-                    if (number == getString(R.string.empty)) binding.NumberText.setText("")
-                    else binding.NumberText.setText(number)
-                    if (period == getString(R.string.empty)) binding.PeriodText.setText("")
-                    else binding.PeriodText.setText(period)
-                }
-                habitEditViewModel.setColorOfHabit(oldHabit.colorHabit)
-                binding.colorOfHabit.background = ShapeColorBox(1, habitEditViewModel.colorHabit)
-                binding.addButton.text = getString(R.string.changeButton)
+        with(oldHabit) {
+            if (name == getString(R.string.notSpecified)) binding.NameHabitText.setText("")
+            else binding.NameHabitText.setText(name)
+            binding.DescText.setText(desc)
+            when (this.type) {
+                Type.Good -> binding.radioGroup.check(binding.radioButton0.id)
+                Type.Bad -> binding.radioGroup.check(binding.radioButton1.id)
+            }
+            when (this.priority) {
+                Priority.High -> binding.prioritySpinner.setSelection(0)
+                Priority.Middle -> binding.prioritySpinner.setSelection(1)
+                Priority.Low -> binding.prioritySpinner.setSelection(2)
+            }
+            if (number == getString(R.string.empty)) binding.NumberText.setText("")
+            else binding.NumberText.setText(number)
+            if (period == getString(R.string.empty)) binding.PeriodText.setText("")
+            else binding.PeriodText.setText(period)
+        }
+        habitEditViewModel.setColorOfHabit(oldHabit.colorHabit)
+        binding.colorOfHabit.background = ShapeColorBox(1, habitEditViewModel.colorHabit)
+        binding.addButton.text = getString(R.string.changeButton)
     }
 
     private fun checkData(parameter: String): String {

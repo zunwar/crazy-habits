@@ -2,6 +2,7 @@ package com.example.crazy_habits.colorchoose
 
 import android.util.Log
 import androidx.lifecycle.*
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.crazy_habits.App
 import com.example.crazy_habits.utils.ColorBoxNum
@@ -75,7 +76,7 @@ class ColorViewModel(private val colorModel: ColorModel, private val id: String)
                 extras: CreationExtras
             ): T {
                 val app =
-                    checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
+                    checkNotNull(extras[APPLICATION_KEY])
                 val frag = checkNotNull(extras[VIEW_MODEL_STORE_OWNER_KEY])
                 return ColorViewModel(
                     (app as App).colorModel,
