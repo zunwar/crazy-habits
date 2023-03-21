@@ -14,7 +14,6 @@ import java.util.*
 
 class HabitEditViewModel(
     private val habitModel: HabitModel,
-//    val isEditable: Boolean,
     id: String?
 ) : ViewModel() {
     private val _displayOldHabit: MutableLiveData<HabitEntity> = MutableLiveData()
@@ -28,21 +27,12 @@ class HabitEditViewModel(
     private var _colorHabit = -1
     val colorHabit get() = _colorHabit
     private var colorChange: Boolean = false
-    private val idHabit: String = getId(id)
-    var isEditable = false
+    private val idHabit: String = id ?: UUID.randomUUID().toString()
+    val isEditable = id != null
 
     init {
         Log.d(TAG, "HabitEditViewModel created")
         displayOldHabit()
-    }
-
-    private fun getId(protoId: String?): String {
-        return if (protoId == null) {
-            UUID.randomUUID().toString()
-        } else {
-            isEditable = true
-            protoId
-        }
     }
 
     private fun addHabit(habit: HabitEntity) {
@@ -125,17 +115,17 @@ class HabitEditViewModel(
             id: String?
         ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(
-                modelClass: Class<T>,
-                extras: CreationExtras
-            ): T {
-                val app = checkNotNull(extras[APPLICATION_KEY])
-                return HabitEditViewModel(
-                    (app as App).habitModel,
-                    id
-                ) as T
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(
+                    modelClass: Class<T>,
+                    extras: CreationExtras
+                ): T {
+                    val app = checkNotNull(extras[APPLICATION_KEY])
+                    return HabitEditViewModel(
+                        (app as App).habitModel,
+                        id
+                    ) as T
+                }
             }
-        }
     }
 }

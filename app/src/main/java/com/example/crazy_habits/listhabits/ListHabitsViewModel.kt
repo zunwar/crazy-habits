@@ -11,39 +11,64 @@ import com.example.crazy_habits.database.habit.HabitEntity
 import com.example.crazy_habits.database.habit.NameToFilter
 import com.example.crazy_habits.database.habit.NoName
 import com.example.crazy_habits.edithabits.HabitModel
+import com.example.crazy_habits.utils.SortState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ListHabitsViewModel(private val habitModel: HabitModel) : ViewModel() {
-    private val nameToFilter = MutableStateFlow<NameToFilter>(NoName)
     private val _listLoadedToRecycler: MutableLiveData<Boolean> = MutableLiveData()
     val listLoadedToRecycler: LiveData<Boolean> = _listLoadedToRecycler
+    private val sortOrFilterStateFlow = MutableStateFlow(Pair(SortState.NoSort, NoName))
+    private var nameToFilterR = NoName
+    private var sortState: SortState = SortState.NoSort
 
     init {
-        Log.d(TAG, "ListHabitsViewModel---created ")
+        Log.d(TAG, "ListHabitsViewModel---init created ")
     }
 
-    fun getRightHabits(isBadList: Boolean): LiveData<List<HabitEntity>> {
+    fun getGoodOrBadList(isBadList: Boolean): LiveData<List<HabitEntity>> {
         return when (isBadList) {
-            false -> getHabitsByType(Type.Good)
-            true -> getHabitsByType(Type.Bad)
+            false -> getList(Type.Good)
+            true -> getList(Type.Bad)
         }
     }
 
-    private fun getHabitsByType(type: Type): LiveData<List<HabitEntity>> {
-        return nameToFilter.flatMapLatest { name ->
-            if (name == NoName) {
-                habitModel.getHabitsByType(type)
-            } else {
-                habitModel.searchHabitsByNameAndType(name.string, type)
+    private fun getList(type: Type): LiveData<List<HabitEntity>> {
+        return sortOrFilterStateFlow.flatMapLatest {
+            when (it.first) {
+                SortState.SortASC -> habitModel.getHabitsByNameAndTypeAndSort(
+                    it.second.string,
+                    type,
+                    1
+                )
+                SortState.SortDESC -> habitModel.getHabitsByNameAndTypeAndSort(
+                    it.second.string,
+                    type,
+                    2
+                )
+                SortState.NoSort -> habitModel.getHabitsByNameAndType(it.second.string, type)
             }
         }.asLiveData()
     }
 
+    fun sortClicked() {
+        sortState = when (sortState) {
+            SortState.SortASC -> SortState.SortDESC
+            SortState.SortDESC -> SortState.NoSort
+            SortState.NoSort -> SortState.SortASC
+        }
+        updateSortOrFilterState()
+    }
+
     fun updateNameToFilter(name: String) {
-        nameToFilter.value = NameToFilter(name)
+        nameToFilterR = NameToFilter(name)
+        updateSortOrFilterState()
+    }
+
+    private fun updateSortOrFilterState() {
+        sortOrFilterStateFlow.value = Pair(sortState, nameToFilterR)
     }
 
     override fun onCleared() {

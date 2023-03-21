@@ -1,6 +1,6 @@
 package com.example.crazy_habits.utils
 
-enum class ColorBoxNum (val id: Int){
+enum class ColorBoxNum (val idBox: Int){
     One      (1),
     Two      (2),
     Three    (3),

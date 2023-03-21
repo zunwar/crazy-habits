@@ -29,12 +29,16 @@ class HabitModel(private val habitDao: HabitDao) {
         return habitDao.getHabitById(id)
     }
 
-    fun searchHabitsByNameAndType(name: String, type: Type): Flow<List<HabitEntity>> {
+    fun getHabitsByNameAndType(name: String, type: Type): Flow<List<HabitEntity>> {
         return habitDao.searchHabitsByNameAndType(name, type)
     }
 
     suspend fun deleteHabitById(id: String) {
         habitDao.deleteById(id)
+    }
+
+    fun getHabitsByNameAndTypeAndSort(name: String, type: Type, isAsc: Int): Flow<List<HabitEntity>> {
+        return habitDao.getHabitsByNameAndTypeAndSort(name, type, isAsc)
     }
 
 }

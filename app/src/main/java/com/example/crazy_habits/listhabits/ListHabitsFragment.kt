@@ -82,11 +82,11 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
     }
 
     private fun subscribeUi() {
-        val listHabits = listHabitsViewModel.getRightHabits(isBadList = isBadInstance)
-        listHabits.observe(viewLifecycleOwner) { list ->
-            (binding.recyclerView.adapter as HabitAdapter).submitList(list)
-            listHabitsViewModel.listLoadedToRecycler(true)
-        }
+        listHabitsViewModel.getGoodOrBadList(isBadList = isBadInstance)
+            .observe(viewLifecycleOwner) { list ->
+                (binding.recyclerView.adapter as HabitAdapter).submitList(list)
+                listHabitsViewModel.listLoadedToRecycler(true)
+            }
     }
 
     override fun onDestroy() {

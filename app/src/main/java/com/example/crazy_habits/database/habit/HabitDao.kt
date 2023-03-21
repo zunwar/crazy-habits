@@ -23,6 +23,18 @@ interface HabitDao {
     @Query("SELECT * FROM HabitEntity WHERE name LIKE '%' || :name || '%' AND type IN (:type)")
     fun searchHabitsByNameAndType(name: String, type: Type): Flow<List<HabitEntity>>
 
+    @Query(
+        "SELECT * FROM HabitEntity WHERE name LIKE '%' || :name || '%' AND type IN (:type)" +
+                "ORDER BY " +
+                "CASE WHEN :isAsc = 1 THEN name END ASC, " +
+                "CASE WHEN :isAsc = 2 THEN name END DESC"
+    )
+    fun getHabitsByNameAndTypeAndSort(
+        name: String,
+        type: Type,
+        isAsc: Int
+    ): Flow<List<HabitEntity>>
+
     @Update
     suspend fun updateHabit(vararg habit: HabitEntity)
 

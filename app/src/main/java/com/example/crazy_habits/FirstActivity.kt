@@ -4,22 +4,25 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.findNavController
 import com.example.crazy_habits.databinding.ActivityFirstBinding
 import com.example.crazy_habits.listhabits.BottomSheet
+import com.example.crazy_habits.listhabits.ListHabitsViewModel
 
 
 class FirstActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityFirstBinding
     private lateinit var toggle: ActionBarDrawerToggle
+    private val listHabitsViewModel: ListHabitsViewModel by viewModels{ ListHabitsViewModel.Factory}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
-        Log.d(FirstActivity, "onCreate")
+        Log.d(TAG, "FirstActivity---onCreate ")
         super.onCreate(savedInstanceState)
         binding = ActivityFirstBinding.inflate(layoutInflater)
         val view = binding.root
@@ -67,6 +70,14 @@ class FirstActivity : AppCompatActivity() {
         binding.appBarMain.filterButtonToolBar.setOnClickListener {
             bottomSheet()
         }
+
+        binding.appBarMain.sortButtonToolBar.setOnClickListener { sortButton ->
+            listHabitsViewModel.sortClicked()
+            sortButton.animate().apply {
+                duration = 1000
+                rotationXBy(360f)
+            }.start()
+        }
     }
 
     private fun bottomSheet() {
@@ -80,7 +91,6 @@ class FirstActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val FirstActivity = "FirstActivity"
         const val TAG = "errorqwer"
     }
 
