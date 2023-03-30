@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.findNavController
 import com.example.crazy_habits.databinding.ActivityFirstBinding
@@ -21,6 +22,8 @@ class FirstActivity : AppCompatActivity() {
     private val listHabitsViewModel: ListHabitsViewModel by viewModels{ ListHabitsViewModel.Factory}
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //пока темная тема не настроена, добавлена след строка
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         installSplashScreen()
         Log.d(TAG, "FirstActivity---onCreate ")
         super.onCreate(savedInstanceState)
