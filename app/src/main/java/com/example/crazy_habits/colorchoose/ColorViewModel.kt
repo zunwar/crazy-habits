@@ -9,6 +9,7 @@ import com.example.crazy_habits.utils.ColorBoxNum
 import com.example.crazy_habits.FirstActivity.Companion.TAG
 import com.example.crazy_habits.SingleLiveEvent
 import com.example.crazy_habits.database.habit.ColorBoxEntity
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ColorViewModel(private val colorModel: ColorModel, private val id: String) : ViewModel() {
@@ -33,7 +34,7 @@ class ColorViewModel(private val colorModel: ColorModel, private val id: String)
     }
 
     fun saveIfNew() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             colorModel.getAllColorBoxes().collect { list ->
                 if ((list.find { it.id == id }) == null) {
                     addNewColorBox()
@@ -55,7 +56,7 @@ class ColorViewModel(private val colorModel: ColorModel, private val id: String)
     }
 
     fun saveSelectedColorAndNum(color: Int, num: Int) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val cbe = ColorBoxEntity(
                 id = id,
                 color = color,

@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.crazy_habits.FirstActivity.Companion.TAG
 import com.example.crazy_habits.R
 import com.example.crazy_habits.databinding.FragmentListHabitsBinding
@@ -69,7 +68,6 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
 
     private fun initRecyclerView() {
         Log.d(TAG, "List_frag_initRecyclerView")
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = HabitAdapter{
                 val action =
                     ViewPagerFragmentDirections.actionViewPagerFragmentToHabitEditFragment(

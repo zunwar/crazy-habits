@@ -37,8 +37,16 @@ class HabitModel(private val habitDao: HabitDao) {
         habitDao.deleteById(id)
     }
 
-    fun getHabitsByNameAndTypeAndSort(name: String, type: Type, isAsc: Int): Flow<List<HabitEntity>> {
-        return habitDao.getHabitsByNameAndTypeAndSort(name, type, isAsc)
+    fun getHabitsByNameAndTypeAndSortASC(name: String, type: Type): Flow<List<HabitEntity>> {
+        return habitDao.getHabitsByNameAndTypeAndSort(name, type, sortAscending)
     }
 
+    fun getHabitsByNameAndTypeAndSortDESC(name: String, type: Type): Flow<List<HabitEntity>> {
+        return habitDao.getHabitsByNameAndTypeAndSort(name, type, sortDescending)
+    }
+
+    companion object {
+        private const val sortAscending = 1
+        private const val sortDescending = 2
+    }
 }

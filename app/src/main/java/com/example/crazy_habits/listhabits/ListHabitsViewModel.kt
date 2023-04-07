@@ -12,9 +12,8 @@ import com.example.crazy_habits.database.habit.NameToFilter
 import com.example.crazy_habits.database.habit.NoName
 import com.example.crazy_habits.edithabits.HabitModel
 import com.example.crazy_habits.utils.SortState
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ListHabitsViewModel(private val habitModel: HabitModel) : ViewModel() {
@@ -37,18 +36,18 @@ class ListHabitsViewModel(private val habitModel: HabitModel) : ViewModel() {
 
     private fun getList(type: Type): LiveData<List<HabitEntity>> {
         return sortOrFilterStateFlow.flatMapLatest {
-            when (it.first) {
-                SortState.SortASC -> habitModel.getHabitsByNameAndTypeAndSort(
-                    it.second.string,
-                    type,
-                    1
-                )
-                SortState.SortDESC -> habitModel.getHabitsByNameAndTypeAndSort(
-                    it.second.string,
-                    type,
-                    2
-                )
-                SortState.NoSort -> habitModel.getHabitsByNameAndType(it.second.string, type)
+            withContext(Dispatchers.IO) {
+                when (it.first) {
+                    SortState.SortASC -> habitModel.getHabitsByNameAndTypeAndSortASC(
+                        it.second.string,
+                        type
+                    )
+                    SortState.SortDESC -> habitModel.getHabitsByNameAndTypeAndSortDESC(
+                        it.second.string,
+                        type
+                    )
+                    SortState.NoSort -> habitModel.getHabitsByNameAndType(it.second.string, type)
+                }
             }
         }.asLiveData()
     }
@@ -77,7 +76,7 @@ class ListHabitsViewModel(private val habitModel: HabitModel) : ViewModel() {
     }
 
     fun deleteClickedHabit(idd: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             habitModel.deleteHabitById(idd)
         }
     }

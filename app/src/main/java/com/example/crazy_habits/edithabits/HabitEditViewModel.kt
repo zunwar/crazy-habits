@@ -9,6 +9,7 @@ import com.example.crazy_habits.FirstActivity.Companion.TAG
 import com.example.crazy_habits.database.habit.HabitEntity
 import com.example.crazy_habits.utils.Priority
 import com.example.crazy_habits.utils.Type
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -36,7 +37,7 @@ class HabitEditViewModel(
     }
 
     private fun addHabit(habit: HabitEntity) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             habitModel.addHabit(habit)
         }
     }
@@ -44,7 +45,7 @@ class HabitEditViewModel(
 
     private fun displayOldHabit() {
         if (isEditable) {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 habitModel.getHabitToEdit(idHabit).collect{
                     _displayOldHabit.postValue(it)
                 }
@@ -53,7 +54,7 @@ class HabitEditViewModel(
     }
 
     private fun changeHabit(habit: HabitEntity) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             habitModel.changeHabit(habit)
         }
     }
@@ -98,7 +99,7 @@ class HabitEditViewModel(
     }
 
     fun deleteHabitById() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             habitModel.deleteHabitById(idHabit)
         }
     }
