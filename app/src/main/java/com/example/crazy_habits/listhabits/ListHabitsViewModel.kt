@@ -1,5 +1,6 @@
 package com.example.crazy_habits.listhabits
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -22,9 +23,19 @@ class ListHabitsViewModel(private val habitModel: HabitModel) : ViewModel() {
     private val sortOrFilterStateFlow = MutableStateFlow(Pair(SortState.NoSort, NoName))
     private var nameToFilterR = NoName
     private var sortState: SortState = SortState.NoSort
+    private val _uri: MutableLiveData<Uri> = MutableLiveData()
+    val uri: LiveData<Uri> = _uri
 
     init {
         Log.d(TAG, "ListHabitsViewModel---init created ")
+        getUriToAvatarDownload()
+        getHabitsFromServer()
+    }
+
+    private fun getHabitsFromServer() {
+        viewModelScope.launch {
+            habitModel.getHabitsFromServer()
+        }
     }
 
     fun getGoodOrBadList(isBadList: Boolean): LiveData<List<HabitEntity>> {
@@ -46,7 +57,9 @@ class ListHabitsViewModel(private val habitModel: HabitModel) : ViewModel() {
                         it.second.string,
                         type
                     )
-                    SortState.NoSort -> habitModel.getHabitsByNameAndType(it.second.string, type)
+                    SortState.NoSort -> {
+                        habitModel.getHabitsByNameAndType(it.second.string, type)
+                    }
                 }
             }
         }.asLiveData()
@@ -70,19 +83,34 @@ class ListHabitsViewModel(private val habitModel: HabitModel) : ViewModel() {
         sortOrFilterStateFlow.value = Pair(sortState, nameToFilterR)
     }
 
-    override fun onCleared() {
-        Log.d(TAG, "ListHabitsViewModel---onCleared --dead")
-        super.onCleared()
-    }
-
-    fun deleteClickedHabit(idd: String) {
+    fun deleteClickedHabit(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            habitModel.deleteHabitById(idd)
+            habitModel.deleteHabitById(id)
         }
     }
 
     fun listLoadedToRecycler(isLoaded: Boolean) {
         _listLoadedToRecycler.postValue(isLoaded)
+    }
+
+    override fun onCleared() {
+        Log.d(TAG, "ListHabitsViewModel---onCleared --dead")
+        super.onCleared()
+    }
+
+    private fun getUriToAvatarDownload() {
+        viewModelScope.launch {
+            habitModel.getUriToAvatarDownload().collect { _uri.postValue(it) }
+        }
+    }
+
+    fun syncHabitsWithServer(isBadList: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            when (isBadList) {
+                false -> habitModel.syncHabitsWithServer(Type.Good)
+                true -> habitModel.syncHabitsWithServer(Type.Bad)
+            }
+        }
     }
 
     companion object {

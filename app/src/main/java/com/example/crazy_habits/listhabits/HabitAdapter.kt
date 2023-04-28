@@ -64,7 +64,7 @@ class HabitAdapter (private val onItemClicked: (HabitEntity) -> Unit)
                         Priority.Middle -> ctx.getString(R.string.middlePriority)
                         Priority.High   -> ctx.getString(R.string.highPriority)
                     }
-                period.text         = habit.period
+                frequency.text      = habit.frequency.toString()
                 LLliv.background    = GradientDrawable().apply { setColor(habit.colorHabit) }
             }
         }

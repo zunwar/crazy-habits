@@ -10,9 +10,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.findNavController
+import coil.load
 import com.example.crazy_habits.databinding.ActivityFirstBinding
 import com.example.crazy_habits.listhabits.BottomSheet
 import com.example.crazy_habits.listhabits.ListHabitsViewModel
+import com.google.android.material.imageview.ShapeableImageView
 
 
 class FirstActivity : AppCompatActivity() {
@@ -67,6 +69,14 @@ class FirstActivity : AppCompatActivity() {
                     }
                 }
                 true
+            }
+        }
+
+        listHabitsViewModel.uri.observe(this) {
+            val imgView = binding.navView.getHeaderView(0).findViewById<ShapeableImageView>(R.id.cat)
+            imgView.load(it) {
+                placeholder(R.drawable.loading_animation)
+                error(R.drawable.cat_placeholder)
             }
         }
 

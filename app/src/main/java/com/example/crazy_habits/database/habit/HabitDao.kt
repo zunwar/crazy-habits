@@ -35,6 +35,12 @@ interface HabitDao {
         isAsc: Int
     ): Flow<List<HabitEntity>>
 
+    @Query("SELECT * FROM HabitEntity WHERE isSentToServer IN (:isSentToServer) AND type IN (:type)")
+    fun getUnsentHabits(isSentToServer: Int, type: Type): List<HabitEntity>
+
+    @Query("UPDATE HabitEntity SET id = :idNetwork, isSentToServer = :isSentToServer WHERE id = :id")
+    fun updateIdWithIdNetwork(id: String, idNetwork: String, isSentToServer: Int)
+
     @Update
     suspend fun updateHabit(vararg habit: HabitEntity)
 

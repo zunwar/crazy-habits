@@ -27,6 +27,7 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
         arguments?.let {
             isBadInstance = it.getBoolean(BAD_INSTANCE)
         }
+        syncHabitsWithServer(isBadInstance)
     }
 
     override fun onCreateView(
@@ -44,6 +45,10 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
         setBackgroundForFragments()
         initRecyclerView()
         scrollToPositionWhenNewAdded()
+    }
+
+    private fun syncHabitsWithServer(isBadInstance: Boolean) {
+        listHabitsViewModel.syncHabitsWithServer(isBadInstance)
     }
 
     private fun scrollToPositionWhenNewAdded() {
@@ -74,6 +79,7 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
                         idHabit = it.id
                     )
                 findNavController().navigate(action)
+//            закоментировать часть выше и раскоментировать эту строку для удаления по клику
 //            listHabitsViewModel.deleteClickedHabit(it.id)
         }
         subscribeUi()

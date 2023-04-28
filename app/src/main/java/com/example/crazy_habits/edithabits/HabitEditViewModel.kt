@@ -6,12 +6,16 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.crazy_habits.*
 import com.example.crazy_habits.FirstActivity.Companion.TAG
+import com.example.crazy_habits.database.habit.DataOfHabit
 import com.example.crazy_habits.database.habit.HabitEntity
 import com.example.crazy_habits.utils.Priority
 import com.example.crazy_habits.utils.Type
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
+import kotlinx.coroutines.withContext
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 class HabitEditViewModel(
     private val habitModel: HabitModel,
@@ -28,44 +32,61 @@ class HabitEditViewModel(
     private var _colorHabit = -1
     val colorHabit get() = _colorHabit
     private var colorChange: Boolean = false
-    private val idHabit: String = id ?: UUID.randomUUID().toString()
+    private val idHabit: String? = id
     val isEditable = id != null
+    private var serverResponse: String = ""
+
 
     init {
         Log.d(TAG, "HabitEditViewModel created")
         displayOldHabit()
     }
 
-    private fun addHabit(habit: HabitEntity) {
-        viewModelScope.launch(Dispatchers.IO) {
-            habitModel.addHabit(habit)
-        }
+    fun getServerResponse(): String {
+        return serverResponse
     }
 
+    private suspend fun addHabit(dataOfHabit: DataOfHabit) {
+           serverResponse = habitModel.addHabit(dataOfHabit)
+    }
 
     private fun displayOldHabit() {
         if (isEditable) {
             viewModelScope.launch(Dispatchers.IO) {
-                habitModel.getHabitToEdit(idHabit).collect{
+                habitModel.getHabitToEdit(idHabit!!).collect{
                     _displayOldHabit.postValue(it)
                 }
             }
         }
     }
 
-    private fun changeHabit(habit: HabitEntity) {
-        viewModelScope.launch(Dispatchers.IO) {
-            habitModel.changeHabit(habit)
-        }
+    private suspend fun changeHabit(dataOfHabit: DataOfHabit) {
+            val formatter = DateTimeFormatter.ofPattern("ddHHmss")
+            val currentDateTimeInt = LocalDateTime.now(ZoneId.of("UTC+5")).format(formatter).toInt()
+        Log.d(TAG, "HabitEditViewModel---changeHabit $currentDateTimeInt")
+            val habit = HabitEntity(
+                name = dataOfHabit.name,
+                desc = dataOfHabit.desc,
+                type = dataOfHabit.type,
+                priority = dataOfHabit.priority,
+                number = dataOfHabit.number,
+                frequency = dataOfHabit.frequency,
+                colorHabit = dataOfHabit.colorHabit,
+                date = currentDateTimeInt,
+                id = idHabit!!
+            )
+            serverResponse = habitModel.changeHabit(habit)
     }
 
-    fun saveHabit(habit: HabitEntity) {
-        if (isEditable) {
-            changeHabit(habit)
-        } else {
-            addHabit(habit)
+    fun saveHabit(dataOfHabit: DataOfHabit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (isEditable) {
+                changeHabit(dataOfHabit)
+            } else {
+                addHabit(dataOfHabit)
+            }
+            withContext(Dispatchers.Main){closeScreen()}
         }
-        closeScreen()
     }
 
     fun selectPriority(priority: Priority) {
@@ -82,7 +103,7 @@ class HabitEditViewModel(
     }
 
     fun getId(): String {
-        return idHabit
+        return idHabit!!
     }
 
     fun toColorFragmentClicked() {
@@ -100,7 +121,7 @@ class HabitEditViewModel(
 
     fun deleteHabitById() {
         viewModelScope.launch(Dispatchers.IO) {
-            habitModel.deleteHabitById(idHabit)
+            habitModel.deleteHabitById(idHabit!!)
         }
     }
 

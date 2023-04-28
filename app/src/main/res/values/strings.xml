@@ -7,14 +7,14 @@
     <string name="name_plug">Название_привычкиX</string>
     <string name="description">В чащах юга жил бы цитрус? Да, но фальшивый экземпляр! В чащах юга жил бы цитрус? Да, но фальшивый экземпляр!</string>
     <string name="type">тип:</string>
-    <string name="period">период:</string>
+    <string name="frequency">частота:</string>
     <string name="priority">10</string>
     <string name="hintDescription">Описание привычки</string>
     <string name="hintNameHabit">Название</string>
     <string name="typeHabit">Тип</string>
     <string name="priorityText">Приоритет</string>
     <string name="hintNumber">Количество выполнения</string>
-    <string name="hintPeriod">Периодичность</string>
+    <string name="hintFreq">Частота выполнения</string>
     <string name="chooseColorButton">Задать цвет</string>
     <string name="ok">ок</string>
     <string name="chosen_color">RGB:</string>
@@ -56,4 +56,5 @@
     <string name="filter_name_hint">Имя привычки</string>
     <string name="filter_list">filter list</string>
     <string name="too_much">too much symbols!</string>
+    <string name="requiredToFill">required to fill</string>
 </resources>
