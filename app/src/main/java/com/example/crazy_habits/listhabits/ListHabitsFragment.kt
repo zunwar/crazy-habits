@@ -41,7 +41,6 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "List_frag_onViewCreated")
         setBackgroundForFragments()
         initRecyclerView()
         scrollToPositionWhenNewAdded()
@@ -72,16 +71,14 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
     }
 
     private fun initRecyclerView() {
-        Log.d(TAG, "List_frag_initRecyclerView")
-        binding.recyclerView.adapter = HabitAdapter{
-                val action =
-                    ViewPagerFragmentDirections.actionViewPagerFragmentToHabitEditFragment(
-                        idHabit = it.id
-                    )
-                findNavController().navigate(action)
-//            закоментировать часть выше и раскоментировать эту строку для удаления по клику
-//            listHabitsViewModel.deleteClickedHabit(it.id)
-        }
+        binding.recyclerView.adapter = HabitAdapter({
+            val action = ViewPagerFragmentDirections.actionViewPagerFragmentToHabitEditFragment(
+                idHabit = it.id
+            )
+            findNavController().navigate(action)
+        }, {
+            listHabitsViewModel.deleteClickedHabit(it.id)
+        })
         subscribeUi()
     }
 
