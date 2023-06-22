@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ui_graph"
+    app:startDestination="@id/viewPagerFragment">
+
+    <fragment
+        android:id="@+id/viewPagerFragment"
+        android:name="com.example.presentation.listhabits.ViewPagerFragment"
+        android:label="fragment_view_pager"
+        tools:layout="@layout/fragment_view_pager" >
+        <action
+            android:id="@+id/action_viewPagerFragment_to_habitEditFragment"
+            app:destination="@id/habitEditFragment"
+            app:popUpTo="@id/viewPagerFragment" />
+        <deepLink app:uri="android-app://crazy_habits/viewPagerFragment"/>
+    </fragment>
+        <fragment
+            android:id="@+id/infoFragment"
+            android:name="com.example.presentation.info.InfoFragment"
+            android:label="fragment_info"
+            tools:layout="@layout/fragment_info" >
+            <action
+                android:id="@+id/action_infoFragment_to_habitEditFragment"
+                app:destination="@id/habitEditFragment"
+                />
+            <deepLink app:uri="android-app://crazy_habits/infoFragment"/>
+        </fragment>
+        <fragment
+            android:id="@+id/habitEditFragment"
+            android:name="com.example.presentation.edithabit.HabitEditFragment"
+            android:label="fragment_habit_edit"
+            tools:layout="@layout/fragment_habit_edit" >
+            <action
+                android:id="@+id/action_habitEditFragment_to_colorHabitFragment"
+                app:destination="@id/colorHabitFragment" />
+            <action
+                android:id="@+id/action_habitEditFragment_to_viewPagerFragment"
+
+                />
+            <deepLink app:uri="android-app://com.example.crazy_habits/habitEditFragment"/>
+            <argument
+                android:name="idHabit"
+                app:argType="string" />
+        </fragment>
+
+        <fragment
+            android:id="@+id/colorHabitFragment"
+            android:name="com.example.presentation.colorchoose.ColorHabitFragment"
+            android:label="fragment_color_habit"
+            tools:layout="@layout/fragment_color_habit" />
+        <action
+            android:id="@+id/action_global_infoFragment"
+            app:destination="@id/infoFragment" />
+
+</navigation>

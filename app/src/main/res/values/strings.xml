@@ -1,36 +1,32 @@
 <resources>
     <string name="app_name">crazy_habits</string>
-    <string name="addButton">Добавить</string>
+
     <string name="counter">0</string>
     <string name="info">Information</string>
     <string name="title2">Activity2</string>
-    <string name="name_plug">Название_привычкиX</string>
-    <string name="description">В чащах юга жил бы цитрус? Да, но фальшивый экземпляр! В чащах юга жил бы цитрус? Да, но фальшивый экземпляр!</string>
-    <string name="type">тип:</string>
-    <string name="frequency">частота:</string>
-    <string name="priority">10</string>
-    <string name="hintDescription">Описание привычки</string>
-    <string name="hintNameHabit">Название</string>
-    <string name="typeHabit">Тип</string>
-    <string name="priorityText">Приоритет</string>
-    <string name="hintNumber">Количество выполнения</string>
-    <string name="hintFreq">Частота выполнения</string>
-    <string name="chooseColorButton">Задать цвет</string>
-    <string name="ok">ок</string>
-    <string name="chosen_color">RGB:</string>
-    <string name="rgb_code">(255, 255, 255)</string>
-    <string name="submit">submit</string>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <string name="notSpecified">не указано</string>
-    <string name="goodHabit">полезная</string>
-    <string name="goodHabitTab1">good</string>
+
+
     <string name="neutralHabit">нейтральная</string>
-    <string name="badHabit">вредная</string>
-    <string name="badHabitTab2">evil</string>
+
+
     <string name="empty">---</string>
-    <string name="highPriority">Высокий</string>
-    <string name="middlePriority">Средний</string>
-    <string name="lowPriority">Низкий</string>
-    <string name="changeButton">изменить</string>
+
+
     <string-array name="spinner">
         <item>Высокий</item>
         <item>Средний</item>
@@ -38,23 +34,21 @@
     </string-array>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="Application_info">Application info</string>
+
     <string name="home">Home</string>
     <string name="emotion">Emotion</string>
     <string name="hello_there">Hello there…</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
-    <string name="ragdoll_cat">ragdoll cat</string>
-    <string name="app_info_text1">This test app is created to take control over your habits.</string>
-    <string name="app_info_text2">gl and hf!</string>
-    <string name="go_add_habit">Скорее добавить привычку!</string>
+
+
+
     <string name="logo">logo</string>
     <string name="application_name">Crazy Habits</string>
-    <string name="onTabReselectedText">Already here!</string>
+
     <string name="nav_emotionText">Feels good!</string>
-    <string name="filtration">Фильтрация по имени</string>
-    <string name="filter_name_hint">Имя привычки</string>
-    <string name="filter_list">filter list</string>
-    <string name="too_much">too much symbols!</string>
-    <string name="requiredToFill">required to fill</string>
+
+
+
+    <string name="title_presentation">Presentation</string>
 </resources>

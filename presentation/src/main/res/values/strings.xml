@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="too_much">too much symbols!</string>
+    <string name="habit_delete">Deleted!</string>
+    <string name="goodHabitTab1">good</string>
+    <string name="badHabitTab2">evil</string>
+    <string name="onTabReselectedText">Already here!</string>
+    <string name="goodHabit">полезная</string>
+    <string name="badHabit">вредная</string>
+    <string name="highPriority">Высокий</string>
+    <string name="middlePriority">Средний</string>
+    <string name="lowPriority">Низкий</string>
+    <string name="filtration">Фильтрация по имени</string>
+    <string name="filter_name_hint">Имя привычки</string>
+    <string name="filter_list">filter list</string>
+    <string name="Application_info">Application info</string>
+    <string name="app_info_text1">This test app is created to take control over your habits.</string>
+    <string name="app_info_text2">gl and hf!</string>
+    <string name="ok">ок</string>
+    <string name="chosen_color">RGB:</string>
+    <string name="rgb_code">(255, 255, 255)</string>
+    <string name="addButton">Добавить</string>
+    <string name="hintNameHabit">Название</string>
+    <string name="hintDescription">Описание привычки</string>
+    <string name="typeHabit">Тип</string>
+    <string name="priorityText">Приоритет</string>
+    <string name="hintNumber">Количество выполнения</string>
+    <string name="hintFreq">Частота выполнения</string>
+    <string name="chooseColorButton">Задать цвет</string>
+    <string name="ragdoll_cat">ragdoll cat</string>
+    <string name="go_add_habit">Скорее добавить привычку!</string>
+    <string name="submit">submit</string>
+    <string name="name_plug">Название_привычкиX</string>
+    <string name="type">тип:</string>
+    <string name="frequency">частота:</string>
+    <string name="priority">10</string>
+    <string name="description">В чащах юга жил бы цитрус? Да, но фальшивый экземпляр! В чащах юга жил бы цитрус? Да, но фальшивый экземпляр!</string>
+    <string name="changeButton">изменить</string>
+    <string name="requiredToFill">required to fill</string>
+</resources>

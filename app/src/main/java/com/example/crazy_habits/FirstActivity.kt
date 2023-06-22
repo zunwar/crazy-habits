@@ -1,33 +1,34 @@
 package com.example.crazy_habits
 
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.findNavController
 import coil.load
 import com.example.crazy_habits.databinding.ActivityFirstBinding
-import com.example.crazy_habits.listhabits.BottomSheet
-import com.example.crazy_habits.listhabits.ListHabitsViewModel
+import com.example.presentation.listhabits.BottomSheet
+import com.example.presentation.listhabits.ListHabitsViewModel
 import com.google.android.material.imageview.ShapeableImageView
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class FirstActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityFirstBinding
     private lateinit var toggle: ActionBarDrawerToggle
-    private val listHabitsViewModel: ListHabitsViewModel by viewModels{ ListHabitsViewModel.Factory}
+    private val listHabitsViewModel: ListHabitsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         //пока темная тема не настроена, добавлена след строка
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         installSplashScreen()
-        Log.d(TAG, "FirstActivity---onCreate ")
         super.onCreate(savedInstanceState)
         binding = ActivityFirstBinding.inflate(layoutInflater)
         val view = binding.root
@@ -50,14 +51,20 @@ class FirstActivity : AppCompatActivity() {
             navView.setNavigationItemSelectedListener {
                 when (it.itemId) {
                     R.id.nav_home -> {
-                        findNavController(R.id.nav_host_fragment).popBackStack(
-                            R.id.viewPagerFragment,
-                            false
-                        )
+                        val request = NavDeepLinkRequest.Builder
+                            .fromUri("android-app://crazy_habits/viewPagerFragment".toUri())
+                            .build()
+                        if (!findNavController(R.id.nav_host_fragment).currentDestination!!.hasDeepLink(
+                                request
+                            )
+                        ) findNavController(R.id.nav_host_fragment).navigate(request)
                         drawerLayout.closeDrawers()
                     }
                     R.id.nav_info -> {
-                        findNavController(R.id.nav_host_fragment).navigate(R.id.action_global_infoFragment)
+                        val request = NavDeepLinkRequest.Builder
+                            .fromUri("android-app://crazy_habits/infoFragment".toUri())
+                            .build()
+                        findNavController(R.id.nav_host_fragment).navigate(request)
                         drawerLayout.closeDrawers()
                     }
                     R.id.nav_emotion -> {
@@ -73,7 +80,8 @@ class FirstActivity : AppCompatActivity() {
         }
 
         listHabitsViewModel.uri.observe(this) {
-            val imgView = binding.navView.getHeaderView(0).findViewById<ShapeableImageView>(R.id.cat)
+            val imgView =
+                binding.navView.getHeaderView(0).findViewById<ShapeableImageView>(R.id.cat)
             imgView.load(it) {
                 placeholder(R.drawable.loading_animation)
                 error(R.drawable.cat_placeholder)
@@ -101,10 +109,6 @@ class FirstActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (toggle.onOptionsItemSelected(item)) true
         else super.onOptionsItemSelected(item)
-    }
-
-    companion object {
-        const val TAG = "errorqwer"
     }
 
 }
