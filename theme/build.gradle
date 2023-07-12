@@ -31,10 +31,6 @@ android {
 }
 
 dependencies {
-
-//    implementation 'androidx.core:core-ktx:1.7.0'
-//    implementation 'com.google.android.material:material:1.9.0'
-
     implementation libs.CoreKtx
     implementation libs.Material
 }
