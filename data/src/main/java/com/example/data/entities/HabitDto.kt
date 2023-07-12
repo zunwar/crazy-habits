@@ -26,5 +26,6 @@ fun HabitDto.toHabitEntity(isSentToServer: Boolean, id: String): HabitEntity = H
     colorHabit = this.colorHabit,
     date = this.date,
     isSentToServer = isSentToServer,
+    doneCount = 0,
     id = id
 )

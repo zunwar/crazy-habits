@@ -18,7 +18,7 @@ class HabitDtoAdapter : JsonAdapter<HabitDto>() {
         var frequency = 0
         var colorHabit: Int? = null
         var date: Int? = null
-        var doneDates: Int? = null
+        var doneDates = 0
 
         while (reader.hasNext()) {
             when (reader.nextName()) {
@@ -58,7 +58,7 @@ class HabitDtoAdapter : JsonAdapter<HabitDto>() {
             colorHabit = colorHabit
                 ?: 0,
             date = date ?: 0,
-            done_dates = doneDates ?: 0
+            done_dates = doneDates
         )
     }
 

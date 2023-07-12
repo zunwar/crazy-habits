@@ -13,5 +13,6 @@ internal fun HabitEntity.toDomain(): Habit = Habit(
     colorHabit,
     isSentToServer,
     date,
+    doneCount,
     id
 )

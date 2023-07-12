@@ -19,6 +19,7 @@ class HabitEntityAdapter : JsonAdapter<HabitEntity>() {
         var frequency = 0
         var date = 0
         var colorHabit: Int? = null
+        val doneCount = 0
         var id: String? = null
 
         while (reader.hasNext()) {
@@ -46,7 +47,6 @@ class HabitEntityAdapter : JsonAdapter<HabitEntity>() {
         }
 
         reader.endObject()
-
         return HabitEntity(
             name = name.orEmpty(),
             desc = desc.orEmpty(),
@@ -57,6 +57,7 @@ class HabitEntityAdapter : JsonAdapter<HabitEntity>() {
             date = date,
             colorHabit = colorHabit ?: 0,
             isSentToServer = true,
+            doneCount = doneCount,
             id = id.orEmpty()
         )
     }
@@ -84,6 +85,7 @@ class HabitEntityAdapter : JsonAdapter<HabitEntity>() {
             writer.name("frequency").value(it.frequency)
             writer.name("date").value(it.date)
             writer.name("color").value(it.colorHabit)
+            writer.name("done_dates").beginArray().value(it.doneCount).endArray()
             writer.name("uid").value(it.id)
             writer.endObject()
         } ?: writer.nullValue()

@@ -13,5 +13,6 @@ internal fun Habit.toEntity(): HabitEntity = HabitEntity(
     colorHabit,
     isSentToServer,
     date,
+    doneCount,
     id
 )

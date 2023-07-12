@@ -34,7 +34,12 @@
     <string name="type">тип:</string>
     <string name="frequency">частота:</string>
     <string name="priority">10</string>
-    <string name="description">В чащах юга жил бы цитрус? Да, но фальшивый экземпляр! В чащах юга жил бы цитрус? Да, но фальшивый экземпляр!</string>
+    <string name="description">В чащах юга жил бы цитрус? Да, но фальшивый экземпляр!</string>
     <string name="changeButton">изменить</string>
     <string name="requiredToFill">required to fill</string>
+    <string name="do_habit">Do habit</string>
+    <string name="do_bad_habit_more">Можете выполнить еще %1$s раз</string>
+    <string name="do_good_habit_more">Стоит выполнить еще %1$s раз</string>
+    <string name="do_bad_habit_enough">Хватит это делать</string>
+    <string name="do_good_habit_enough">You are breathtaking!</string>
 </resources>

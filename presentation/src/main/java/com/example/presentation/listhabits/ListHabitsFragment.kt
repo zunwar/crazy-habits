@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.domain.entities.MessageDoHabit
 import com.example.presentation.R
 import com.example.theme.R.color
 import com.example.presentation.databinding.FragmentListHabitsBinding
@@ -66,8 +67,8 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
     }
 
     private fun setBackgroundForFragments() {
-            if (isBadInstance) binding.constrListHabits.setBackgroundResource(color.badHabit)
-            else binding.constrListHabits.setBackgroundResource(color.goodHabit)
+        if (isBadInstance) binding.constrListHabits.setBackgroundResource(color.badHabit)
+        else binding.constrListHabits.setBackgroundResource(color.goodHabit)
     }
 
     private fun initRecyclerView() {
@@ -81,6 +82,25 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
             onItemLongClicked = {
                 listHabitsViewModel.deleteClickedHabit(it.id)
                 Toast.makeText(context, getString(R.string.habit_delete), Toast.LENGTH_SHORT).show()
+            },
+            onDoHabitClicked = {
+                listHabitsViewModel.doHabitClicked(habit = it)
+                    .observe(viewLifecycleOwner) { msgData ->
+                        val message =
+                            when (msgData.first) {
+                                MessageDoHabit.DoBadHabitMore -> getString(
+                                    R.string.do_bad_habit_more,
+                                    "${msgData.second}"
+                                )
+                                MessageDoHabit.DoBadHabitEnough -> getString(R.string.do_bad_habit_enough)
+                                MessageDoHabit.DoGoodHabitMore -> getString(
+                                    R.string.do_good_habit_more,
+                                    "${msgData.second}"
+                                )
+                                MessageDoHabit.DoGoodHabitEnough -> getString(R.string.do_good_habit_enough)
+                            }
+                        Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
+                    }
             }
         )
         subscribeUi()

@@ -16,6 +16,7 @@ class ListHabitsViewModel @Inject constructor(
     private val deleteHabitUseCase: DeleteHabitUseCase,
     private val getAvatarUriUseCase: GetAvatarUriUseCase,
     private val syncHabitsWithServerUseCase: SyncHabitsWithServerUseCase,
+    private val doHabitUseCase: DoHabitUseCase,
     ) : ViewModel() {
     private val _listLoadedToRecycler: MutableLiveData<Boolean> = MutableLiveData()
     val listLoadedToRecycler: LiveData<Boolean> = _listLoadedToRecycler
@@ -85,6 +86,10 @@ class ListHabitsViewModel @Inject constructor(
                 true -> syncHabitsWithServerUseCase(Type.Bad)
             }
         }
+    }
+
+    fun doHabitClicked(habit: Habit) = liveData {
+        emit(doHabitUseCase(habit))
     }
 
 }

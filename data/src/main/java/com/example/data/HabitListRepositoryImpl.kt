@@ -8,6 +8,7 @@ import com.example.data.entities.HabitEntity
 import com.example.data.entities.toHabitDto
 import com.example.data.local.database.HabitDao
 import com.example.data.mappers.toDomain
+import com.example.data.mappers.toEntity
 import com.example.data.remote.network.ConnectivityObserver
 import com.example.data.remote.network.HabitUID
 import com.example.data.remote.network.HabitsApiService
@@ -29,6 +30,27 @@ class HabitListRepositoryImpl @Inject constructor(
     private val retrofitService: HabitsApiService,
     private val connectivityObserver: ConnectivityObserver
 ): HabitListRepository {
+
+    init {
+        CoroutineScope(Dispatchers.IO).launch {
+            getHabitsFromServer()
+        }
+    }
+
+    private suspend fun getHabitsFromServer() {
+        when (val response = retrofitService.getHabits()) {
+            is NetworkResult.Success -> {
+                val list: List<HabitEntity> = response.data
+                list.forEach { habitDao.insertAll(it) }
+            }
+            is NetworkResult.Error -> Log.d(
+                TAG, "getHabitsFromServer Error ${response.responseError}"
+            )
+            is NetworkResult.Exception -> Log.d(
+                TAG, "getHabitsFromServer Exception ${response.e}"
+            )
+        }
+    }
 
     override suspend fun getHabitsByNameAndTypeAndSortASC(
         nameToFilter: String,
@@ -141,25 +163,8 @@ class HabitListRepositoryImpl @Inject constructor(
         connectivityObserver.observe().collect { emit(imgUri) }
     }
 
-    init {
-        CoroutineScope(Dispatchers.IO).launch {
-            getHabitsFromServer()
-        }
-    }
-
-    private suspend fun getHabitsFromServer() {
-        when (val response = retrofitService.getHabits()) {
-            is NetworkResult.Success -> {
-                val list: List<HabitEntity> = response.data
-                list.forEach { habitDao.insertAll(it) }
-            }
-            is NetworkResult.Error -> Log.d(
-                TAG, "getHabitsFromServer Error ${response.responseError}"
-            )
-            is NetworkResult.Exception -> Log.d(
-                TAG, "getHabitsFromServer Exception ${response.e}"
-            )
-        }
+    override suspend fun changeHabit(habit: Habit) {
+        habitDao.updateHabit(habit.toEntity())
     }
 
     companion object {

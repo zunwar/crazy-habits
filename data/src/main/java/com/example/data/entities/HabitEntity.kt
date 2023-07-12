@@ -18,6 +18,7 @@ data class HabitEntity(
     @Json(name = "color") @ColumnInfo(name = "color") val colorHabit: Int,
     @ColumnInfo(name = "isSentToServer") val isSentToServer: Boolean = false,
     @Json(name = "date") @ColumnInfo(name = "date") val date: Int,
+    @ColumnInfo(name = "doneCount") val doneCount: Int,
     @Json(name = "uid") @PrimaryKey val id: String
 )
 

@@ -10,6 +10,7 @@ data class Habit(
     val colorHabit: Int,
     val isSentToServer: Boolean = false,
     val date: Int,
+    val doneCount: Int = 0,
     val id: String
 )
 

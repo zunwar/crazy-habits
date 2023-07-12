@@ -14,7 +14,8 @@ import com.example.presentation.databinding.ListItemViewBinding
 
 class HabitAdapter(
     private val onItemClicked: (Habit) -> Unit,
-    private val onItemLongClicked: (Habit) -> Unit
+    private val onItemLongClicked: (Habit) -> Unit,
+    private val onDoHabitClicked:(Habit) -> Unit
 ) : ListAdapter<Habit, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitViewHolder {
@@ -29,6 +30,10 @@ class HabitAdapter(
             val position = viewHolder.absoluteAdapterPosition
             onItemLongClicked(getItem(position))
             true
+        }
+        binding.doHabit.setOnClickListener {
+            val position = viewHolder.absoluteAdapterPosition
+            onDoHabitClicked(getItem(position))
         }
         return viewHolder
     }

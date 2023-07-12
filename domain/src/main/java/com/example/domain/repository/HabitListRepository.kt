@@ -20,4 +20,6 @@ interface HabitListRepository {
 
     suspend fun getAvatar(): Flow<Uri>
 
+    suspend fun changeHabit(habit: Habit)
+
 }
