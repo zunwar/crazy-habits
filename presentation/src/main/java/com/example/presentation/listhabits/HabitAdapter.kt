@@ -15,27 +15,13 @@ import com.example.presentation.databinding.ListItemViewBinding
 class HabitAdapter(
     private val onItemClicked: (Habit) -> Unit,
     private val onItemLongClicked: (Habit) -> Unit,
-    private val onDoHabitClicked:(Habit) -> Unit
+    private val onDoHabitClicked: (Habit) -> Unit
 ) : ListAdapter<Habit, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitViewHolder {
         val binding =
             ListItemViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        val viewHolder = HabitViewHolder(binding)
-        viewHolder.itemView.setOnClickListener {
-            val position = viewHolder.absoluteAdapterPosition
-            onItemClicked(getItem(position))
-        }
-        viewHolder.itemView.setOnLongClickListener {
-            val position = viewHolder.absoluteAdapterPosition
-            onItemLongClicked(getItem(position))
-            true
-        }
-        binding.doHabit.setOnClickListener {
-            val position = viewHolder.absoluteAdapterPosition
-            onDoHabitClicked(getItem(position))
-        }
-        return viewHolder
+        return HabitViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -66,7 +52,6 @@ class HabitAdapter(
         private val ctx = this.itemView.context
 
         fun bind(habit: Habit) {
-
             with(binding) {
                 nameHabit.text = habit.name
                 description.text = habit.desc
@@ -81,6 +66,16 @@ class HabitAdapter(
                 }
                 frequency.text = habit.frequency.toString()
                 LLliv.background = GradientDrawable().apply { setColor(habit.colorHabit) }
+            }
+            itemView.setOnClickListener {
+                onItemClicked(habit)
+            }
+            itemView.setOnLongClickListener {
+                onItemLongClicked(habit)
+                true
+            }
+            binding.doHabit.setOnClickListener {
+                onDoHabitClicked(habit)
             }
         }
     }

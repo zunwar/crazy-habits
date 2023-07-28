@@ -10,6 +10,7 @@ import com.example.domain.entities.Habit
 import com.example.domain.repository.HabitEditRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.util.*
 import javax.inject.Inject
 
 class HabitEditRepositoryImpl @Inject constructor(
@@ -24,45 +25,48 @@ class HabitEditRepositoryImpl @Inject constructor(
     * с локальным id и флагом isSentToServer = false
     */
     override suspend fun addHabit(habit: Habit): String {
-        var serverResponse = ""
-        var habitToAdd = habit
-        when (val response = retrofitService.putHabit(habitData = habit.toEntity().toHabitDto())) {
+        val serverResponse = when (val response =
+            retrofitService.putHabit(habitData = habit.toEntity().toHabitDto())) {
             is NetworkResult.Success -> {
-                if (response.code == 200 && response.message == "OK") {
-                    habitToAdd = habit.copy(isSentToServer = true, id = response.data.uid)
-                    serverResponse = "${response.code} ${response.message}"
-                }
+                val habitToAdd = habit.copy(isSentToServer = true, id = response.data.uid)
+                habitDao.insertAll(habitToAdd.toEntity())
+                "${response.code} ${response.message}"
             }
             is NetworkResult.Error -> {
-                serverResponse =
-                    "\n${response.responseError!!.code}\n${response.responseError.message}"
+                val habitToAdd = habit.copy(id = UUID.randomUUID().toString())
+                habitDao.insertAll(habitToAdd.toEntity())
+                "\n${response.responseError!!.code}\n${response.responseError.message}"
             }
-            is NetworkResult.Exception -> serverResponse = "${response.e.message}"
+            is NetworkResult.Exception -> {
+                val habitToAdd = habit.copy(id = UUID.randomUUID().toString())
+                habitDao.insertAll(habitToAdd.toEntity())
+                "${response.e.message}"
+            }
         }
-        habitDao.insertAll(habitToAdd.toEntity())
         return serverResponse
     }
 
-
+    /*
+    * изменение привычки, в любом случае сохраняем изменения в БД,
+    * при появлении сети данные будут синхронизированны
+    */
     override suspend fun changeHabit(habit: Habit): String {
-        var habitToChange = habit
-        var serverResponse = ""
-        when (val response = retrofitService.changeHabit(habit = habit.toEntity())) {
-            is NetworkResult.Success -> {
-                if (response.code == 200 && response.message == "OK") {
-                    habitToChange = habit.copy(isSentToServer = true)
-                    serverResponse = "${response.code} ${response.message}"
+        val serverResponse =
+            when (val response = retrofitService.changeHabit(habit = habit.toEntity().toHabitDto())) {
+                is NetworkResult.Success -> {
+                    val habitToChange = habit.copy(isSentToServer = true)
+                    habitDao.updateHabit(habitToChange.toEntity())
+                    "${response.code} ${response.message}"
+                }
+                is NetworkResult.Error -> {
+                    habitDao.updateHabit(habit.toEntity())
+                    "\n${response.responseError!!.code}\n${response.responseError.message}"
+                }
+                is NetworkResult.Exception -> {
+                    habitDao.updateHabit(habit.toEntity())
+                    "${response.e.message}"
                 }
             }
-            is NetworkResult.Error -> {
-                serverResponse =
-                    "\n${response.responseError!!.code}\n${response.responseError.message}"
-            }
-            is NetworkResult.Exception -> {
-                serverResponse = "${response.e.message}"
-            }
-        }
-        habitDao.updateHabit(habitToChange.toEntity())
         return serverResponse
     }
 

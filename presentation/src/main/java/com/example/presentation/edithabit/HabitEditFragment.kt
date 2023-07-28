@@ -49,7 +49,7 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
 
     //отображение ответа сервера, скрывание прогресс бара и закрытие фрагмента
         habitEditViewModel.closeFragment.observe(viewLifecycleOwner) {
-            val serverResponse = habitEditViewModel.getServerResponse()
+            val serverResponse = habitEditViewModel.serverResponse.value
             Toast.makeText(activity, "Server response: $serverResponse", Toast.LENGTH_LONG).show()
             binding.progressBar.visibility = View.GONE
             findNavController().popBackStack()

@@ -16,9 +16,19 @@ object HabitEditModule {
     @Qualifier
     annotation class IdHabit
 
+    @Qualifier
+    annotation class IsEditable
+
     @Provides
     @IdHabit
     @ViewModelScoped
     fun provideIdHabit(savedStateHandle: SavedStateHandle): String? = savedStateHandle.get<String>(
-        ListHabitsFragment.HABIT_TO_EDIT_ID)
+        ListHabitsFragment.HABIT_TO_EDIT_ID
+    )
+
+    @Provides
+    @IsEditable
+    @ViewModelScoped
+    fun provideIsEditable(@IdHabit provideIdHabit: String?): Boolean =
+        provideIdHabit != null
 }

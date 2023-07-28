@@ -20,8 +20,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class FirstActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityFirstBinding
+    private var _binding: ActivityFirstBinding? = null
+    private val binding get() = _binding!!
     private lateinit var toggle: ActionBarDrawerToggle
     private val listHabitsViewModel: ListHabitsViewModel by viewModels()
 
@@ -30,13 +30,47 @@ class FirstActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         installSplashScreen()
         super.onCreate(savedInstanceState)
-        binding = ActivityFirstBinding.inflate(layoutInflater)
+        _binding = ActivityFirstBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
 
         //setting ToolBar to replace the ActionBar
         setSupportActionBar(binding.appBarMain.toolbar)
 
+        actionBarDrawerToggle()
+        loadAvatar()
+        filterButtonToolBar()
+        sortButtonToolBar()
+    }
+
+    private fun sortButtonToolBar() {
+        binding.appBarMain.filterButtonToolBar.setOnClickListener {
+            bottomSheet()
+        }
+    }
+
+    private fun filterButtonToolBar() {
+        binding.appBarMain.sortButtonToolBar.setOnClickListener { sortButton ->
+            listHabitsViewModel.sortClicked()
+            sortButton.animate().apply {
+                duration = 1000
+                rotationXBy(360f)
+            }.start()
+        }
+    }
+
+    private fun loadAvatar() {
+        listHabitsViewModel.uri.observe(this) {
+            val imgView =
+                binding.navView.getHeaderView(0).findViewById<ShapeableImageView>(R.id.cat)
+            imgView.load(it) {
+                placeholder(R.drawable.loading_animation)
+                error(R.drawable.cat_placeholder)
+            }
+        }
+    }
+
+    private fun actionBarDrawerToggle() {
         binding.apply {
             toggle = ActionBarDrawerToggle(
                 this@FirstActivity,
@@ -78,27 +112,6 @@ class FirstActivity : AppCompatActivity() {
                 true
             }
         }
-
-        listHabitsViewModel.uri.observe(this) {
-            val imgView =
-                binding.navView.getHeaderView(0).findViewById<ShapeableImageView>(R.id.cat)
-            imgView.load(it) {
-                placeholder(R.drawable.loading_animation)
-                error(R.drawable.cat_placeholder)
-            }
-        }
-
-        binding.appBarMain.filterButtonToolBar.setOnClickListener {
-            bottomSheet()
-        }
-
-        binding.appBarMain.sortButtonToolBar.setOnClickListener { sortButton ->
-            listHabitsViewModel.sortClicked()
-            sortButton.animate().apply {
-                duration = 1000
-                rotationXBy(360f)
-            }.start()
-        }
     }
 
     private fun bottomSheet() {
@@ -112,6 +125,3 @@ class FirstActivity : AppCompatActivity() {
     }
 
 }
-
-
-

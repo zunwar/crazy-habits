@@ -27,7 +27,7 @@ suspend fun <T : Any> handleApi(execute: suspend () -> Response<T>): NetworkResu
         if (response.isSuccessful && body != null) {
             NetworkResult.Success(data = body, code = response.code(), message = response.message())
         } else {
-            val errorBody = response.errorBody()!!.string()
+            val errorBody = response.errorBody()?.string() ?: ""
             val errorBodyJson = JSONObject(errorBody)
             val responseError =
                 ResponseError(

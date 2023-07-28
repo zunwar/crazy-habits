@@ -21,8 +21,6 @@ object NetworkModule {
     @Singleton
     fun provideMoshi(): Moshi {
         return Moshi.Builder()
-            .add(HabitEntityAdapter())
-            .add(HabitDtoAdapter())
             .add(KotlinJsonAdapterFactory())
             .build()
     }

@@ -19,23 +19,25 @@ import javax.inject.Inject
 @HiltViewModel
 class HabitEditViewModel @Inject constructor(
     @HabitEditModule.IdHabit private val idHabit: String?,
+    @HabitEditModule.IsEditable val isEditable: Boolean,
     private val addHabitUseCase: AddHabitUseCase,
     private val getHabitUseCase: GetHabitUseCase,
     private val changeHabitUseCase: ChangeHabitUseCase,
 ) : ViewModel() {
     private val _displayOldHabit: MutableLiveData<Habit> = MutableLiveData()
     val displayOldHabit: LiveData<Habit> = _displayOldHabit
-    private var _closeFragment = SingleLiveEvent<Boolean>()
+    private val _closeFragment = SingleLiveEvent<Boolean>()
     val closeFragment = _closeFragment
-    private var _navigateToColorFragment = SingleLiveEvent<Boolean>()
+    private val _navigateToColorFragment = SingleLiveEvent<Boolean>()
     val navigateToColorFragment = _navigateToColorFragment
     private var _selectedPriority = Priority.Middle
     val selectedPriority get() = _selectedPriority
     private var _colorHabit = -1
     val colorHabit get() = _colorHabit
     private var colorChange: Boolean = false
-    val isEditable = idHabit != null
-    private var serverResponse: String = ""
+
+    private val _serverResponse: MutableLiveData<String> = MutableLiveData()
+    val serverResponse: LiveData<String> = _serverResponse
 
     init {
         displayOldHabit()
@@ -53,11 +55,11 @@ class HabitEditViewModel @Inject constructor(
     }
 
     private suspend fun addHabit(habit: Habit) {
-        serverResponse = addHabitUseCase(habit)
+        _serverResponse.postValue(this.addHabitUseCase(habit))
     }
 
     private suspend fun changeHabit(habit: Habit) {
-        serverResponse = changeHabitUseCase(habit)
+        _serverResponse.postValue(this.changeHabitUseCase(habit))
     }
 
     private fun displayOldHabit() {
@@ -68,10 +70,6 @@ class HabitEditViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    fun getServerResponse(): String {
-        return serverResponse
     }
 
     fun selectPriority(priority: Priority) {

@@ -88,14 +88,14 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
                     .observe(viewLifecycleOwner) { msgData ->
                         val message =
                             when (msgData.first) {
-                                MessageDoHabit.DoBadHabitMore -> getString(
-                                    R.string.do_bad_habit_more,
-                                    "${msgData.second}"
+                                MessageDoHabit.DoBadHabitMore -> resources.getQuantityString(
+                                    R.plurals.do_bad_habit_more,
+                                    msgData.second, msgData.second
                                 )
                                 MessageDoHabit.DoBadHabitEnough -> getString(R.string.do_bad_habit_enough)
-                                MessageDoHabit.DoGoodHabitMore -> getString(
-                                    R.string.do_good_habit_more,
-                                    "${msgData.second}"
+                                MessageDoHabit.DoGoodHabitMore -> resources.getQuantityString(
+                                    R.plurals.do_good_habit_more,
+                                    msgData.second, msgData.second
                                 )
                                 MessageDoHabit.DoGoodHabitEnough -> getString(R.string.do_good_habit_enough)
                             }
@@ -121,7 +121,7 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
 
     companion object {
         const val HABIT_TO_EDIT_ID = "idHabit"
-        private const val BAD_INSTANCE = "BadInstance"
+        const val BAD_INSTANCE = "BadInstance"
 
         fun newInstance(isBad: Boolean) =
             ListHabitsFragment().apply {

@@ -1,23 +1,19 @@
 package com.example.presentation.colorchoose
-//
-//import android.util.Log
-//import androidx.lifecycle.*
-//import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-//import androidx.lifecycle.viewmodel.CreationExtras
-//import kotlinx.coroutines.Dispatchers
-//import kotlinx.coroutines.launch
-//
+
+import androidx.lifecycle.*
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+
 //class ColorViewModel(private val colorModel: ColorModel, private val id: String) : ViewModel() {
+@HiltViewModel
+class ColorViewModel @Inject constructor(
+) : ViewModel() {
 //    private var _closeColorFragment = SingleLiveEvent<Boolean>()
 //    val closeColorFragment = _closeColorFragment
 //    private var _colorBoxEntity: MutableLiveData<ColorBoxEntity> = MutableLiveData()
 //    val colorBoxEntity: MutableLiveData<ColorBoxEntity> = _colorBoxEntity
 //    private val _isDoneCreatingBoxes: MutableLiveData<Boolean> = MutableLiveData()
 //    val isDoneCreatingBoxes = _isDoneCreatingBoxes
-//
-//    init {
-//        Log.d(TAG, "initColorViewModel")
-//    }
 //
 //    private suspend fun addNewColorBox() {
 //        val cbe = ColorBoxEntity(
@@ -88,4 +84,4 @@ package com.example.presentation.colorchoose
 //            }
 //    }
 //
-//}
+}

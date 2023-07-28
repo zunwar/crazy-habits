@@ -21,8 +21,6 @@ class ListHabitsViewModel @Inject constructor(
     private val _listLoadedToRecycler: MutableLiveData<Boolean> = MutableLiveData()
     val listLoadedToRecycler: LiveData<Boolean> = _listLoadedToRecycler
     private val sortOrFilterStateFlow = MutableStateFlow(Pair(SortState.NoSort, NoName))
-    private var nameToFilterR = NoName
-    private var sortState: SortState = SortState.NoSort
     private val _uri: MutableLiveData<Uri> = MutableLiveData()
     val uri: LiveData<Uri> = _uri
 
@@ -46,21 +44,17 @@ class ListHabitsViewModel @Inject constructor(
     }
 
     fun sortClicked() {
-        sortState = when (sortState) {
+        val sortState: SortState = when (sortOrFilterStateFlow.value.first) {
             SortState.SortASC -> SortState.SortDESC
             SortState.SortDESC -> SortState.NoSort
             SortState.NoSort -> SortState.SortASC
         }
-        updateSortOrFilterState()
+        sortOrFilterStateFlow.value = sortOrFilterStateFlow.value.copy(first = sortState)
     }
 
     fun updateNameToFilter(name: String) {
-        nameToFilterR = NameToFilter(name)
-        updateSortOrFilterState()
-    }
-
-    private fun updateSortOrFilterState() {
-        sortOrFilterStateFlow.value = Pair(sortState, nameToFilterR)
+        val nameToFilter = NameToFilter(name)
+        sortOrFilterStateFlow.value = sortOrFilterStateFlow.value.copy(second = nameToFilter)
     }
 
     fun deleteClickedHabit(idHabit: String) {

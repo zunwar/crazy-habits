@@ -6,6 +6,7 @@ import androidx.core.net.toUri
 import com.example.data.entities.HabitDto
 import com.example.data.entities.HabitEntity
 import com.example.data.entities.toHabitDto
+import com.example.data.entities.toHabitEntity
 import com.example.data.local.database.HabitDao
 import com.example.data.mappers.toDomain
 import com.example.data.mappers.toEntity
@@ -40,14 +41,16 @@ class HabitListRepositoryImpl @Inject constructor(
     private suspend fun getHabitsFromServer() {
         when (val response = retrofitService.getHabits()) {
             is NetworkResult.Success -> {
-                val list: List<HabitEntity> = response.data
+                val list: List<HabitEntity> =
+                    response.data.map { it.toHabitEntity(isSentToServer = true, id = it.uid!!) }
                 list.forEach { habitDao.insertAll(it) }
+                Log.d(TAG, "HabitListRepositoryImpl---getHabitsFromServer Success")
             }
             is NetworkResult.Error -> Log.d(
-                TAG, "getHabitsFromServer Error ${response.responseError}"
+                TAG, "HabitListRepositoryImpl---getHabitsFromServer Error ${response.responseError}"
             )
             is NetworkResult.Exception -> Log.d(
-                TAG, "getHabitsFromServer Exception ${response.e}"
+                TAG, "HabitListRepositoryImpl---getHabitsFromServer Exception ${response.e}"
             )
         }
     }
@@ -138,23 +141,22 @@ class HabitListRepositoryImpl @Inject constructor(
         }
     }
 
-        private suspend fun addHabitTrySync(habitDto: HabitDto): String {
-            var id = ""
-            when (val response = retrofitService.putHabit(habitData = habitDto)) {
-                is NetworkResult.Success -> {
-                    if (response.code == 200 && response.message == "OK") {
-                        id = response.data.uid
-                    }
-                }
-                is NetworkResult.Error -> {
-                    Log.d(TAG, "addHabitTrySync ${response.responseError}")
-                }
-                is NetworkResult.Exception -> {
-                    Log.d(TAG, "addHabitTrySync ${response.e.message}")
-                }
+    private suspend fun addHabitTrySync(habitDto: HabitDto): String {
+        val id = when (val response = retrofitService.putHabit(habitData = habitDto)) {
+            is NetworkResult.Success -> {
+                response.data.uid
             }
-            return id
+            is NetworkResult.Error -> {
+                Log.d(TAG, "addHabitTrySync ${response.responseError}")
+                ""
+            }
+            is NetworkResult.Exception -> {
+                Log.d(TAG, "addHabitTrySync ${response.e.message}")
+                ""
+            }
         }
+        return id
+    }
 
     override suspend fun getAvatar(): Flow<Uri> = flow {
         val imgUrl = "https://i.imgur.com/bMhYfSR.png"

@@ -23,7 +23,7 @@ class BottomSheet : BottomSheetDialogFragment() {
 
     private var _binding: BottomSheetBinding? = null
     private val binding get() = _binding!!
-    lateinit var beh: BottomSheetBehavior<*>
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
 
     private val listHabitsViewModel: ListHabitsViewModel by activityViewModels()
 
@@ -34,8 +34,8 @@ class BottomSheet : BottomSheetDialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        beh = (dialog as BottomSheetDialog).behavior
-        beh.peekHeight = 40.dpToPx
+        bottomSheetBehavior = (dialog as BottomSheetDialog).behavior
+        bottomSheetBehavior.peekHeight = 40.dpToPx
     }
 
     override fun onCreateView(
@@ -54,10 +54,10 @@ class BottomSheet : BottomSheetDialogFragment() {
         }
 
         binding.bottomSheetRoot.setOnClickListener {
-            when (beh.state) {
-                BottomSheetBehavior.STATE_COLLAPSED -> beh.state =
+            when (bottomSheetBehavior.state) {
+                BottomSheetBehavior.STATE_COLLAPSED -> bottomSheetBehavior.state =
                     BottomSheetBehavior.STATE_EXPANDED
-                BottomSheetBehavior.STATE_EXPANDED -> beh.state =
+                BottomSheetBehavior.STATE_EXPANDED -> bottomSheetBehavior.state =
                     BottomSheetBehavior.STATE_COLLAPSED
                 BottomSheetBehavior.STATE_DRAGGING -> {}
                 BottomSheetBehavior.STATE_SETTLING -> {}
