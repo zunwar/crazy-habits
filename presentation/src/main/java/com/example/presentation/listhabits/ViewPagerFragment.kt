@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.presentation.R
 import com.example.presentation.databinding.FragmentViewPagerBinding
+import com.example.presentation.listhabits.badlist.BadListFragment
+import com.example.presentation.listhabits.goodlist.GoodListFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -27,8 +29,8 @@ class ViewPagerFragment :  Fragment(R.layout.fragment_view_pager) {
         _binding = FragmentViewPagerBinding.inflate(inflater, container, false)
 
         val fragmentList = arrayListOf<Fragment>(
-            ListHabitsFragment.newInstance(isBad = false),
-            ListHabitsFragment.newInstance(isBad = true)
+            GoodListFragment(),
+            BadListFragment()
         )
 
         val adapter = ViewPagerAdapter(

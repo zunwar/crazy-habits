@@ -1,7 +1,7 @@
 package com.example.presentation.edithabit.di
 
 import androidx.lifecycle.SavedStateHandle
-import com.example.presentation.listhabits.ListHabitsFragment
+import com.example.domain.Constants.HABIT_TO_EDIT_ID
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,12 +23,12 @@ object HabitEditModule {
     @IdHabit
     @ViewModelScoped
     fun provideIdHabit(savedStateHandle: SavedStateHandle): String? = savedStateHandle.get<String>(
-        ListHabitsFragment.HABIT_TO_EDIT_ID
+        HABIT_TO_EDIT_ID
     )
 
     @Provides
     @IsEditable
     @ViewModelScoped
-    fun provideIsEditable(@IdHabit provideIdHabit: String?): Boolean =
-        provideIdHabit != null
+    fun provideIsEditable(@IdHabit provideIdHabit: String?): Boolean = provideIdHabit != null
+
 }

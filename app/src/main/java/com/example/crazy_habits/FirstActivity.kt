@@ -14,7 +14,8 @@ import androidx.navigation.findNavController
 import coil.load
 import com.example.crazy_habits.databinding.ActivityFirstBinding
 import com.example.presentation.listhabits.BottomSheet
-import com.example.presentation.listhabits.ListHabitsViewModel
+import com.example.presentation.listhabits.badlist.BadListViewModel
+import com.example.presentation.listhabits.goodlist.GoodListViewModel
 import com.google.android.material.imageview.ShapeableImageView
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,7 +24,8 @@ class FirstActivity : AppCompatActivity() {
     private var _binding: ActivityFirstBinding? = null
     private val binding get() = _binding!!
     private lateinit var toggle: ActionBarDrawerToggle
-    private val listHabitsViewModel: ListHabitsViewModel by viewModels()
+    private val goodListViewModel: GoodListViewModel by viewModels()
+    private val badListViewModel: BadListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         //пока темная тема не настроена, добавлена след строка
@@ -51,7 +53,8 @@ class FirstActivity : AppCompatActivity() {
 
     private fun filterButtonToolBar() {
         binding.appBarMain.sortButtonToolBar.setOnClickListener { sortButton ->
-            listHabitsViewModel.sortClicked()
+            goodListViewModel.sortClicked()
+            badListViewModel.sortClicked()
             sortButton.animate().apply {
                 duration = 1000
                 rotationXBy(360f)
@@ -60,7 +63,7 @@ class FirstActivity : AppCompatActivity() {
     }
 
     private fun loadAvatar() {
-        listHabitsViewModel.uri.observe(this) {
+        goodListViewModel.uri.observe(this) {
             val imgView =
                 binding.navView.getHeaderView(0).findViewById<ShapeableImageView>(R.id.cat)
             imgView.load(it) {

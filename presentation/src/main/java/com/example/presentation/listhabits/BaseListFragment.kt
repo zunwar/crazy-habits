@@ -5,74 +5,81 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.createViewModelLazy
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import com.example.domain.entities.MessageDoHabit
 import com.example.presentation.R
-import com.example.theme.R.color
-import com.example.presentation.databinding.FragmentListHabitsBinding
-import com.example.presentation.edithabit.HabitEditFragment.Companion.EDIT_BOOL
-import dagger.hilt.android.AndroidEntryPoint
+import com.example.presentation.edithabit.HabitEditFragment
+import java.lang.reflect.ParameterizedType
 
-@AndroidEntryPoint
-class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
-
-    private var _binding: FragmentListHabitsBinding? = null
-    private val binding get() = _binding!!
-    private var isBadInstance: Boolean = false
-    private val listHabitsViewModel: ListHabitsViewModel by activityViewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            isBadInstance = it.getBoolean(BAD_INSTANCE)
-        }
-        syncHabitsWithServer(isBadInstance)
-    }
+@Suppress("UNCHECKED_CAST")
+abstract class BaseListFragment<
+        Binding : ViewBinding?,
+        ViewModel : BaseListViewModel
+        >(
+    @LayoutRes layoutID: Int
+) : Fragment(layoutID) {
+    private lateinit var viewModel: ViewModel
+    private var _binding: Binding? = null
+    protected val binding get() = _binding!!
+    private val type = (javaClass.genericSuperclass as ParameterizedType)
+    private val classViewBinding = type.actualTypeArguments[0] as Class<Binding>
+    private val classViewModel = type.actualTypeArguments[1] as Class<ViewModel>
+    private val inflateMethod = classViewBinding.getMethod(
+        "inflate",
+        LayoutInflater::class.java,
+        ViewGroup::class.java,
+        Boolean::class.java
+    )
+    private var recycler: RecyclerView? = null
+    protected abstract fun getRecyclerView(): RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentListHabitsBinding.inflate(inflater, container, false)
+    ): View? {
+        _binding = inflateMethod.invoke(null, inflater, container, false) as Binding
+        viewModel = createViewModelLazy(classViewModel.kotlin, { requireActivity().viewModelStore }).value
+        syncHabitsWithServer()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setBackgroundForFragments()
+        recycler = getRecyclerView()
         initRecyclerView()
         scrollToPositionWhenNewAdded()
     }
 
-    private fun syncHabitsWithServer(isBadInstance: Boolean) {
-        listHabitsViewModel.syncHabitsWithServer(isBadInstance)
+
+    private fun syncHabitsWithServer() {
+        viewModel.syncHabitsWithServer()
     }
 
     private fun scrollToPositionWhenNewAdded() {
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(EDIT_BOOL)
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
+            HabitEditFragment.EDIT_BOOL
+        )
             ?.observe(viewLifecycleOwner) { result ->
-                listHabitsViewModel.listLoadedToRecycler.observe(viewLifecycleOwner) {
+                viewModel.listLoadedToRecycler.observe(viewLifecycleOwner) {
                     if (!result) {
-                        val posToInsert = (binding.recyclerView.adapter as HabitAdapter).itemCount
-                        binding.recyclerView.smoothScrollToPosition(posToInsert)
+                        val posToInsert = (recycler!!.adapter as HabitAdapter).itemCount
+                        recycler!!.smoothScrollToPosition(posToInsert)
                         findNavController().currentBackStackEntry?.savedStateHandle?.remove<Boolean>(
-                            EDIT_BOOL
+                            HabitEditFragment.EDIT_BOOL
                         )
                     }
                 }
             }
     }
 
-    private fun setBackgroundForFragments() {
-        if (isBadInstance) binding.constrListHabits.setBackgroundResource(color.badHabit)
-        else binding.constrListHabits.setBackgroundResource(color.goodHabit)
-    }
-
     private fun initRecyclerView() {
-        binding.recyclerView.adapter = HabitAdapter(
+        recycler?.adapter = HabitAdapter(
             onItemClicked = {
                 val action = ViewPagerFragmentDirections.actionViewPagerFragmentToHabitEditFragment(
                     idHabit = it.id
@@ -80,11 +87,11 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
                 findNavController().navigate(action)
             },
             onItemLongClicked = {
-                listHabitsViewModel.deleteClickedHabit(it.id)
+                viewModel.deleteClickedHabit(it.id)
                 Toast.makeText(context, getString(R.string.habit_delete), Toast.LENGTH_SHORT).show()
             },
             onDoHabitClicked = {
-                listHabitsViewModel.doHabitClicked(habit = it)
+                viewModel.doHabitClicked(habit = it)
                     .observe(viewLifecycleOwner) { msgData ->
                         val message =
                             when (msgData.first) {
@@ -103,14 +110,14 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
                     }
             }
         )
-        subscribeUi()
+        subscribeRecycler()
     }
 
-    private fun subscribeUi() {
-        listHabitsViewModel.getGoodOrBadList(isBadList = isBadInstance)
+    private fun subscribeRecycler() {
+        viewModel.getHabitsList()
             .observe(viewLifecycleOwner) { list ->
-                (binding.recyclerView.adapter as HabitAdapter).submitList(list)
-                listHabitsViewModel.listLoadedToRecycler(true)
+               (recycler?.adapter as HabitAdapter).submitList(list)
+                viewModel.listLoadedToRecycler(true)
             }
     }
 
@@ -119,15 +126,4 @@ class ListHabitsFragment : Fragment(R.layout.fragment_list_habits) {
         _binding = null
     }
 
-    companion object {
-        const val HABIT_TO_EDIT_ID = "idHabit"
-        const val BAD_INSTANCE = "BadInstance"
-
-        fun newInstance(isBad: Boolean) =
-            ListHabitsFragment().apply {
-                arguments = Bundle().apply {
-                    putBoolean(BAD_INSTANCE, isBad)
-                }
-            }
-    }
 }

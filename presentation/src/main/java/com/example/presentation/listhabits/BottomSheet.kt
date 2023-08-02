@@ -12,6 +12,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import com.example.presentation.databinding.BottomSheetBinding
 import com.example.presentation.R.string
+import com.example.presentation.listhabits.badlist.BadListViewModel
+import com.example.presentation.listhabits.goodlist.GoodListViewModel
 import com.example.theme.R.style
 import com.example.theme.R.color
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -25,7 +27,8 @@ class BottomSheet : BottomSheetDialogFragment() {
     private val binding get() = _binding!!
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
 
-    private val listHabitsViewModel: ListHabitsViewModel by activityViewModels()
+    private val goodListViewModel: GoodListViewModel by activityViewModels()
+    private val badListViewModel: BadListViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +53,8 @@ class BottomSheet : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.filterButton.setOnClickListener {
-            listHabitsViewModel.updateNameToFilter(binding.filterTextSet.text.toString())
+            goodListViewModel.updateNameToFilter(binding.filterTextSet.text.toString())
+            badListViewModel.updateNameToFilter(binding.filterTextSet.text.toString())
         }
 
         binding.bottomSheetRoot.setOnClickListener {

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/goodHabit"
-    tools:context="com.example.presentation.listhabits.ListHabitsFragment">
+    tools:context="com.example.presentation.listhabits.goodlist.GoodListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
