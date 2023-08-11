@@ -117,7 +117,7 @@ class HabitListRepositoryImpl @Inject constructor(
                         isSentToServer = isSentToServerFalse,
                         type
                     ) as MutableList<HabitEntity>
-                    val listUnsentHabitDto = listUnsentHabit.map { it.toHabitDto() }
+                    val listUnsentHabitDto = listUnsentHabit.map { it.toHabitDto(uid = null) }
                     val listIdFromServer: MutableList<String> = mutableListOf()
                     listUnsentHabitDto.forEach {
                         val id = addHabitTrySync(it)

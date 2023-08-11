@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.RadioButton
 import android.widget.Toast
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -16,12 +17,7 @@ import com.example.domain.entities.Type
 import com.example.presentation.R
 import com.example.presentation.colorchoose.ColorHabitFragment.Companion.COLOR_HABIT
 import com.example.presentation.databinding.FragmentHabitEditBinding
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
 class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
@@ -42,20 +38,23 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
         super.onViewCreated(view, savedInstanceState)
         binding.progressBar.visibility = View.GONE
 
-    //отображаем старую/редактируемую привычку, если возможно
-        habitEditViewModel.displayOldHabit.observe(viewLifecycleOwner) {
+        //отображаем старую/редактируемую привычку, если возможно
+        habitEditViewModel.displayOldHabit().observe(viewLifecycleOwner) {
             displayOldHabit(it)
         }
 
-    //отображение ответа сервера, скрывание прогресс бара и закрытие фрагмента
+        //отображение ответа сервера, скрывание прогресс бара и закрытие фрагмента
         habitEditViewModel.closeFragment.observe(viewLifecycleOwner) {
-            val serverResponse = habitEditViewModel.serverResponse.value
-            Toast.makeText(activity, "Server response: $serverResponse", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                activity,
+                "Server response: ${habitEditViewModel.serverResponse}",
+                Toast.LENGTH_LONG
+            ).show()
             binding.progressBar.visibility = View.GONE
             findNavController().popBackStack()
         }
 
-    //подписываемся на нажатие кнопки перехода на фрагмент с выбором цвета привычки
+        //подписываемся на нажатие кнопки перехода на фрагмент с выбором цвета привычки
         habitEditViewModel.navigateToColorFragment.observe(viewLifecycleOwner) {
             findNavController().navigate(
                 R.id.action_habitEditFragment_to_colorHabitFragment,
@@ -68,18 +67,67 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
             )
         }
 
-    //получение результата с ColorFragment и сохранение его в EditViewModel и задание цвета строки,
-    // показывающей выбранный ранее цвет
+        //получение результата с ColorFragment и сохранение его в EditViewModel и задание цвета строки,
+        // показывающей выбранный ранее цвет
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Bundle>(COLOR_HABIT)
             ?.observe(viewLifecycleOwner) { result ->
                 habitEditViewModel.setColorFromColorFragment(result.getInt(COLOR_HABIT))
                 binding.colorOfHabit.background = ShapeColorBox(1, habitEditViewModel.colorHabit)
             }
 
+//подписка на изменение полей и включение или отключение кнопки сохранения/изменения
+        habitEditViewModel.uiState.observe(viewLifecycleOwner) {
+            if (it.isErrorName) binding.NameHabitLayout.error = getString(R.string.requiredToFill)
+            else binding.NameHabitLayout.error = null
+            if (it.isErrorDesc) binding.Desc.error = getString(R.string.requiredToFill)
+            else binding.Desc.error = null
+            if (it.isErrorNumber) binding.Number.error = getString(R.string.requiredToFill)
+            else binding.Number.error = null
+            if (it.isErrorFrequency) binding.FrequencyLayout.error =
+                getString(R.string.requiredToFill)
+            else binding.FrequencyLayout.error = null
+
+            if (it.isErrorName || it.isErrorDesc || it.isErrorNumber || it.isErrorFrequency) {
+                binding.addButton.isClickable = false
+                binding.addButton.isEnabled = false
+            } else {
+                binding.addButton.isClickable = true
+                binding.addButton.isEnabled = true
+            }
+        }
+
+        observeTextFields()
         checkDefaultRadioGroupValue()
-        initPrioritySpinner()
         chooseColorButton()
         submitButton()
+    }
+
+    private fun observeTextFields() {
+        binding.NameHabitText.doOnTextChanged { text, _, _, _ ->
+            habitEditViewModel.setNameAndValidate(
+                text.toString()
+            )
+        }
+        binding.DescText.doOnTextChanged { text, _, _, _ ->
+            habitEditViewModel.setDescAndValidate(
+                text.toString()
+            )
+        }
+        binding.Number.doOnTextChanged { text, _, _, _ ->
+            habitEditViewModel.setNumberAndValidate(
+                text.toString()
+            )
+        }
+        binding.Frequency.doOnTextChanged { text, _, _, _ ->
+            habitEditViewModel.setFrequencyAndValidate(
+                text.toString()
+            )
+        }
+        binding.radioGroup.setOnCheckedChangeListener { _, i ->
+            val type = getRadioButton(i)
+            habitEditViewModel.setType(type)
+        }
+        initPrioritySpinner()
     }
 
     private fun checkDefaultRadioGroupValue() {
@@ -92,44 +140,18 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
         }
     }
 
-    private fun collectAndSaveHabit() {
-        val formatter = DateTimeFormatter.ofPattern("ddHHmss")
-        val currentDateTimeInt = LocalDateTime.now(ZoneId.of("UTC+5")).format(formatter).toInt()
-        val habit = Habit(
-            name = binding.NameHabitText.text.toString(),
-            desc = binding.DescText.text.toString(),
-            type =
-            when (requireView().findViewById<RadioButton>(binding.radioGroup.checkedRadioButtonId).text.toString()) {
-                getString(R.string.goodHabit) -> Type.Good
-                getString(R.string.badHabit) -> Type.Bad
-                else -> Type.Good
-            },
-            priority = habitEditViewModel.selectedPriority,
-            number = binding.Number.text.toString().toInt(),
-            frequency = binding.Frequency.text.toString().toInt(),
-            colorHabit = habitEditViewModel.colorHabit,
-            date = currentDateTimeInt,
-            isSentToServer = false,
-            id = habitEditViewModel.getId()
-        )
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(
-            EDIT_BOOL,
-            habitEditViewModel.isEditable)
-        findNavController().previousBackStackEntry?.savedStateHandle?.set(
-            TAB_ITEM,
-            habitEditViewModel.setRightTabItem(habit.type)
-        )
-        habitEditViewModel.saveHabit(habit)
-    }
-
     private fun submitButton() {
         binding.addButton.setOnClickListener {
-            if (validateView()) {
-                binding.addButton.isClickable = false
-                binding.addButton.isEnabled = false
-                binding.progressBar.visibility = View.VISIBLE
-                collectAndSaveHabit()
-            }
+            findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                EDIT_BOOL,
+                habitEditViewModel.isEditable
+            )
+            findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                TAB_ITEM,
+                habitEditViewModel.setRightTabItem(habitEditViewModel.uiState.value!!.type!!)
+            )
+            binding.progressBar.visibility = View.VISIBLE
+            habitEditViewModel.saveHabit()
         }
     }
 
@@ -161,7 +183,7 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
             Priority.values()
         )
         binding.prioritySpinner.adapter = csa
-        binding.prioritySpinner.setSelection(habitEditViewModel.selectedPriority.id)
+        binding.prioritySpinner.setSelection(1)
         binding.prioritySpinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
@@ -170,36 +192,24 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
                     position: Int,
                     id: Long
                 ) {
-                    habitEditViewModel.selectPriority(parent!!.adapter.getItem(position) as Priority)
+                    habitEditViewModel.setPriority(parent!!.adapter.getItem(position) as Priority)
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
     }
 
-// проверка полей на заполненность, после клика на кнопку добавить/изменить
-    private fun validateView(): Boolean {
-        val isEmptyViews: MutableList<Boolean> = mutableListOf()
-
-        val validate = { viewLayout: TextInputLayout, view: TextInputEditText ->
-            if (view.text.isNullOrEmpty()) {
-                isEmptyViews.add(view.text.isNullOrEmpty())
-                viewLayout.error = getString(R.string.requiredToFill)
-            } else {
-                viewLayout.error = null
-            }
-        }
-        validate(binding.NameHabitLayout, binding.NameHabitText)
-        validate(binding.Desc, binding.DescText)
-        validate(binding.NumberLayout, binding.Number)
-        validate(binding.FrequencyLayout, binding.Frequency)
-
-        return !isEmptyViews.contains(true)
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun getRadioButton(idButton: Int): Type {
+        return when (requireView().findViewById<RadioButton>(idButton).text.toString()) {
+            getString(R.string.goodHabit) -> Type.Good
+            getString(R.string.badHabit) -> Type.Bad
+            else -> Type.Good
+        }
     }
 
     companion object {

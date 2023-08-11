@@ -39,19 +39,13 @@
     <string name="requiredToFill">required to fill</string>
     <string name="do_habit">Do habit</string>
     <plurals name="do_bad_habit_more">
-        <item quantity="zero"> Можете выполнить еще %1$s раз</item>
         <item quantity="one">  Можете выполнить еще %1$s раз</item>
-        <item quantity="two">  Можете выполнить еще %1$s раза</item>
         <item quantity="few">  Можете выполнить еще %1$s раза</item>
-        <item quantity="many"> Можете выполнить еще %1$s раз</item>
         <item quantity="other">Можете выполнить еще %1$s раз</item>
     </plurals>
     <plurals name="do_good_habit_more">
-        <item quantity="zero"> Стоит выполнить еще %1$s раз</item>
         <item quantity="one">  Стоит выполнить еще %1$s раз</item>
-        <item quantity="two">  Стоит выполнить еще %1$s раза</item>
         <item quantity="few">  Стоит выполнить еще %1$s раза</item>
-        <item quantity="many"> Стоит выполнить еще %1$s раз</item>
         <item quantity="other">Стоит выполнить еще %1$s раз</item>
     </plurals>
     <string name="do_bad_habit_enough">Хватит это делать</string>

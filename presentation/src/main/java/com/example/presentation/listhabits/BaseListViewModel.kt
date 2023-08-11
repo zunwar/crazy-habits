@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalCoroutinesApi::class)
-abstract class BaseListViewModel (
+open class BaseListViewModel (
     private val sortFilterHabitsUseCase: SortFilterHabitsUseCase,
     private val deleteHabitUseCase: DeleteHabitUseCase,
     private val syncHabitsWithServerUseCase: SyncHabitsWithServerUseCase,

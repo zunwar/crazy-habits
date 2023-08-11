@@ -21,7 +21,7 @@ data class HabitEntity(
     @PrimaryKey val id: String
 )
 
-fun HabitEntity.toHabitDto(): HabitDto = HabitDto(
+fun HabitEntity.toHabitDto(uid: String?): HabitDto = HabitDto(
     name = this.name,
     desc = this.desc,
     type = when (type) {
@@ -36,5 +36,6 @@ fun HabitEntity.toHabitDto(): HabitDto = HabitDto(
     number = this.number,
     frequency = this.frequency,
     colorHabit = this.colorHabit,
-    date = this.date
+    date = this.date,
+    uid = uid
 )

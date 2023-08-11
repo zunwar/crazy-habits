@@ -26,7 +26,7 @@ class HabitEditRepositoryImpl @Inject constructor(
     */
     override suspend fun addHabit(habit: Habit): String {
         val serverResponse = when (val response =
-            retrofitService.putHabit(habitData = habit.toEntity().toHabitDto())) {
+            retrofitService.putHabit(habitData = habit.toEntity().toHabitDto(uid = null))) {
             is NetworkResult.Success -> {
                 val habitToAdd = habit.copy(isSentToServer = true, id = response.data.uid)
                 habitDao.insertAll(habitToAdd.toEntity())
@@ -52,7 +52,7 @@ class HabitEditRepositoryImpl @Inject constructor(
     */
     override suspend fun changeHabit(habit: Habit): String {
         val serverResponse =
-            when (val response = retrofitService.changeHabit(habit = habit.toEntity().toHabitDto())) {
+            when (val response = retrofitService.changeHabit(habit = habit.toEntity().toHabitDto(uid = habit.id))) {
                 is NetworkResult.Success -> {
                     val habitToChange = habit.copy(isSentToServer = true)
                     habitDao.updateHabit(habitToChange.toEntity())
