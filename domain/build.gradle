@@ -8,11 +8,11 @@ plugins {
 
 android {
     namespace 'com.example.domain'
-    compileSdk 32
 
     defaultConfig {
-        minSdk 27
-        targetSdk 32
+        compileSdk androidSdk.compileAndroidSdk
+        targetSdk androidSdk.targetAndroidSdk
+        minSdk androidSdk.minAndroidSdk
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -40,8 +40,10 @@ dependencies {
 
     implementation libs.CoreKtx
     testImplementation libs.JUnit
-    androidTestImplementation libs.JunitKtx
-    androidTestImplementation libs.Espresso
+    testImplementation libs.Hamcrest
+    testImplementation libs.AndroidXArchCoreTest
+    testImplementation libs.Mockk
+    testImplementation libs.KotlinXCoTest
 
     //Hilt
     implementation libs.Hilt

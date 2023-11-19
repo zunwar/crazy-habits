@@ -9,16 +9,17 @@ plugins {
 }
 
 android {
-    compileSdk 33
 
     defaultConfig {
         applicationId "com.example.crazy_habits"
-        minSdk 27
-        targetSdk 32
+        compileSdk androidSdk.compileAndroidSdk
+        targetSdk androidSdk.targetAndroidSdk
+        minSdk androidSdk.minAndroidSdk
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+//        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.example.crazy_habits.CustomTestRunner"
     }
 
     buildTypes {
@@ -38,8 +39,54 @@ android {
     buildFeatures {
         viewBinding = true
     }
-    namespace 'com.example.crazy_habits'
+    dataBinding {
+        enabled = true
+        enabledForTests = true
     }
+    testOptions.unitTests {
+        includeAndroidResources = true
+        returnDefaultValues = true
+    }
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/LICENSE.md', 'META-INF/LICENSE-notice.md']
+        }
+    }
+    namespace 'com.example.crazy_habits'
+    sourceSets {
+        debug {
+            java {
+                srcDirs 'src\\debug\\java'
+            }
+        }
+    }
+
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            testCoverageEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
+        }
+
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
+        }
+    }
+
+}
+
+kapt {
+    arguments {
+        // Make Hilt share the same definition of Components in tests instead of
+        // creating a new set of Components per test class.
+        arg("dagger.hilt.shareTestComponents", "true")
+    }
+}
 
 dependencies {
 
@@ -54,9 +101,6 @@ dependencies {
     implementation libs.ViewModelKtx
     implementation libs.SplashScreen
 
-    testImplementation libs.JUnit
-    androidTestImplementation libs.JunitKtx
-    androidTestImplementation libs.Espresso
     implementation(platform(libs.Bom))
 
 //    // Coil
@@ -66,8 +110,23 @@ dependencies {
     implementation libs.Hilt
     kapt libs.HiltCompiler
 
+    //Testing
+    androidTestImplementation libs.JUnit
+    androidTestImplementation libs.JUnitKtx
+    androidTestImplementation libs.KotlinXCoTest
+    androidTestImplementation libs.AndroidXArchCoreTest
+    androidTestImplementation libs.EspressoCore
+    androidTestImplementation libs.AppCompat
+    androidTestImplementation libs.NavigationTest
+    androidTestImplementation libs.HiltTesting
+    kaptAndroidTest libs.HiltCompiler
+    debugImplementation libs.FragmentTesting
+    implementation libs.AndroidXArchCoreTest
+    implementation libs.EspressoIdling
+
     //projects
     implementation project(Modules.presentation)
     implementation project(Modules.data)
+    implementation project(Modules.domain)
 }
 

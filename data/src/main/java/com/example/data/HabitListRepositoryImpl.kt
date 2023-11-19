@@ -82,25 +82,23 @@ class HabitListRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteHabit(idHabit: String) {
-        val uid = HabitUID(idHabit)
-        when (val response = retrofitService.deleteHabit(uid = uid)) {
-            is NetworkResult.Success -> {
-                habitDao.deleteById(idHabit)
-                Log.d(
-                    TAG,
-                    "deleteHabitById Success ${response.message}---${response.code}"
-                )
+    override suspend fun deleteHabit(idHabit: String): String {
+        wrapEspressoIdlingResource {
+            val uid = HabitUID(idHabit)
+            return when (val response = retrofitService.deleteHabit(uid = uid)) {
+                is NetworkResult.Success -> {
+                    habitDao.deleteById(idHabit)
+                    "Success---${response.message}---${response.code}"
+                }
+                is NetworkResult.Error -> {
+                    "Error---${response.responseError}"
+                }
+                is NetworkResult.Exception -> {
+                    "Exception---${response.e}"
+                }
             }
-            is NetworkResult.Error -> Log.d(
-                TAG,
-                "deleteHabitById Error ${response.responseError}"
-            )
-            is NetworkResult.Exception -> Log.d(
-                TAG,
-                "deleteHabitById Exception ${response.e}"
-            )
         }
+
     }
 
     /*
@@ -142,7 +140,7 @@ class HabitListRepositoryImpl @Inject constructor(
     }
 
     private suspend fun addHabitTrySync(habitDto: HabitDto): String {
-        val id = when (val response = retrofitService.putHabit(habitData = habitDto)) {
+        val id = when (val response = retrofitService.putHabit(habitDto = habitDto)) {
             is NetworkResult.Success -> {
                 response.data.uid
             }

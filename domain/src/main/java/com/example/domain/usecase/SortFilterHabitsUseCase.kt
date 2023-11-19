@@ -10,21 +10,24 @@ import com.example.domain.entities.Type
 
 class SortFilterHabitsUseCase @Inject constructor(
     private val habitListRepository: HabitListRepository
-    ) {
+) {
 
-   suspend operator fun invoke(sortOrFilter: Pair<SortState, NameToFilter>, type: Type): Flow<List<Habit>> {
-            return when (sortOrFilter.first) {
-                SortState.SortASC -> habitListRepository.getHabitsByNameAndTypeAndSortASC(
-                    sortOrFilter.second.string,
-                    type
-                )
-                SortState.SortDESC -> habitListRepository.getHabitsByNameAndTypeAndSortDESC(
-                    sortOrFilter.second.string,
-                    type
-                )
-                SortState.NoSort -> {
-                    habitListRepository.getHabitsByNameAndType(sortOrFilter.second.string, type)
-                }
+    suspend operator fun invoke(
+        sortOrFilter: Pair<SortState, NameToFilter>,
+        type: Type
+    ): Flow<List<Habit>> {
+        return when (sortOrFilter.first) {
+            SortState.SortASC -> habitListRepository.getHabitsByNameAndTypeAndSortASC(
+                sortOrFilter.second.string,
+                type
+            )
+            SortState.SortDESC -> habitListRepository.getHabitsByNameAndTypeAndSortDESC(
+                sortOrFilter.second.string,
+                type
+            )
+            SortState.NoSort -> {
+                habitListRepository.getHabitsByNameAndType(sortOrFilter.second.string, type)
             }
+        }
     }
 }

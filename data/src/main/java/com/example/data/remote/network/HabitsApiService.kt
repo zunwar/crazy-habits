@@ -10,10 +10,10 @@ interface HabitsApiService {
     suspend fun getHabits(@Header("Authorization") token: String = API_TOKEN): NetworkResult<List<HabitDto>>
 
     @PUT("habit")
-    suspend fun putHabit(@Header("Authorization") token: String = API_TOKEN, @Body habitData : HabitDto): NetworkResult<HabitUID>
+    suspend fun putHabit(@Header("Authorization") token: String = API_TOKEN, @Body habitDto : HabitDto): NetworkResult<HabitUID>
 
     @PUT("habit")
-    suspend fun changeHabit(@Header("Authorization") token: String = API_TOKEN, @Body habit : HabitDto): NetworkResult<HabitUID>
+    suspend fun changeHabit(@Header("Authorization") token: String = API_TOKEN, @Body habitDto : HabitDto): NetworkResult<HabitUID>
 
     @HTTP(method = "DELETE", path = "habit", hasBody = true)
     suspend fun deleteHabit(@Header("Authorization") token: String = API_TOKEN, @Body uid: HabitUID): NetworkResult<Unit>

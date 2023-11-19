@@ -54,4 +54,7 @@ interface HabitDao {
     @Query("DELETE FROM HabitEntity WHERE id IN (:id)")
     suspend fun deleteById(id: String)
 
+    @Query("DELETE FROM HabitEntity")
+    fun deleteAll()
+
 }

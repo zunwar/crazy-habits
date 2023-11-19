@@ -50,4 +50,5 @@
     </plurals>
     <string name="do_bad_habit_enough">Хватит это делать</string>
     <string name="do_good_habit_enough">You are breathtaking!</string>
+    <string name="error_occurred">Error occurred. Try again later.</string>
 </resources>

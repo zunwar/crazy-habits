@@ -11,13 +11,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalCoroutinesApi::class)
-open class BaseListViewModel (
+open class BaseListViewModel(
     private val sortFilterHabitsUseCase: SortFilterHabitsUseCase,
     private val deleteHabitUseCase: DeleteHabitUseCase,
     private val syncHabitsWithServerUseCase: SyncHabitsWithServerUseCase,
     private val doHabitUseCase: DoHabitUseCase,
     private val isBadList: Boolean
-    ) : ViewModel() {
+) : ViewModel() {
 
     private val sortOrFilterStateFlow = MutableStateFlow(Pair(SortState.NoSort, NoName))
     private val _listLoadedToRecycler: MutableLiveData<Boolean> = MutableLiveData()
@@ -30,7 +30,7 @@ open class BaseListViewModel (
         }
     }
 
-   protected open fun getList(type: Type): LiveData<List<Habit>> {
+    private fun getList(type: Type): LiveData<List<Habit>> {
         return sortOrFilterStateFlow.flatMapLatest {
             withContext(Dispatchers.IO) {
                 sortFilterHabitsUseCase(sortOrFilter = it, type = type)
@@ -52,14 +52,12 @@ open class BaseListViewModel (
         sortOrFilterStateFlow.value = sortOrFilterStateFlow.value.copy(second = nameToFilter)
     }
 
-   fun listLoadedToRecycler(isLoaded: Boolean) {
+    fun listLoadedToRecycler(isLoaded: Boolean) {
         _listLoadedToRecycler.postValue(isLoaded)
     }
 
-    fun deleteClickedHabit(idHabit: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            deleteHabitUseCase(idHabit)
-        }
+    fun deleteClickedHabit(idHabit: String) = liveData {
+        emit(deleteHabitUseCase(idHabit))
     }
 
     fun syncHabitsWithServer() {

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.example.domain.entities.DeleteStatus
 import com.example.domain.entities.MessageDoHabit
 import com.example.presentation.R
 import com.example.presentation.edithabit.HabitEditFragment
@@ -37,24 +38,30 @@ abstract class BaseListFragment<
     }
 
     private fun syncHabitsWithServer() {
-        viewModel.syncHabitsWithServer()
+        wrapEspressoIdlingResource {
+            viewModel.syncHabitsWithServer()
+        }
     }
 
     private fun scrollToPositionWhenNewAdded() {
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
-            HabitEditFragment.EDIT_BOOL
-        )
-            ?.observe(viewLifecycleOwner) { result ->
-                viewModel.listLoadedToRecycler.observe(viewLifecycleOwner) {
-                    if (!result) {
-                        val posToInsert = (recycler!!.adapter as HabitAdapter).itemCount
-                        recycler!!.smoothScrollToPosition(posToInsert)
-                        findNavController().currentBackStackEntry?.savedStateHandle?.remove<Boolean>(
-                            HabitEditFragment.EDIT_BOOL
-                        )
+        wrapEspressoIdlingResource {
+            try {
+                findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
+                    HabitEditFragment.EDIT_BOOL
+                )
+                    ?.observe(viewLifecycleOwner) { result ->
+                        viewModel.listLoadedToRecycler.observe(viewLifecycleOwner) {
+                            if (!result) {
+                                val posToInsert = (recycler!!.adapter as HabitAdapter).itemCount
+                                recycler!!.smoothScrollToPosition(posToInsert)
+                                findNavController().currentBackStackEntry?.savedStateHandle?.remove<Boolean>(
+                                    HabitEditFragment.EDIT_BOOL
+                                )
+                            }
+                        }
                     }
-                }
-            }
+            } finally {}
+        }
     }
 
     private fun initRecyclerView() {
@@ -66,8 +73,17 @@ abstract class BaseListFragment<
                 findNavController().navigate(action)
             },
             onItemLongClicked = {
-                viewModel.deleteClickedHabit(it.id)
-                Toast.makeText(context, getString(R.string.habit_delete), Toast.LENGTH_SHORT).show()
+                wrapEspressoIdlingResource {
+                    viewModel.deleteClickedHabit(it.id)
+                        .observe(viewLifecycleOwner) { deleteStatus ->
+                            @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA") val message =
+                                when (deleteStatus) {
+                                    DeleteStatus.Deleted -> getString(R.string.habit_delete)
+                                    DeleteStatus.ErrorOccurred -> getString(R.string.error_occurred)
+                                }
+                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                        }
+                }
             },
             onDoHabitClicked = {
                 viewModel.doHabitClicked(habit = it)
@@ -93,11 +109,13 @@ abstract class BaseListFragment<
     }
 
     private fun subscribeRecycler() {
-        viewModel.getHabitsList()
-            .observe(viewLifecycleOwner) { list ->
-                (recycler?.adapter as HabitAdapter).submitList(list)
-                viewModel.listLoadedToRecycler(true)
-            }
+        wrapEspressoIdlingResource {
+            viewModel.getHabitsList()
+                .observe(viewLifecycleOwner) { list ->
+                    (recycler?.adapter as HabitAdapter).submitList(list)
+                    viewModel.listLoadedToRecycler(true)
+                }
+        }
     }
 
 }

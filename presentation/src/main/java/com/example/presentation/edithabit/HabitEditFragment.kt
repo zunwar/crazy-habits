@@ -69,11 +69,13 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
 
         //получение результата с ColorFragment и сохранение его в EditViewModel и задание цвета строки,
         // показывающей выбранный ранее цвет
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Bundle>(COLOR_HABIT)
-            ?.observe(viewLifecycleOwner) { result ->
-                habitEditViewModel.setColorFromColorFragment(result.getInt(COLOR_HABIT))
-                binding.colorOfHabit.background = ShapeColorBox(1, habitEditViewModel.colorHabit)
-            }
+        try {
+            findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Bundle>(COLOR_HABIT)
+                ?.observe(viewLifecycleOwner) { result ->
+                    habitEditViewModel.setColorFromColorFragment(result.getInt(COLOR_HABIT))
+                    binding.colorOfHabit.background = ShapeColorBox(1, habitEditViewModel.colorHabit)
+                }
+        } finally {}
 
 //подписка на изменение полей и включение или отключение кнопки сохранения/изменения
         habitEditViewModel.uiState.observe(viewLifecycleOwner) {
@@ -83,8 +85,7 @@ class HabitEditFragment : Fragment(R.layout.fragment_habit_edit) {
             else binding.Desc.error = null
             if (it.isErrorNumber) binding.Number.error = getString(R.string.requiredToFill)
             else binding.Number.error = null
-            if (it.isErrorFrequency) binding.FrequencyLayout.error =
-                getString(R.string.requiredToFill)
+            if (it.isErrorFrequency) binding.FrequencyLayout.error = getString(R.string.requiredToFill)
             else binding.FrequencyLayout.error = null
 
             if (it.isErrorName || it.isErrorDesc || it.isErrorNumber || it.isErrorFrequency) {

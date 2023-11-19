@@ -8,11 +8,11 @@ plugins {
 
 android {
     namespace 'com.example.presentation'
-    compileSdk 32
 
     defaultConfig {
-        minSdk 27
-        targetSdk 32
+        compileSdk androidSdk.compileAndroidSdk
+        targetSdk androidSdk.targetAndroidSdk
+        minSdk androidSdk.minAndroidSdk
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -34,6 +34,10 @@ android {
 
     buildFeatures {
         viewBinding = true
+    }
+    testOptions.unitTests {
+        includeAndroidResources = true
+        returnDefaultValues = true
     }
 }
 
@@ -59,8 +63,16 @@ dependencies {
     kapt libs.HiltCompiler
 
     testImplementation libs.JUnit
-    androidTestImplementation libs.JunitKtx
-    androidTestImplementation libs.Espresso
+    testImplementation libs.Hamcrest
+    testImplementation libs.AndroidXArchCoreTest
+    testImplementation libs.Mockk
+    testImplementation libs.KotlinXCoTest
+    testImplementation libs.Robolectric
+    testImplementation libs.JUnitKtx
+    androidTestImplementation libs.JUnitKtx
+    androidTestImplementation libs.EspressoCore
+
+    implementation libs.EspressoIdling
 
     implementation project(Modules.domain)
     implementation project(Modules.theme)

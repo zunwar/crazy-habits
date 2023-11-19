@@ -42,7 +42,7 @@
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/FAB"
+        android:id="@+id/add_new_habit_fab"
         app:fabSize="auto"
         android:layout_width="56dp"
         android:layout_height="56dp"

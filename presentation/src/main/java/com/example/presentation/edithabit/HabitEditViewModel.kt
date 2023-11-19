@@ -12,7 +12,6 @@ import com.example.domain.usecase.ValidateViewUseCase
 import com.example.presentation.edithabit.di.HabitEditModule
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -22,7 +21,6 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.inject.Inject
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class HabitEditViewModel @Inject constructor(
     @HabitEditModule.IdHabit private val idHabit: String?,
@@ -71,9 +69,7 @@ class HabitEditViewModel @Inject constructor(
                 _uiState.value = _uiState.value!!.copy(isErrorDesc = false)
                 _uiState.value = _uiState.value!!.copy(isErrorNumber = false)
                 _uiState.value = _uiState.value!!.copy(isErrorFrequency = false)
-                getHabitUseCase(idHabit!!).collect {
-                    emit(it)
-                }
+                emit(getHabitUseCase(idHabit!!).first())
             }
         }.asLiveData()
     }

@@ -68,7 +68,7 @@ class ViewPagerFragment :  Fragment(R.layout.fragment_view_pager) {
         var indicatorColorChange = true
         binding.tabLayout.setSelectedTabIndicatorColor(Color.parseColor("#00FF37"))
         binding.tabLayout.setTabTextColors(Color.parseColor("#66000000"), Color.parseColor("#FF03DAC5"))
-        binding.FAB.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#00FF37"))
+        binding.addNewHabitFab.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#00FF37"))
         TabLayoutMediator(binding.tabLayout, binding.viewPagerMain){
                 tab, position ->
             when (position) {
@@ -89,12 +89,12 @@ class ViewPagerFragment :  Fragment(R.layout.fragment_view_pager) {
                 tab.icon?.alpha = 255
                 if (indicatorColorChange) {
                     indicatorColorChange = false
-                    binding.FAB.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FF0000"))
+                    binding.addNewHabitFab.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FF0000"))
                     binding.tabLayout.setSelectedTabIndicatorColor(Color.parseColor("#FF0000"))
                 } else {
                     indicatorColorChange = true
                     binding.tabLayout.setSelectedTabIndicatorColor(Color.parseColor("#00FF37"))
-                    binding.FAB.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#00FF37"))
+                    binding.addNewHabitFab.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#00FF37"))
                 }
 
             }
@@ -111,7 +111,7 @@ class ViewPagerFragment :  Fragment(R.layout.fragment_view_pager) {
     }
 
     private fun fabClick() {
-        binding.FAB.setOnClickListener {
+        binding.addNewHabitFab.setOnClickListener {
             findNavController().navigate(R.id.action_viewPagerFragment_to_habitEditFragment)
         }
     }

@@ -14,7 +14,7 @@ interface HabitListRepository {
 
     suspend fun getHabitsByNameAndType(nameToFilter: String, type: Type): Flow<List<Habit>>
 
-    suspend fun deleteHabit(idHabit: String)
+    suspend fun deleteHabit(idHabit: String): String
 
     suspend fun syncHabitsWithServer(type: Type)
 
