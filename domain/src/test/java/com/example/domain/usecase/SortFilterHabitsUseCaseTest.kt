@@ -30,7 +30,7 @@ class SortFilterHabitsUseCaseTest {
         } returns listDesc()
         coEvery { habitListRepository.getHabitsByNameAndType(any(), any()) } returns noSortList()
 
-        sortFilterHabitsUseCase = SortFilterHabitsUseCase(habitListRepository)
+        sortFilterHabitsUseCase = SortFilterHabitsUseCase(habitListRepository, Type.Good)
     }
 
     @Test
@@ -38,9 +38,8 @@ class SortFilterHabitsUseCaseTest {
         val sortState = SortState.SortASC
         val nameToFilter = NameToFilter("")
         val sortOrFilter = Pair(sortState, nameToFilter)
-        val type = Type.Good
 
-        val result = sortFilterHabitsUseCase(sortOrFilter, type).first()
+        val result = sortFilterHabitsUseCase(sortOrFilter).first()
         assertThat(result, equalTo(listASC().first()))
     }
 
@@ -49,9 +48,8 @@ class SortFilterHabitsUseCaseTest {
         val sortState = SortState.SortDESC
         val nameToFilter = NameToFilter("")
         val sortOrFilter = Pair(sortState, nameToFilter)
-        val type = Type.Good
 
-        val result = sortFilterHabitsUseCase(sortOrFilter, type).first()
+        val result = sortFilterHabitsUseCase(sortOrFilter).first()
         assertThat(result, equalTo(listDesc().first()))
     }
 
@@ -60,9 +58,8 @@ class SortFilterHabitsUseCaseTest {
         val sortState = SortState.NoSort
         val nameToFilter = NameToFilter("")
         val sortOrFilter = Pair(sortState, nameToFilter)
-        val type = Type.Good
 
-        val result = sortFilterHabitsUseCase(sortOrFilter, type).first()
+        val result = sortFilterHabitsUseCase(sortOrFilter).first()
         assertThat(result, equalTo(noSortList().first()))
     }
 

@@ -5,10 +5,11 @@ import com.example.domain.repository.HabitListRepository
 import javax.inject.Inject
 
 class SyncHabitsWithServerUseCase @Inject constructor(
-    private val habitListRepository: HabitListRepository
+    private val habitListRepository: HabitListRepository,
+    private val type: Type
 ) {
 
-    suspend operator fun invoke(type: Type) {
+    suspend operator fun invoke() {
         habitListRepository.syncHabitsWithServer(type)
     }
 }

@@ -42,28 +42,30 @@ class GoodListViewModelTest {
     private val getAvatarUriUseCase = mockk<GetAvatarUriUseCase>()
     private val syncHabitsWithServerUseCase = mockk<SyncHabitsWithServerUseCase>()
     private val doHabitUseCase = mockk<DoHabitUseCase>()
+    private val nextSortStateUseCase = mockk<NextSortStateUseCase>(relaxed = true)
 
     @ExperimentalCoroutinesApi
     @Before
     fun setupViewModel() {
-        coEvery { sortFilterHabitsUseCase(any(), any()) } returns flowOf(listOf(buildHabit()))
+        coEvery { sortFilterHabitsUseCase(any()) } returns flowOf(listOf(testHabit))
         coEvery { deleteHabitUseCase(any()) }
         coEvery { getAvatarUriUseCase() } returns flowOf(Uri.parse("www.test.com"))
-        coEvery { syncHabitsWithServerUseCase(any()) }
+        coEvery { syncHabitsWithServerUseCase() }
         coEvery { doHabitUseCase(any()) } returns Pair(MessageDoHabit.DoGoodHabitEnough, 2)
 
         goodListViewModel = GoodListViewModel(
             sortFilterHabitsUseCase,
+            syncHabitsWithServerUseCase,
             deleteHabitUseCase,
             getAvatarUriUseCase,
-            syncHabitsWithServerUseCase,
-            doHabitUseCase
+            doHabitUseCase,
+            nextSortStateUseCase
         )
     }
 
     @Test
     fun `get good habits list`() {
-        val list = listOf(buildHabit())
+        val list = listOf(testHabit)
         val receivedList = goodListViewModel.getHabitsList().getOrAwaitValue()
         assertThat(receivedList, equalTo(list))
     }
@@ -84,7 +86,7 @@ class GoodListViewModelTest {
 
     @Test
     fun `doHabitClicked get liveData back`() {
-        val result = goodListViewModel.doHabitClicked(buildHabit()).getOrAwaitValue()
+        val result = goodListViewModel.doHabitClicked(testHabit).getOrAwaitValue()
         assertThat(result, notNullValue())
     }
 
@@ -96,7 +98,7 @@ class GoodListViewModelTest {
     }
 
     companion object {
-        fun buildHabit() = Habit(
+        val testHabit = Habit(
             name = "aa",
             desc = "bb",
             type = Type.Good,

@@ -1,6 +1,5 @@
 package com.example.data
 
-import com.example.data.entities.HabitDto
 import com.example.data.local.database.HabitDao
 import com.example.data.mappers.toEntity
 import com.example.data.remote.network.HabitUID
@@ -30,60 +29,35 @@ class HabitEditRepositoryImplTest {
     private lateinit var habitDao: HabitDao
 
     @Before
-    fun setUp() {
+    fun setup() {
         habitDao = mockk(relaxed = true)
         retrofitService = mockk()
-        val habitDtoSlot = slot<HabitDto>()
-        coEvery { retrofitService.putHabit(habitDto = capture(habitDtoSlot)) } answers {
-            when (habitDtoSlot.captured.name) {
-                "success" -> NetworkResult.Success(
-                    HabitUID("111"),
-                    200,
-                    "success"
-                )
-                "error" -> NetworkResult.Error(
-                    400,
-                    "error",
-                    responseError = ResponseError(400, "error")
-                )
-                else -> NetworkResult.Exception(Throwable(message = "exception"))
-            }
-        }
-        coEvery { retrofitService.changeHabit(habitDto = capture(habitDtoSlot)) } answers {
-            when (habitDtoSlot.captured.name) {
-                "success" -> NetworkResult.Success(
-                    HabitUID("111"),
-                    200,
-                    "success"
-                )
-                "error" -> NetworkResult.Error(
-                    400,
-                    "error",
-                    responseError = ResponseError(400, "error")
-                )
-                else -> NetworkResult.Exception(Throwable(message = "exception"))
-            }
-        }
         habitEditRepositoryImpl = HabitEditRepositoryImpl(habitDao, retrofitService)
     }
 
     @Test
     fun `addHabit - success network call, id from server saved to DB`() = runTest {
-        val habitToSave: Habit = createHabit(name = "success")
-        val result = habitEditRepositoryImpl.addHabit(habitToSave)
+        coEvery { retrofitService.putHabit(habitDto = any()) } returns NetworkResult.Success(
+            HabitUID("111"),
+            200,
+            "success"
+        )
+        val result = habitEditRepositoryImpl.addHabit(testHabit)
         coVerify { retrofitService.putHabit(habitDto = any()) }
-        coVerify { habitDao.insertAll(any()) }
         coVerify {
-            habitDao.insertAll(
-                habitToSave.copy(isSentToServer = true, id = "111").toEntity()
-            )
+            habitDao.insertAll(testHabit.copy(isSentToServer = true, id = "111").toEntity())
         }
         assertThat(result, equalTo("200 success"))
     }
 
     @Test
     fun `addHabit - error network call`() = runTest {
-        val result = habitEditRepositoryImpl.addHabit(createHabit(name = "error"))
+        coEvery { retrofitService.putHabit(habitDto = any()) } returns NetworkResult.Error(
+            400,
+            "error",
+            responseError = ResponseError(400, "error")
+        )
+        val result = habitEditRepositoryImpl.addHabit(testHabit)
         coVerify { retrofitService.putHabit(habitDto = any()) }
         coVerify { habitDao.insertAll(any()) }
         assertThat(result, containsString("400"))
@@ -91,7 +65,10 @@ class HabitEditRepositoryImplTest {
 
     @Test
     fun `addHabit - exception network call`() = runTest {
-        val result = habitEditRepositoryImpl.addHabit(createHabit(name = "exception"))
+        coEvery { retrofitService.putHabit(habitDto = any()) } returns NetworkResult.Exception(
+            Throwable(message = "exception")
+        )
+        val result = habitEditRepositoryImpl.addHabit(testHabit)
         coVerify { retrofitService.putHabit(habitDto = any()) }
         coVerify { habitDao.insertAll(any()) }
         assertThat(result, equalTo("exception"))
@@ -99,63 +76,61 @@ class HabitEditRepositoryImplTest {
 
     @Test
     fun `changeHabit - success network call `() = runTest {
-        val habitToChange: Habit = createHabit(name = "success")
-        val result = habitEditRepositoryImpl.changeHabit(habitToChange)
+        coEvery { retrofitService.changeHabit(habitDto = any()) } returns NetworkResult.Success(
+            HabitUID("111"),
+            200,
+            "success"
+        )
+        val result = habitEditRepositoryImpl.changeHabit(testHabit)
         coVerify { retrofitService.changeHabit(habitDto = any()) }
-        coVerify { habitDao.updateHabit(habitToChange.copy(isSentToServer = true).toEntity()) }
+        coVerify { habitDao.updateHabit(testHabit.copy(isSentToServer = true).toEntity()) }
         assertThat(result, equalTo("200 success"))
     }
 
     @Test
     fun `changeHabit - error network call `() = runTest {
-        val habitToChange: Habit = createHabit(name = "error")
-        val result = habitEditRepositoryImpl.changeHabit(habitToChange)
-        coVerify { habitDao.updateHabit(habitToChange.copy(isSentToServer = false).toEntity()) }
+        coEvery { retrofitService.changeHabit(habitDto = any()) } returns NetworkResult.Error(
+            400,
+            "error",
+            responseError = ResponseError(400, "error")
+        )
+        val result = habitEditRepositoryImpl.changeHabit(testHabit)
+        coVerify { habitDao.updateHabit(testHabit.copy(isSentToServer = false).toEntity()) }
         assertThat(result, containsString("400"))
     }
 
     @Test
     fun `changeHabit - exception network call `() = runTest {
-        val habitToChange: Habit = createHabit(name = "exception")
-        val result = habitEditRepositoryImpl.changeHabit(habitToChange)
-        coVerify { habitDao.updateHabit(habitToChange.copy(isSentToServer = false).toEntity()) }
+        coEvery { retrofitService.changeHabit(habitDto = any()) } returns NetworkResult.Exception(
+            Throwable(message = "exception")
+        )
+        val result = habitEditRepositoryImpl.changeHabit(testHabit)
+        coVerify { habitDao.updateHabit(testHabit.copy(isSentToServer = false).toEntity()) }
         assertThat(result, equalTo("exception"))
     }
 
     @Test
     fun `getHabitToEdit - returns right habit`() = runTest {
-        val idHabit = "222"
-        coEvery { habitDao.getHabitById(any()) } returns flowOf(createHabit(id = idHabit).toEntity())
-        val result = habitEditRepositoryImpl.getHabitToEdit(idHabit).first()
-        coVerify { habitDao.getHabitById(idHabit) }
-        assertThat(result, equalTo(createHabit(id = idHabit)))
+        coEvery { habitDao.getHabitById(any()) } returns flowOf(testHabit.toEntity())
+        val result = habitEditRepositoryImpl.getHabitToEdit(testHabit.id).first()
+        coVerify { habitDao.getHabitById(testHabit.id) }
+        assertThat(result, equalTo(testHabit))
     }
 
     companion object {
-        fun createHabit(
-            name: String = "aa",
-            desc: String = "bb",
-            type: Type = Type.Good,
-            priority: Priority = Priority.High,
-            number: Int = 2,
-            frequency: Int = 3,
-            colorHabit: Int = -1,
-            isSentToServer: Boolean = false,
-            date: Int = 11,
-            doneCount: Int = 0,
-            id: String = "uid",
-        ) = Habit(
-            name = name,
-            desc = desc,
-            type = type,
-            priority = priority,
-            number = number,
-            frequency = frequency,
-            colorHabit = colorHabit,
-            isSentToServer = isSentToServer,
-            date = date,
-            doneCount = doneCount,
-            id = id,
+        val testHabit = Habit(
+            name = "aa",
+            desc = "bb",
+            type = Type.Good,
+            priority = Priority.High,
+            number = 2,
+            frequency = 3,
+            colorHabit = -1,
+            isSentToServer = false,
+            date = 11,
+            doneCount = 0,
+            id = "uid",
         )
     }
+
 }

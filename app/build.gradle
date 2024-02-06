@@ -122,7 +122,10 @@ dependencies {
     kaptAndroidTest libs.HiltCompiler
     debugImplementation libs.FragmentTesting
     implementation libs.AndroidXArchCoreTest
-    implementation libs.EspressoIdling
+    androidTestImplementation libs.Hamcrest
+    androidTestImplementation libs.HamcrestLibrary
+    androidTestImplementation libs.Kaspresso
+    androidTestUtil libs.AndroidXOrchestrator
 
     //projects
     implementation project(Modules.presentation)

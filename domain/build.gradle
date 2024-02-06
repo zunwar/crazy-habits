@@ -41,6 +41,7 @@ dependencies {
     implementation libs.CoreKtx
     testImplementation libs.JUnit
     testImplementation libs.Hamcrest
+    testImplementation libs.HamcrestLibrary
     testImplementation libs.AndroidXArchCoreTest
     testImplementation libs.Mockk
     testImplementation libs.KotlinXCoTest

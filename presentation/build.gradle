@@ -72,7 +72,6 @@ dependencies {
     androidTestImplementation libs.JUnitKtx
     androidTestImplementation libs.EspressoCore
 
-    implementation libs.EspressoIdling
 
     implementation project(Modules.domain)
     implementation project(Modules.theme)

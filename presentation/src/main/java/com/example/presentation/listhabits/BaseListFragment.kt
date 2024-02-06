@@ -38,13 +38,10 @@ abstract class BaseListFragment<
     }
 
     private fun syncHabitsWithServer() {
-        wrapEspressoIdlingResource {
             viewModel.syncHabitsWithServer()
-        }
     }
 
     private fun scrollToPositionWhenNewAdded() {
-        wrapEspressoIdlingResource {
             try {
                 findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>(
                     HabitEditFragment.EDIT_BOOL
@@ -61,7 +58,6 @@ abstract class BaseListFragment<
                         }
                     }
             } finally {}
-        }
     }
 
     private fun initRecyclerView() {
@@ -73,7 +69,6 @@ abstract class BaseListFragment<
                 findNavController().navigate(action)
             },
             onItemLongClicked = {
-                wrapEspressoIdlingResource {
                     viewModel.deleteClickedHabit(it.id)
                         .observe(viewLifecycleOwner) { deleteStatus ->
                             @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA") val message =
@@ -83,7 +78,6 @@ abstract class BaseListFragment<
                                 }
                             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                         }
-                }
             },
             onDoHabitClicked = {
                 viewModel.doHabitClicked(habit = it)
@@ -109,13 +103,11 @@ abstract class BaseListFragment<
     }
 
     private fun subscribeRecycler() {
-        wrapEspressoIdlingResource {
             viewModel.getHabitsList()
                 .observe(viewLifecycleOwner) { list ->
                     (recycler?.adapter as HabitAdapter).submitList(list)
                     viewModel.listLoadedToRecycler(true)
                 }
-        }
     }
 
 }

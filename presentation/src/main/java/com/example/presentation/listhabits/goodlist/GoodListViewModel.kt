@@ -7,21 +7,24 @@ import com.example.presentation.listhabits.BaseListViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
+import com.example.domain.di.DomainModule
 
 @HiltViewModel
 class GoodListViewModel @Inject constructor(
-    sortFilterHabitsUseCase: SortFilterHabitsUseCase,
+    @DomainModule.GoodHabitFilter sortFilterHabitsUseCase: SortFilterHabitsUseCase,
+    @DomainModule.GoodHabitSync syncHabitsWithServerUseCase: SyncHabitsWithServerUseCase,
     deleteHabitUseCase: DeleteHabitUseCase,
     private val getAvatarUriUseCase: GetAvatarUriUseCase,
-    syncHabitsWithServerUseCase: SyncHabitsWithServerUseCase,
     doHabitUseCase: DoHabitUseCase,
+    nextSortStateUseCase: NextSortStateUseCase,
 ) : BaseListViewModel(
+    syncHabitsWithServerUseCase,
     sortFilterHabitsUseCase,
     deleteHabitUseCase,
-    syncHabitsWithServerUseCase,
     doHabitUseCase,
-    isBadList = false
+    nextSortStateUseCase,
 ) {
+
     private val _uri: MutableLiveData<Uri> = MutableLiveData()
     val uri: LiveData<Uri> = _uri
 

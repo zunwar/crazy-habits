@@ -83,7 +83,6 @@ class HabitListRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteHabit(idHabit: String): String {
-        wrapEspressoIdlingResource {
             val uid = HabitUID(idHabit)
             return when (val response = retrofitService.deleteHabit(uid = uid)) {
                 is NetworkResult.Success -> {
@@ -97,8 +96,6 @@ class HabitListRepositoryImpl @Inject constructor(
                     "Exception---${response.e}"
                 }
             }
-        }
-
     }
 
     /*

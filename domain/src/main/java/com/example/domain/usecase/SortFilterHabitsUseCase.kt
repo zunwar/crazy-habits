@@ -9,24 +9,24 @@ import javax.inject.Inject
 import com.example.domain.entities.Type
 
 class SortFilterHabitsUseCase @Inject constructor(
-    private val habitListRepository: HabitListRepository
+    private val habitListRepository: HabitListRepository,
+    private val type: Type
 ) {
 
     suspend operator fun invoke(
-        sortOrFilter: Pair<SortState, NameToFilter>,
-        type: Type
+        sortAndFilter: Pair<SortState, NameToFilter>,
     ): Flow<List<Habit>> {
-        return when (sortOrFilter.first) {
+        return when (sortAndFilter.first) {
             SortState.SortASC -> habitListRepository.getHabitsByNameAndTypeAndSortASC(
-                sortOrFilter.second.string,
+                sortAndFilter.second.string,
                 type
             )
             SortState.SortDESC -> habitListRepository.getHabitsByNameAndTypeAndSortDESC(
-                sortOrFilter.second.string,
+                sortAndFilter.second.string,
                 type
             )
             SortState.NoSort -> {
-                habitListRepository.getHabitsByNameAndType(sortOrFilter.second.string, type)
+                habitListRepository.getHabitsByNameAndType(sortAndFilter.second.string, type)
             }
         }
     }

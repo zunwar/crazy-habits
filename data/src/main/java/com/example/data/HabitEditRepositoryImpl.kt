@@ -16,8 +16,7 @@ import javax.inject.Inject
 class HabitEditRepositoryImpl @Inject constructor(
     private val habitDao: HabitDao,
     private val retrofitService: HabitsApiService
-) :
-    HabitEditRepository {
+) : HabitEditRepository {
 
     /*
     * отправка привычки на сервер, чтобы сохранить на сервере и получить от сервера id привычки,
@@ -52,7 +51,9 @@ class HabitEditRepositoryImpl @Inject constructor(
     */
     override suspend fun changeHabit(habit: Habit): String {
         val serverResponse =
-            when (val response = retrofitService.changeHabit(habitDto = habit.toEntity().toHabitDto(uid = habit.id))) {
+            when (val response = retrofitService.changeHabit(
+                habitDto = habit.toEntity().toHabitDto(uid = habit.id)
+            )) {
                 is NetworkResult.Success -> {
                     val habitToChange = habit.copy(isSentToServer = true)
                     habitDao.updateHabit(habitToChange.toEntity())

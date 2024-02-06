@@ -59,9 +59,7 @@ dependencies {
     testImplementation libs.Hamcrest
     testImplementation libs.Mockk
     testImplementation libs.KotlinXCoTest
-
     implementation libs.AndroidXArchCoreTest
-    implementation libs.EspressoIdling
 
     implementation project(Modules.domain)
 

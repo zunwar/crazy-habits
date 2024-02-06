@@ -11,12 +11,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalCoroutinesApi::class)
-open class BaseListViewModel(
+abstract class BaseListViewModel(
+    private val syncHabitsWithServerUseCase: SyncHabitsWithServerUseCase,
     private val sortFilterHabitsUseCase: SortFilterHabitsUseCase,
     private val deleteHabitUseCase: DeleteHabitUseCase,
-    private val syncHabitsWithServerUseCase: SyncHabitsWithServerUseCase,
     private val doHabitUseCase: DoHabitUseCase,
-    private val isBadList: Boolean
+    private val nextSortStateUseCase: NextSortStateUseCase,
 ) : ViewModel() {
 
     private val sortOrFilterStateFlow = MutableStateFlow(Pair(SortState.NoSort, NoName))
@@ -24,26 +24,15 @@ open class BaseListViewModel(
     val listLoadedToRecycler: LiveData<Boolean> = _listLoadedToRecycler
 
     fun getHabitsList(): LiveData<List<Habit>> {
-        return when (isBadList) {
-            false -> getList(Type.Good)
-            true -> getList(Type.Bad)
-        }
-    }
-
-    private fun getList(type: Type): LiveData<List<Habit>> {
         return sortOrFilterStateFlow.flatMapLatest {
             withContext(Dispatchers.IO) {
-                sortFilterHabitsUseCase(sortOrFilter = it, type = type)
+                sortFilterHabitsUseCase(sortAndFilter = it)
             }
         }.asLiveData()
     }
 
     fun sortClicked() {
-        val sortState: SortState = when (sortOrFilterStateFlow.value.first) {
-            SortState.SortASC -> SortState.SortDESC
-            SortState.SortDESC -> SortState.NoSort
-            SortState.NoSort -> SortState.SortASC
-        }
+        val sortState = nextSortStateUseCase(sortOrFilterStateFlow.value.first)
         sortOrFilterStateFlow.value = sortOrFilterStateFlow.value.copy(first = sortState)
     }
 
@@ -62,10 +51,7 @@ open class BaseListViewModel(
 
     fun syncHabitsWithServer() {
         viewModelScope.launch(Dispatchers.IO) {
-            when (isBadList) {
-                false -> syncHabitsWithServerUseCase(Type.Good)
-                true -> syncHabitsWithServerUseCase(Type.Bad)
-            }
+            syncHabitsWithServerUseCase()
         }
     }
 
